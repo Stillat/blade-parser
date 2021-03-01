@@ -6,7 +6,6 @@ use Stillat\BladeParser\Nodes\Node;
 
 trait PrintsVerbatim
 {
-
     protected function print_verbatim(Node $node)
     {
         return $node->innerContent();
@@ -16,5 +15,4 @@ trait PrintsVerbatim
     {
         return '';
     }
-
 }

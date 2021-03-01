@@ -3,16 +3,14 @@
 namespace Stillat\BladeParser\Printers;
 
 /**
- * Class PrinterOptions
+ * Class PrinterOptions.
  *
  * A collection of various printing options.
  *
- * @package Stillat\BladeParser\Printers
  * @since 1.0.0
  */
 class PrinterOptions
 {
-
     /**
      * The current new-line style.
      * @var string
@@ -38,5 +36,4 @@ class PrinterOptions
     {
         return $this->newLineType;
     }
-
 }

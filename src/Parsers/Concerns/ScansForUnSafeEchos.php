@@ -22,22 +22,20 @@ trait ScansForUnSafeEchos
                 $peek = $this->indexPeek($i, 2);
 
                 if ($peek === '!}') {
-
                     $echo .= '!}';
                     $breakIndex = ($i + 2);
                     break;
                 }
             }
 
-            $breakIndex+=1;
+            $breakIndex += 1;
             $echo .= $current;
         }
 
         return [
             $echo,
             $breakIndex,
-            1
+            1,
         ];
     }
-
 }

@@ -50,7 +50,7 @@ class RuntimeTypes
             return false;
         }
 
-        return ($analyzedType === $type);
+        return $analyzedType === $type;
     }
 
     public function inferType($input)
@@ -89,10 +89,10 @@ class RuntimeTypes
             }
 
             $this->typeCache[$inputHash] = null;
+
             return null;
         }
 
         return $this->typeCache[$inputHash];
     }
-
 }

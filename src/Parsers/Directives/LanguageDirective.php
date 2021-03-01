@@ -4,7 +4,6 @@ namespace Stillat\BladeParser\Parsers\Directives;
 
 abstract class LanguageDirective
 {
-
     public $name = '';
 
     public $mustAppearIn = [];
@@ -27,6 +26,4 @@ abstract class LanguageDirective
 
         return count($this->mustAppearIn) > 0;
     }
-
 }
-

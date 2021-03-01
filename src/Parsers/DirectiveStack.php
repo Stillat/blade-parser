@@ -7,7 +7,6 @@ use Stillat\BladeParser\Parsers\Directives\LanguageDirective;
 
 class DirectiveStack
 {
-
     protected $stack = [];
 
     public function push(DirectiveNode $directive)
@@ -45,6 +44,4 @@ class DirectiveStack
 
         return null;
     }
-
-
 }

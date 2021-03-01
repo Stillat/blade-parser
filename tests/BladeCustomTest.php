@@ -96,5 +96,4 @@ class BladeCustomTest extends ParserTestCase
         $expected = '<?php custom(); ?>';
         $this->assertEquals($expected, $this->compiler->compileString($string));
     }
-
 }

@@ -4,7 +4,6 @@ namespace Stillat\BladeParser\Tests;
 
 class BladeElseAuthStatementsTest extends ParserTestCase
 {
-
     public function testElseAuthStatementsAreCompiled()
     {
         $string = '@auth("api")
@@ -34,5 +33,4 @@ wheeze
 <?php endif; ?>';
         $this->assertEquals($expected, $this->compiler->compileString($string));
     }
-
 }

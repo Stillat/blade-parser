@@ -4,7 +4,6 @@ namespace Stillat\BladeParser\Parsers\Concerns;
 
 trait ManagesNewLines
 {
-
     private function detectNewLine($content)
     {
         $arr = array_count_values(
@@ -24,12 +23,11 @@ trait ManagesNewLines
 
     private function removeNewLines($string)
     {
-        return trim(str_replace(array("\r\n","\r"), '',$string));
+        return trim(str_replace(["\r\n", "\r"], '', $string));
     }
 
     private function normalizeLineEndings($string, $to = "\n")
     {
         return preg_replace("/\r\n|\r|\n/", $to, $string);
     }
-
 }

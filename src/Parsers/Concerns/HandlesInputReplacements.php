@@ -2,9 +2,8 @@
 
 namespace Stillat\BladeParser\Parsers\Concerns;
 
-trait  HandlesInputReplacements
+trait HandlesInputReplacements
 {
-
     protected $replacements = [];
 
     public function addReplacement(callable $callback)
@@ -20,5 +19,4 @@ trait  HandlesInputReplacements
 
         return $input;
     }
-
 }

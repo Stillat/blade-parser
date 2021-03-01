@@ -6,7 +6,6 @@ use Stillat\BladeParser\Nodes\Node;
 
 trait PrintsHelpers
 {
-
     protected function print_csrf(Node $node)
     {
         return '<?php echo csrf_field(); ?>';
@@ -26,5 +25,4 @@ trait PrintsHelpers
     {
         return '<?php dump('.$node->innerContent().'); ?>';
     }
-
 }

@@ -6,7 +6,6 @@ use Stillat\BladeParser\Analyzers\ArraySearch;
 
 class PhpBlockParser
 {
-
     const START_PHP = '@php';
     const NAME_PHP = 'php';
     const END_PHP = '@endphp';
@@ -91,7 +90,7 @@ class PhpBlockParser
                     'start' => $extraction['start'],
                     'content_start' => $extraction['start'] + $this->phpStartCount,
                     'end' => $extraction['end'],
-                    'content_end' => $extraction['end'] - $this->phpEndCount
+                    'content_end' => $extraction['end'] - $this->phpEndCount,
                 ];
             }
 
@@ -142,13 +141,12 @@ class PhpBlockParser
                 $trimStart = true;
             }
 
-
             $extractions[$pairStart] = [
                 'start' => $pairStart,
                 'end' => $pairEnd,
                 'raw_pair' => $pair,
                 'raw_content' => implode($extractedParts),
-                'content' => implode($adjustedContent)
+                'content' => implode($adjustedContent),
             ];
         }
 
@@ -189,7 +187,7 @@ class PhpBlockParser
                 $this->invalidLiteralLocations[$startLocation] = true;
                 $this->invalidLiteralLocations[$lastGatheredEndIndex] = true;
                 $pairs[] = [
-                    $location, $candidate
+                    $location, $candidate,
                 ];
             }
         }
@@ -244,5 +242,4 @@ class PhpBlockParser
     {
         return array_key_exists($index, $this->literalPhpLocations);
     }
-
 }

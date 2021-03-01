@@ -4,7 +4,6 @@ namespace Stillat\BladeParser\Tests;
 
 class BladeCanAnyStatementsTest extends ParserTestCase
 {
-
     public function testCanAnyStatementsAreCompiled()
     {
         $string = '@canany ([\'create\', \'update\'], [$post])
@@ -19,5 +18,4 @@ sneeze
 <?php endif; ?>';
         $this->assertEquals($expected, $this->compiler->compileString($string));
     }
-
 }

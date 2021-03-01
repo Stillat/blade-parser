@@ -6,7 +6,5 @@ use Stillat\BladeParser\Nodes\Node;
 
 abstract class AbstractNodeVisitor
 {
-
-    public abstract function onEnter(Node $node);
-
+    abstract public function onEnter(Node $node);
 }

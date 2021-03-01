@@ -2,16 +2,11 @@
 
 namespace Stillat\BladeParser\Tests;
 
-use PhpParser\Node\Scalar\String_;
 use PHPUnit\Framework\TestCase;
 use Stillat\BladeParser\Compilers\PhpCompiler;
-use Stillat\BladeParser\Parsers\Blade;
-use Stillat\BladeParser\Printers\NodeStructurePrinter;
-use Stillat\BladeParser\Printers\Php\Printer;
 
 class ParserTestCase extends TestCase
 {
-
     /**
      * The PhpCompiler instance.
      *
@@ -25,6 +20,4 @@ class ParserTestCase extends TestCase
 
         parent::setUp();
     }
-
-
 }

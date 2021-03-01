@@ -4,7 +4,6 @@ namespace Stillat\BladeParser\Tests;
 
 class BladeEchoTest extends ParserTestCase
 {
-
     public function testEchosAreCompiled()
     {
         $this->assertSame('<?php echo $name; ?>', $this->compiler->compileString('{!!$name!!}'));
@@ -64,5 +63,4 @@ class BladeEchoTest extends ParserTestCase
             $this->compiler->compileString('@{{ $name }}
             '));
     }
-    
 }

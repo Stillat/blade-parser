@@ -12,7 +12,6 @@ use Stillat\BladeParser\Visitors\PrinterNodeVisitor;
 
 class Template
 {
-
     /**
      * @var Node[]
      */
@@ -34,7 +33,7 @@ class Template
         $this->referencesNodes = $referenceNodes;
         $this->newLineType = $newLineType;
 
-        $this->buildMetaData();;
+        $this->buildMetaData();
     }
 
     private function buildMetaData()
@@ -45,7 +44,7 @@ class Template
             } elseif ($node instanceof EchoNode) {
                 $this->echoCount += 1;
             } else {
-                if (array_key_exists($node->directive, $this->directiveTypeCount) === false){
+                if (array_key_exists($node->directive, $this->directiveTypeCount) === false) {
                     $this->directiveTypeCount[$node->directive] = 0;
                 }
 
@@ -95,6 +94,4 @@ class Template
 
         return $printer;
     }
-
 }
-

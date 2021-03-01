@@ -4,7 +4,6 @@ namespace Stillat\BladeParser\Tests;
 
 class BladeCanStatementsTest extends ParserTestCase
 {
-
     public function testCanStatementsAreCompiled()
     {
         $string = '@can (\'update\', [$post])
@@ -20,5 +19,4 @@ sneeze
 
         $this->assertEquals($expected, $this->compiler->compileString($string));
     }
-
 }

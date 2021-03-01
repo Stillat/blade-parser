@@ -4,7 +4,6 @@ namespace Stillat\BladeParser\Tests;
 
 class BladeIfStatementsTest extends ParserTestCase
 {
-
     public function testIfStatementsAreCompiled()
     {
         $string = '@if (name(foo(bar)))
@@ -48,5 +47,4 @@ bar
 
         $this->assertEquals($expected, $this->compiler->compileString($string));
     }
-
 }

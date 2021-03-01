@@ -2,7 +2,6 @@
 
 namespace Stillat\BladeParser\Tests;
 
-
 class BladeForelseStatementsTest extends ParserTestCase
 {
     public function testForelseStatementsAreCompiled()

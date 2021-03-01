@@ -7,7 +7,6 @@ use Stillat\BladeParser\Printers\Php\Printer;
 
 class PhpCompiler
 {
-
     /**
      * The Blade parser instance.
      *
@@ -53,5 +52,4 @@ class PhpCompiler
 
         return $document->withPrinter($this->printer)->getContents();
     }
-
 }

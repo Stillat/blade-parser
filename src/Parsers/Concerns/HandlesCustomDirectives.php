@@ -7,12 +7,11 @@ use Stillat\BladeParser\Validators\NameValidators;
 
 trait HandlesCustomDirectives
 {
-
     protected $customDirectives = [];
 
     public function directive($name, callable $handler)
     {
-        if (!NameValidators::isDirectiveNameValid($name)) {
+        if (! NameValidators::isDirectiveNameValid($name)) {
             throw new InvalidArgumentException("The directive name [{$name}] is not valid. Directive names must only contain alphanumeric characters and underscores.");
         }
 
@@ -23,5 +22,4 @@ trait HandlesCustomDirectives
     {
         return $this->customDirectives;
     }
-
 }

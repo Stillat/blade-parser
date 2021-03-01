@@ -4,7 +4,6 @@ namespace Stillat\BladeParser\Tests;
 
 class BladeBreakStatementsTest extends ParserTestCase
 {
-
     public function testBreakStatementsAreCompiled()
     {
         $string = '@for ($i = 0; $i < 10; $i++)
@@ -32,7 +31,6 @@ test
 
         $this->assertEquals($expected, $this->compiler->compileString($string));
     }
-
 
     public function testBreakStatementsWithArgumentAreCompiled()
     {
@@ -72,5 +70,4 @@ test
 <?php endfor; ?>';
         $this->assertEquals($expected, $this->compiler->compileString($string));
     }
-
 }

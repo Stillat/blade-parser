@@ -158,7 +158,7 @@ class VerbatimBlockParser
                     'start' => $extraction['start'],
                     'content_start' => $extraction['start'] + $this->verbatimStartCount,
                     'end' => $extraction['end'],
-                    'content_end' => $extraction['end'] - $this->verbatimEndCount
+                    'content_end' => $extraction['end'] - $this->verbatimEndCount,
                 ];
             }
 
@@ -210,7 +210,7 @@ class VerbatimBlockParser
                 'end' => $pairEnd,
                 'raw_pair' => $pair,
                 'raw_content' => implode($extractedParts),
-                'content' => implode($adjustedContent)
+                'content' => implode($adjustedContent),
             ];
         }
 
@@ -228,7 +228,6 @@ class VerbatimBlockParser
         $lastIndex = -1;
 
         foreach ($this->startIndex as $possibleTagStart => $tagParts) {
-
             if ($possibleTagStart <= $lastIndex) {
                 continue;
             }
@@ -245,7 +244,7 @@ class VerbatimBlockParser
             if ($candidate != null && is_array($candidate) && count($candidate) > 0) {
                 $pairs[] = [
                     $tagParts,
-                    $candidate
+                    $candidate,
                 ];
 
                 $lastIndex = $candidate[0];
@@ -264,5 +263,4 @@ class VerbatimBlockParser
     {
         return $this->isBalanced;
     }
-
 }

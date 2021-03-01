@@ -52,13 +52,13 @@ class Printer extends AbstractNodePrinter
     public function setCustomDirectiveHandlers($customDirectives)
     {
         foreach ($customDirectives as $name => $handler) {
-            $this->customDirectiveHandlers['print_' . mb_strtolower($name)] = $handler;
+            $this->customDirectiveHandlers['print_'.mb_strtolower($name)] = $handler;
         }
     }
 
     public function printNode(Node $node)
     {
-        $targetMethod = 'print_' . mb_strtolower($node->getSubType());
+        $targetMethod = 'print_'.mb_strtolower($node->getSubType());
 
         // Check the custom handlers first. This will allow the
         // custom directives to overwrite the core directives.
@@ -70,7 +70,7 @@ class Printer extends AbstractNodePrinter
             if (method_exists($this, $targetMethod)) {
                 $this->buffer .= call_user_func([$this, $targetMethod], $node);
             } else {
-                ray('Missing Printer: ' . $targetMethod);
+                ray('Missing Printer: '.$targetMethod);
             }
         }
     }

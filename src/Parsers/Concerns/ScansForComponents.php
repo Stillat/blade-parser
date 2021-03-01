@@ -4,7 +4,6 @@ namespace Stillat\BladeParser\Parsers\Concerns;
 
 trait ScansForComponents
 {
-
     private function scanToEndOfComponent($start)
     {
         $component = '';
@@ -34,5 +33,4 @@ trait ScansForComponents
 
         return [$component, $breakIndex];
     }
-
 }

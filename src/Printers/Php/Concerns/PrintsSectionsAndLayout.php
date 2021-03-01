@@ -6,7 +6,6 @@ use Stillat\BladeParser\Nodes\Node;
 
 trait PrintsSectionsAndLayout
 {
-
     protected function print_show(Node $node)
     {
         return '<?php echo $__env->yieldSection(); ?>';
@@ -41,5 +40,4 @@ trait PrintsSectionsAndLayout
     {
         return '<?php echo $__env->yieldContent('.$node->innerContent().'); ?>';
     }
-
 }

@@ -4,7 +4,6 @@ namespace Stillat\BladeParser\Printers\Generators;
 
 class StructureGenerator
 {
-
     protected $buffer = '';
 
     public static function make()
@@ -35,6 +34,4 @@ class StructureGenerator
     {
         return $this->buffer;
     }
-
-
 }

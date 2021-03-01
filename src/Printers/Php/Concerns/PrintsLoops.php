@@ -6,7 +6,6 @@ use Stillat\BladeParser\Nodes\Node;
 
 trait PrintsLoops
 {
-
     protected $forElseCounter = 0;
 
     protected function print_break(Node $node)
@@ -49,6 +48,7 @@ trait PrintsLoops
                 return '<?php if('.$node->innerContent().') continue; ?>';
             }
         }
+
         return '<?php continue; ?>';
     }
 
@@ -95,7 +95,6 @@ trait PrintsLoops
             return '<?php if(empty('.$node->innerContent().')): ?>';
         }
 
-
         $empty = '$__empty_'.$this->forElseCounter--;
 
         return "<?php endforeach; \$__env->popLoop(); \$loop = \$__env->getLastLoop(); if ({$empty}): ?>";
@@ -120,5 +119,4 @@ trait PrintsLoops
     {
         return '<?php endwhile; ?>';
     }
-
 }

@@ -22,5 +22,4 @@ trait DetectsEchos
 
         return false;
     }
-
 }

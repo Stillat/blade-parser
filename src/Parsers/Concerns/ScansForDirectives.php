@@ -8,7 +8,6 @@ use Stillat\BladeParser\Parsers\Structures\VerbatimBlockParser;
 
 trait ScansForDirectives
 {
-
     private function scanToEndOfDirective($start)
     {
         $part = '';
@@ -19,7 +18,6 @@ trait ScansForDirectives
         $directiveInnerContents = '';
         $currentOpenDirectiveTokens = 0;
         $exitedOnNewLine = false;
-
 
         for ($i = $start; $i < $this->tokenLength; $i++) {
             $cur = $this->tokens[$i];
@@ -108,7 +106,8 @@ trait ScansForDirectives
         return [$part, $directiveName, $breakIndex, $directiveInnerContents, $exitedOnNewLine];
     }
 
-    private function isPhpOpen($directiveName) {
+    private function isPhpOpen($directiveName)
+    {
         if (mb_strlen($directiveName) < 4) {
             return false;
         }
@@ -122,7 +121,8 @@ trait ScansForDirectives
         return false;
     }
 
-    private function isReplacedPhpExtraction($directiveName) {
+    private function isReplacedPhpExtraction($directiveName)
+    {
         if (mb_strlen($directiveName) < 4) {
             return false;
         }
@@ -150,5 +150,4 @@ trait ScansForDirectives
 
         return false;
     }
-
 }

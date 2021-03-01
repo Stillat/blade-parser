@@ -6,7 +6,6 @@ use Stillat\BladeParser\Parsers\Blade;
 
 trait ScansForComments
 {
-
     /**
      * Tests if the current location is the start of a comment.
      *
@@ -54,9 +53,8 @@ trait ScansForComments
         }
 
         return [
-          $comment,
-          $breakIndex
+            $comment,
+            $breakIndex,
         ];
     }
-
 }
