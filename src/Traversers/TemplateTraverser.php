@@ -6,7 +6,6 @@ use Stillat\BladeParser\Nodes\Node;
 
 class TemplateTraverser extends NodeTraverser
 {
-
     protected $nodes = [];
 
     /**
@@ -22,5 +21,4 @@ class TemplateTraverser extends NodeTraverser
     {
         $this->traverseNodes($this->nodes);
     }
-
 }

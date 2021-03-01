@@ -6,7 +6,6 @@ use Stillat\BladeParser\Nodes\Node;
 
 trait PrintsAuthorizations
 {
-
     protected function print_can(Node $node)
     {
         return '<?php if (app(\Illuminate\\Contracts\\Auth\\Access\\Gate::class)->check('.$node->innerContent().')): ?>';
@@ -47,7 +46,7 @@ trait PrintsAuthorizations
         return $this->phpEndIf();
     }
 
-    protected function print_auth(Node  $node)
+    protected function print_auth(Node $node)
     {
         $guard = '';
 
@@ -58,7 +57,7 @@ trait PrintsAuthorizations
         return "<?php if(auth()->guard({$guard})->check()): ?>";
     }
 
-    protected function print_endauth(Node  $node)
+    protected function print_endauth(Node $node)
     {
         return $this->phpEndIf();
     }
@@ -74,7 +73,7 @@ trait PrintsAuthorizations
         return "<?php elseif(auth()->guard({$guard})->check()): ?>";
     }
 
-    protected function print_guest(Node  $node)
+    protected function print_guest(Node $node)
     {
         $guard = '';
 
@@ -85,7 +84,7 @@ trait PrintsAuthorizations
         return "<?php if(auth()->guard({$guard})->guest()): ?>";
     }
 
-    protected function print_elseguest(Node  $node)
+    protected function print_elseguest(Node $node)
     {
         $guard = '';
 
@@ -100,5 +99,4 @@ trait PrintsAuthorizations
     {
         return $this->phpEndIf();
     }
-
 }

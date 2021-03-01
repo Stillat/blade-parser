@@ -7,7 +7,6 @@ use Stillat\BladeParser\Visitors\AbstractNodeVisitor;
 
 class NodeTraverser
 {
-
     /**
      * The registered visitors.
      *
@@ -31,5 +30,4 @@ class NodeTraverser
     {
         $this->nodeVisitors[] = $visitor;
     }
-
 }

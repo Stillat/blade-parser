@@ -11,7 +11,7 @@ trait PrintsStacks
         return '<?php echo $__env->yieldPushContent('.$node->innerContent().'); ?>';
     }
 
-    protected function print_prepend(Node  $node)
+    protected function print_prepend(Node $node)
     {
         return '<?php $__env->startPrepend('.$node->innerContent().'); ?>';
     }
@@ -35,5 +35,4 @@ trait PrintsStacks
     {
         return '<?php $__env->stopPush(); ?>';
     }
-
 }

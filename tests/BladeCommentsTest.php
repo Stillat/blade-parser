@@ -4,7 +4,6 @@ namespace Stillat\BladeParser\Tests;
 
 class BladeCommentsTest extends ParserTestCase
 {
-
     public function testCommentsAreCompiled()
     {
         $string = '{{--this is a comment--}}';
@@ -25,5 +24,4 @@ this is a comment
 
         $this->assertEmpty($this->compiler->compileString($string));
     }
-
 }

@@ -14,5 +14,4 @@ breeze
 <?php endif; ?>';
         $this->assertEquals($expected, $this->compiler->compileString($string));
     }
-
 }

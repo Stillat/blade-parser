@@ -7,7 +7,6 @@ use Stillat\BladeParser\Printers\AbstractNodePrinter;
 
 class PrinterNodeVisitor extends AbstractNodeVisitor
 {
-
     /**
      * The registered printers.
      *
@@ -26,5 +25,4 @@ class PrinterNodeVisitor extends AbstractNodeVisitor
     {
         $this->printers[] = $printer;
     }
-
 }

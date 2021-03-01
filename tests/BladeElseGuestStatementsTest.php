@@ -4,7 +4,6 @@ namespace Stillat\BladeParser\Tests;
 
 class BladeElseGuestStatementsTest extends ParserTestCase
 {
-
     public function testIfStatementsAreCompiled()
     {
         $string = '@guest("api")
@@ -19,5 +18,4 @@ wheeze
 <?php endif; ?>';
         $this->assertEquals($expected, $this->compiler->compileString($string));
     }
-
 }

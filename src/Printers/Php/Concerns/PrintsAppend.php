@@ -6,10 +6,8 @@ use Stillat\BladeParser\Nodes\Node;
 
 trait PrintsAppend
 {
-
     protected function print_append(Node $node)
     {
         return '<?php $__env->appendSection(); ?>';
     }
-    
 }

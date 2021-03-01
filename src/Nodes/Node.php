@@ -6,7 +6,6 @@ use Stillat\BladeParser\Parsers\Directives\LanguageDirective;
 
 abstract class Node
 {
-
     public $rawContent = '';
     public $innerContent = '';
 
@@ -100,10 +99,9 @@ abstract class Node
         $className = array_pop($classParts);
 
         if ($className === 'Node') {
-            return 'node:' . $subType;
+            return 'node:'.$subType;
         }
 
-        return mb_strtolower(mb_substr($className, 0, -4) . ':' . $subType);
+        return mb_strtolower(mb_substr($className, 0, -4).':'.$subType);
     }
-
 }

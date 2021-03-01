@@ -6,10 +6,9 @@ use Stillat\BladeParser\Nodes\Node;
 
 trait PrintsIncludes
 {
-
     protected function print_each(Node $node)
     {
-        return '<?php echo $__env->renderEach(' . $node->innerContent() . '); ?>';
+        return '<?php echo $__env->renderEach('.$node->innerContent().'); ?>';
     }
 
     protected function print_include(Node $node)
@@ -46,5 +45,4 @@ trait PrintsIncludes
 
         return "<?php echo \$__env->first({$expression}, \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>";
     }
-
 }

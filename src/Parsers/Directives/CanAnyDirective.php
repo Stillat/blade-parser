@@ -8,5 +8,4 @@ class CanAnyDirective extends LanguageDirective
 
     public $isTagPair = true;
     public $isClosedBy = 'endcan';
-
 }

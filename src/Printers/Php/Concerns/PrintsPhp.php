@@ -7,15 +7,14 @@ use Stillat\BladeParser\Nodes\PhpNode;
 
 trait PrintsPhp
 {
-
     protected function print_php(Node $node)
     {
         if ($node instanceof PhpNode) {
             if ($node->isSelfClosing == true) {
-                return '<?php (' . $node->innerContent() . '); ?>';
+                return '<?php ('.$node->innerContent().'); ?>';
             }
 
-            return '<?php' . $node->innerContent() . '?>';
+            return '<?php'.$node->innerContent().'?>';
         }
     }
 
@@ -28,5 +27,4 @@ trait PrintsPhp
     {
         return '<?php unset('.$node->innerContent().'); ?>';
     }
-
 }

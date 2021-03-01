@@ -2,13 +2,11 @@
 
 namespace Stillat\BladeParser\Tests\Structures;
 
-use PHPUnit\Framework\TestCase;
 use Stillat\BladeParser\Parsers\Structures\VerbatimBlockParser;
 use Stillat\BladeParser\Tests\ParserTestCase;
 
 class VerbatimTest extends ParserTestCase
 {
-
     public function testExtremeExamplesMatchLaravelOutput()
     {
         $string = 'SL01 {{ $title }}
@@ -120,7 +118,6 @@ SL23 @  <!--ENDPAIR_3-->';
         $parser->parse();
         $this->assertTrue($parser->getIsBalanced());
 
-
         $parser->setTokens(mb_str_split('@verbatim
 
 @endverbatim
@@ -142,5 +139,4 @@ SL23 @  <!--ENDPAIR_3-->';
 
         $this->assertSame($expected, $this->compiler->compileString($string));
     }
-
 }

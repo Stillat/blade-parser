@@ -6,7 +6,6 @@ $template = file_get_contents('template.blade.php');
 
 $parser = new \Stillat\BladeParser\Parsers\Blade();
 
-
 $template = "{{ 'I am Blade' }}"."\n@php echo 'I am PHP {{ not Blade }}' @endphp";
 $doc = $parser->parse($template);
 

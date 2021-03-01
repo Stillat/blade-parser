@@ -4,7 +4,6 @@ namespace Stillat\BladeParser\Tests;
 
 class BladeCannotStatementsTest extends ParserTestCase
 {
-
     public function testCannotStatementsAreCompiled()
     {
         $string = '@cannot (\'update\', [$post])
@@ -19,5 +18,4 @@ sneeze
 <?php endif; ?>';
         $this->assertEquals($expected, $this->compiler->compileString($string));
     }
-
 }

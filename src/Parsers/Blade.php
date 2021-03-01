@@ -115,15 +115,15 @@ class Blade
 
     protected function registerDefaultDirectives()
     {
-        foreach (glob(__DIR__ . '/Directives/*.php') as $file) {
+        foreach (glob(__DIR__.'/Directives/*.php') as $file) {
             $fileBaseName = basename($file);
             $className = substr($fileBaseName, 0, strlen($fileBaseName) - 4);
 
             $abstracts = [
-                LanguageDirective::class
+                LanguageDirective::class,
             ];
 
-            $fqn = 'Stillat\\BladeParser\\Parsers\\Directives\\' . $className;
+            $fqn = 'Stillat\\BladeParser\\Parsers\\Directives\\'.$className;
 
             if (class_exists($fqn) && in_array($fqn, $abstracts) === false) {
                 $this->registerDirective(new $fqn);
@@ -189,7 +189,7 @@ class Blade
                     'start' => $i,
                     'end' => $scanResults[1],
                     'line' => $this->currentLine,
-                    'type' => 'comment'
+                    'type' => 'comment',
                 ];
 
                 $previousIndex = $scanResults[1];
@@ -207,10 +207,9 @@ class Blade
 
                 $echoResults = $this->scanToEndOfEcho($i);
 
-
                 $this->directives[] = [
                     'content' => ltrim($echoResults[0], self::TOKEN_ESCAPE_BLADE),
-                    'type' => 'literal'
+                    'type' => 'literal',
                 ];
 
                 $previousIndex = $echoResults[1];
@@ -233,7 +232,7 @@ class Blade
                     'end' => $echoResults[1],
                     'line' => $this->currentLine,
                     'open_count' => $echoResults[2],
-                    'type' => 'unsafe_echo'
+                    'type' => 'unsafe_echo',
                 ];
 
                 $previousIndex = $echoResults[1];
@@ -257,7 +256,7 @@ class Blade
                     'end' => $echoResults[1],
                     'line' => $this->currentLine,
                     'open_count' => $echoResults[2],
-                    'type' => 'echo'
+                    'type' => 'echo',
                 ];
 
                 $previousIndex = $echoResults[1];
@@ -271,7 +270,7 @@ class Blade
                     if ($this->tokens[$nextIterationIndex] == self::TOKEN_LINE_SEPARATOR) {
                         $this->directives[] = [
                             'type' => 'newline',
-                            'content' => "\n"
+                            'content' => "\n",
                         ];
                         $this->currentSegment = '';
                     }
@@ -281,9 +280,8 @@ class Blade
                 $lastDirectiveType = 'echo';
                 $this->fastForward($i);
 
-
                 continue;
-            } else if ($this->current === self::TOKEN_COMPONENT_START && $this->isStartingBladeComponent()) {
+            } elseif ($this->current === self::TOKEN_COMPONENT_START && $this->isStartingBladeComponent()) {
                 $this->convertSegmentToStringLiteral();
 
                 $componentResults = $this->scanToEndOfComponent($i);
@@ -293,7 +291,7 @@ class Blade
                     'start' => $i,
                     'end' => $componentResults[1],
                     'line' => $this->currentLine,
-                    'type' => 'component'
+                    'type' => 'component',
                 ];
 
                 $previousIndex = $componentResults[1];
@@ -304,7 +302,7 @@ class Blade
                 $i = $componentResults[1];
 
                 continue;
-            } else if ($this->current === self::TOKEN_BLADE_START && $this->isStartingBladeEscapeSequence() === false) {
+            } elseif ($this->current === self::TOKEN_BLADE_START && $this->isStartingBladeEscapeSequence() === false) {
                 $this->convertSegmentToStringLiteral();
 
                 $scanResults = $this->scanToEndOfDirective($i);
@@ -315,7 +313,7 @@ class Blade
 
                     $this->directives[] = array_merge($verbatimDetails, [
                         'name' => VerbatimBlockParser::VERBATIM,
-                        'type' => VerbatimBlockParser::VERBATIM
+                        'type' => VerbatimBlockParser::VERBATIM,
                     ]);
 
                     $lastDirectiveType = VerbatimBlockParser::VERBATIM;
@@ -332,7 +330,7 @@ class Blade
 
                     $this->directives[] = array_merge($phpBlockDetails, [
                         'name' => PhpBlockParser::NAME_PHP,
-                        'type' => PhpBlockParser::NAME_PHP
+                        'type' => PhpBlockParser::NAME_PHP,
                     ]);
 
                     $lastDirectiveType = PhpBlockParser::NAME_PHP;
@@ -355,7 +353,7 @@ class Blade
                             'end' => $scanResults[2],
                             'line' => $this->currentLine,
                             'name' => VerbatimBlockParser::ENDVERBATIM,
-                            'type' => 'directive'
+                            'type' => 'directive',
                         ];
 
                         $skipIndex = $i + 11; // $potentialEndVerbatim['length'];
@@ -366,7 +364,7 @@ class Blade
                     } else {
                         $this->directives[] = [
                             'type' => 'literal',
-                            'content' => $potentialEndVerbatim['directive'] . $potentialEndVerbatim['literal']
+                            'content' => $potentialEndVerbatim['directive'].$potentialEndVerbatim['literal'],
                         ];
 
                         $skipIndex = $i + $potentialEndVerbatim['length'];
@@ -385,14 +383,14 @@ class Blade
                     'end' => $scanResults[2],
                     'line' => $this->currentLine,
                     'name' => $scanResults[1],
-                    'type' => 'directive'
+                    'type' => 'directive',
                 ];
 
                 // Did the scanner break on new line?
                 if ($scanResults[4] === true) {
                     $this->directives[] = [
                         'type' => 'newline',
-                        'content' => "\n"
+                        'content' => "\n",
                     ];
                 }
 
@@ -405,7 +403,7 @@ class Blade
                 $i = $scanResults[2];
 
                 continue;
-            } else if ($this->current === self::TOKEN_BLADE_START && $this->isStartingBladeEscapeSequence()) {
+            } elseif ($this->current === self::TOKEN_BLADE_START && $this->isStartingBladeEscapeSequence()) {
                 $currentDirective = '';
             }
 
@@ -485,6 +483,7 @@ class Blade
         if ($index >= $this->tokenLength) {
             $this->previous = $this->tokens[$this->tokenLength - 1];
             $this->next = null;
+
             return;
         }
         $this->current = $this->tokens[$index];
@@ -569,7 +568,8 @@ class Blade
         $firstChar = mb_substr($content, 0, 1);
         if ($firstChar === self::TOKEN_LINE_SEPARATOR) {
             $string = mb_substr($content, 1);
-            return $string . $firstChar;
+
+            return $string.$firstChar;
         }
 
         return $content;
@@ -841,7 +841,6 @@ class Blade
                 $name = $current->directive;
 
                 if ($this->directiveRequiresClose($name, $parent)) {
-
                     $scanDetails = $this->scanToClose($current, $nodes, $i);
 
                     $newNodes[] = $scanDetails[0];
@@ -903,7 +902,6 @@ class Blade
 
         $foundClose = false;
 
-
         $enclosed = [];
         $seekIndex = 1;
         $enclosedCount = 0;
@@ -913,7 +911,6 @@ class Blade
             $current = $nodes[$i];
 
             $name = $current->directive;
-
 
             if (in_array($name, $canOpenThisClose)) {
                 $seekIndex += 1;
@@ -936,7 +933,6 @@ class Blade
             }
 
             $enclosed[] = $current;
-
         }
 
         $enclosedCount = count($enclosed);
@@ -949,7 +945,7 @@ class Blade
 
         return [
             $pairNode,
-            $enclosedCount
+            $enclosedCount,
         ];
     }
 
@@ -972,8 +968,6 @@ class Blade
             }
         }
 
-
         return $canBeClosedBy;
     }
-
 }

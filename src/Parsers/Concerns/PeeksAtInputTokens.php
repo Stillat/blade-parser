@@ -4,7 +4,6 @@ namespace Stillat\BladeParser\Parsers\Concerns;
 
 trait PeeksAtInputTokens
 {
-
     private function peek($count)
     {
         if (($this->currentIndex + $count) < $this->tokenLength) {
@@ -22,5 +21,4 @@ trait PeeksAtInputTokens
 
         return null;
     }
-
 }

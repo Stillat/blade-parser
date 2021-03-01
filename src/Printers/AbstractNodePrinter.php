@@ -6,7 +6,6 @@ use Stillat\BladeParser\Nodes\Node;
 
 abstract class AbstractNodePrinter
 {
-
     /**
      * The PrinterOptions instance, if any.
      * @var PrinterOptions
@@ -18,11 +17,11 @@ abstract class AbstractNodePrinter
         $this->options = $options;
     }
 
-    public abstract function printNode(Node $node);
+    abstract public function printNode(Node $node);
 
-    public abstract function clearContents();
+    abstract public function clearContents();
 
-    public abstract function getContents();
+    abstract public function getContents();
 
     public function getNewLineStyle()
     {
@@ -50,6 +49,4 @@ abstract class AbstractNodePrinter
     {
         return '"'.$input.'"';
     }
-
-
 }

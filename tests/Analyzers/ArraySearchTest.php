@@ -7,7 +7,6 @@ use Stillat\BladeParser\Analyzers\ArraySearch;
 
 class ArraySearchTest extends TestCase
 {
-
     public function testConsecutiveIntegersAreRemoved()
     {
         $input = [0, 6, 7, 12, 13, 21, 26];
@@ -39,8 +38,6 @@ class ArraySearchTest extends TestCase
         $expected = [6, 8, 10, 17, 65];
 
         $this->assertSame($expected, ArraySearch::removeConsecutiveIntegers($input));
-
-
     }
 
     public function testSequencesCanBeFound()
@@ -76,21 +73,20 @@ class ArraySearchTest extends TestCase
     public function testIndexTablesAreCreated()
     {
         $this->assertSame([
-            21 => [21, 22, 23, 24]
+            21 => [21, 22, 23, 24],
         ], ArraySearch::createIndexTable([[21, 22, 23, 24]]));
 
         $this->assertSame([
             21 => [21, 22, 23, 24],
-            30 => [30, 31, 32, 33]
+            30 => [30, 31, 32, 33],
         ], ArraySearch::createIndexTable([[21, 22, 23, 24], [30, 31, 32, 33]]));
-
     }
 
     public function testCanSearchInComplicatedStrings()
     {
         $expected = [
             [0, 1, 2, 3],
-            [21, 22, 23, 24]
+            [21, 22, 23, 24],
         ];
 
         $string = '@php
@@ -103,7 +99,7 @@ class ArraySearchTest extends TestCase
 
         $expected = [
             [0, 1, 2, 3],
-            [23, 24, 25, 26]
+            [23, 24, 25, 26],
         ];
 
         $string = '@php()
@@ -114,5 +110,4 @@ class ArraySearchTest extends TestCase
         $results = ArraySearch::searchStrings('@php', $string);
         $this->assertSame($expected, $results);
     }
-
 }

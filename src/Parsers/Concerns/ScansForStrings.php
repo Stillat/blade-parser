@@ -4,7 +4,6 @@ namespace Stillat\BladeParser\Parsers\Concerns;
 
 trait ScansForStrings
 {
-
     private function isStartOfString($token)
     {
         if (in_array($token, $this->stringInitiators) && $this->isParsingString === false) {
@@ -35,7 +34,7 @@ trait ScansForStrings
             }
 
             if ($strCurrent === self::TOKEN_STRING_ESCAPE && ($nextToken !== null && $nextToken === $this->currentStringInitiator)) {
-                $stringValue .= self::TOKEN_STRING_ESCAPE . $this->currentStringInitiator;
+                $stringValue .= self::TOKEN_STRING_ESCAPE.$this->currentStringInitiator;
                 $i += 1;
                 continue;
             }
@@ -52,9 +51,7 @@ trait ScansForStrings
         return [
             $stringValue,
             $stringStartsOn,
-            $stringEndsOn
+            $stringEndsOn,
         ];
     }
-
-
 }

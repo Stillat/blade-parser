@@ -7,7 +7,6 @@ use Stillat\BladeParser\Tests\ParserTestCase;
 
 class PhpTest extends ParserTestCase
 {
-
     public function testThatLiteralPositionsAreDiscovered()
     {
         $parser = new PhpBlockParser();
@@ -90,5 +89,4 @@ for($i = 0; $i++;$=two) {}
 ?>';
         $this->assertSame($expected, $this->compiler->compileString($string));
     }
-
 }

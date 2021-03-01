@@ -4,7 +4,6 @@ namespace Stillat\BladeParser\Tests;
 
 class BladeElseIfStatementsTest extends ParserTestCase
 {
-
     public function testElseIfStatementsAreCompiled()
     {
         $string = '@if(name(foo(bar)))
@@ -19,5 +18,4 @@ boom
 <?php endif; ?>';
         $this->assertEquals($expected, $this->compiler->compileString($string));
     }
-
 }

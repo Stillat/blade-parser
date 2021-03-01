@@ -10,5 +10,4 @@ class BladeStackTest extends ParserTestCase
         $expected = '<?php echo $__env->yieldPushContent(\'foo\'); ?>';
         $this->assertEquals($expected, $this->compiler->compileString($string));
     }
-
 }

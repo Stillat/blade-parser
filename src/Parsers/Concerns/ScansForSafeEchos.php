@@ -42,7 +42,6 @@ trait ScansForSafeEchos
             if ($current === self::TOKEN_ECHO_END && (
                     $next !== null && $next === self::TOKEN_ECHO_END
                 )) {
-
                 if ($firstChar === self::TOKEN_ECHO_START && ($next === self::TOKEN_ECHO_END)) {
                     $echo .= '}}}';
                     $openCount = 3;
@@ -51,7 +50,7 @@ trait ScansForSafeEchos
                 }
 
                 $echo .= '}}';
-                $breakIndex = ($i+1);
+                $breakIndex = ($i + 1);
 
                 break;
             }
@@ -62,9 +61,7 @@ trait ScansForSafeEchos
         return [
             $echo,
             $breakIndex,
-            $openCount
+            $openCount,
         ];
     }
-
-
 }

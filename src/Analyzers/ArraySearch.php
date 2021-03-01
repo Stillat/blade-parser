@@ -58,7 +58,6 @@ class ArraySearch
             }
         }
 
-
         $lastHaystackValue = $haystack[$haystackLength - 1];
         $lastDiff = $lastHaystackValue - $haystack[$haystackLength - 2];
 
@@ -108,8 +107,8 @@ class ArraySearch
                 if ($haystack[$i] !== $needle[$j]) {
                     continue 2; // no match
                 }
-                ++$i;
-                ++$j;
+                $i++;
+                $j++;
             }
 
             $results[] = range($index, $index + $needleLength - 1);

@@ -7,7 +7,6 @@ use Stillat\BladeParser\Nodes\Node;
 
 trait PrintsEchos
 {
-
     protected function print_echo(Node $node)
     {
         if ($node instanceof EchoNode) {
@@ -18,5 +17,4 @@ trait PrintsEchos
             }
         }
     }
-
 }

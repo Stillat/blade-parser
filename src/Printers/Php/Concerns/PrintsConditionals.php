@@ -6,10 +6,9 @@ use Stillat\BladeParser\Nodes\Node;
 
 trait PrintsConditionals
 {
-
     protected function print_switch(Node $node)
     {
-        return '<?php switch(' . $node->innerContent() . '):';
+        return '<?php switch('.$node->innerContent().'):';
     }
 
     protected function print_endswitch(Node $node)
@@ -20,18 +19,18 @@ trait PrintsConditionals
     protected function print_case(Node $node)
     {
         if ($node->isFirstOfType()) {
-            return 'case (' . $node->innerContent() . '): ?>';
+            return 'case ('.$node->innerContent().'): ?>';
         }
 
-        return '<?php case (' . $node->innerContent() . '): ?>';
+        return '<?php case ('.$node->innerContent().'): ?>';
     }
 
     protected function print_if(Node $node)
     {
-        return '<?php if(' . $node->innerContent() . '): ?>';
+        return '<?php if('.$node->innerContent().'): ?>';
     }
 
-    protected function print_elseif(Node  $node)
+    protected function print_elseif(Node $node)
     {
         return '<?php elseif('.$node->innerContent().'): ?>';
     }
@@ -65,5 +64,4 @@ trait PrintsConditionals
     {
         return $this->phpEndIf();
     }
-
 }
