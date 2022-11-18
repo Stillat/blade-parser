@@ -302,7 +302,7 @@ class Blade
                 $i = $componentResults[1];
 
                 continue;
-            } elseif ($this->current === self::TOKEN_BLADE_START && $this->isStartingBladeEscapeSequence() ===  false && ($this->previous == "\n" || $this->previous == null || ctype_space($this->previous) || ctype_punct($this->previous) || $this->previous == '?')) {
+            } elseif ($this->current === self::TOKEN_BLADE_START && $this->isStartingBladeEscapeSequence() === false && ($this->previous == "\n" || $this->previous == null || ctype_space($this->previous) || ctype_punct($this->previous) || $this->previous == '?')) {
                 $this->convertSegmentToStringLiteral();
 
                 $scanResults = $this->scanToEndOfDirective($i);
