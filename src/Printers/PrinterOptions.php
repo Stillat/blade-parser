@@ -13,6 +13,7 @@ class PrinterOptions
 {
     /**
      * The current new-line style.
+     *
      * @var string
      */
     protected $newLineType = "\n";
@@ -20,7 +21,7 @@ class PrinterOptions
     /**
      * Sets the new-line style.
      *
-     * @param string $style The new-line style.
+     * @param  string  $style  The new-line style.
      */
     public function setNewLineStyle($style)
     {

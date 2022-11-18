@@ -37,7 +37,7 @@ class VerbatimBlockParser
     /**
      * Sets the list of tokens to parse.
      *
-     * @param string[] $tokens The tokens.
+     * @param  string[]  $tokens  The tokens.
      */
     public function setTokens($tokens)
     {
@@ -85,7 +85,7 @@ class VerbatimBlockParser
     /**
      * Tests if the provided index is the beginning of a verbatim extraction.
      *
-     * @param int $index The index.
+     * @param  int  $index  The index.
      * @return bool
      */
     public function isStartOfTagPair($index)
@@ -95,7 +95,8 @@ class VerbatimBlockParser
 
     /**
      * Tests if the provided index is a valid @verbatim end position.
-     * @param int $index The index.
+     *
+     * @param  int  $index  The index.
      * @return bool
      */
     public function isValidEndPair($index)
@@ -109,7 +110,7 @@ class VerbatimBlockParser
      * End strings may contain literal characters
      * that must be appended to the output.
      *
-     * @param string $end The string to parse.
+     * @param  string  $end  The string to parse.
      * @return array|null
      */
     public function parseEndTagComponents($end)
@@ -136,7 +137,7 @@ class VerbatimBlockParser
     /**
      * Returns the extraction at the provided index.
      *
-     * @param int $index The index.
+     * @param  int  $index  The index.
      * @return array
      */
     public function getExtraction($index)
@@ -171,7 +172,7 @@ class VerbatimBlockParser
     /**
      * Creates a list of all literal extractions for the provided pairs.
      *
-     * @param array $pairs The pairs.
+     * @param  array  $pairs  The pairs.
      * @return array
      */
     private function createExtractions($pairs)

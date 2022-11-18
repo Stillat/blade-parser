@@ -53,7 +53,7 @@ class PhpBlockParser
     /**
      * Returns the extraction at the provided index.
      *
-     * @param int $index The index.
+     * @param  int  $index  The index.
      * @return array
      */
     public function getExtraction($index)
@@ -73,7 +73,7 @@ class PhpBlockParser
     /**
      * Sets the list of tokens to parse.
      *
-     * @param string[] $tokens The tokens.
+     * @param  string[]  $tokens  The tokens.
      */
     public function setTokens($tokens)
     {
@@ -224,7 +224,7 @@ class PhpBlockParser
     /**
      * Tests if the provided index is an invalid location for a literal @php directive.
      *
-     * @param int $index The index.
+     * @param  int  $index  The index.
      * @return bool
      */
     public function isInvalidLiteralLocation($index)
@@ -235,7 +235,7 @@ class PhpBlockParser
     /**
      * Tests if the provided index marks the start of a literal @php directive.
      *
-     * @param int $index The index.
+     * @param  int  $index  The index.
      * @return bool
      */
     public function isLiteralPhp($index)

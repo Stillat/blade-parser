@@ -8,6 +8,7 @@ abstract class AbstractNodePrinter
 {
     /**
      * The PrinterOptions instance, if any.
+     *
      * @var PrinterOptions
      */
     protected $options;
