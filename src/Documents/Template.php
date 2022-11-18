@@ -36,6 +36,11 @@ class Template
         $this->buildMetaData();
     }
 
+    public function getNodes()
+    {
+        return $this->nodes;
+    }
+
     private function buildMetaData()
     {
         foreach ($this->referencesNodes as $node) {

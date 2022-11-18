@@ -50,7 +50,7 @@ trait ScansForDirectives
 
             if ($currentOpenDirectiveTokens == 0 &&
                 ($cur === self::TOKEN_BLADE_DIRECTIVE_END ||
-                    $cur === self::TOKEN_LINE_SEPARATOR)) {
+                    $cur === self::TOKEN_LINE_SEPARATOR) || ($currentOpenDirectiveTokens == 0 && $cur != '(' && ctype_punct($next) && $next != '(' && $next != ')' && $next != '-') && $next != '?') {
                 $part .= $cur;
                 $breakIndex = $i;
 
