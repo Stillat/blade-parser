@@ -10,7 +10,8 @@ class TemplateTraverser extends NodeTraverser
 
     /**
      * TemplateTraverser constructor.
-     * @param Node[] $nodes The nodes.
+     *
+     * @param  Node[]  $nodes  The nodes.
      */
     public function __construct($nodes)
     {

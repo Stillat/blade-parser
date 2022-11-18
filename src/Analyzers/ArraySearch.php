@@ -10,7 +10,7 @@ class ArraySearch
      *  [5,6,7,10] => [10]
      *  [1,2,5,7,8] => [5]
      *
-     * @param int[] $haystack The haystack.
+     * @param  int[]  $haystack  The haystack.
      * @return array
      */
     public static function removeConsecutiveIntegers($haystack)
@@ -76,9 +76,9 @@ class ArraySearch
     /**
      * Searches for all instances of the needle in the haystack array.
      *
-     * @param array $needle The pattern to search for.
-     * @param array $haystack The data to search in.
-     * @param false $preventDoubleFirstChar Whether to allow patterns that have the first character repeated.
+     * @param  array  $needle  The pattern to search for.
+     * @param  array  $haystack  The data to search in.
+     * @param  false  $preventDoubleFirstChar  Whether to allow patterns that have the first character repeated.
      * @return array
      */
     public static function search($needle, $haystack, $preventDoubleFirstChar = false)
@@ -127,7 +127,7 @@ class ArraySearch
      *          67 => [67,68]
      *     ]
      *
-     * @param array $results The data to index.
+     * @param  array  $results  The data to index.
      * @return array
      */
     public static function createIndexTable($results)

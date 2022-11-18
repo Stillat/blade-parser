@@ -811,7 +811,7 @@ class Blade
     /**
      * Attempts to locate a LanguageDirective instance by directive name.
      *
-     * @param string $name The directive name.
+     * @param  string  $name  The directive name.
      * @return LanguageDirective|null
      */
     private function findLanguageDirective($name)
@@ -826,7 +826,7 @@ class Blade
     }
 
     /**
-     * @param Node[] $nodes
+     * @param  Node[]  $nodes
      */
     private function makeNodeHierarchy($nodes, $parent = null)
     {

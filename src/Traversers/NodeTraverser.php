@@ -15,7 +15,7 @@ class NodeTraverser
     protected $nodeVisitors = [];
 
     /**
-     * @param Node[] $nodes The nodes.
+     * @param  Node[]  $nodes  The nodes.
      */
     public function traverseNodes($nodes)
     {
