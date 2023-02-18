@@ -1,82 +1,74 @@
-# Standalone Blade Parser and Compiler
+![](.art/banner.png)
 
-This is an experimental Blade parser and compiler. It is able to parse Blade templates, and regenerate them.
+Blade Parser is library for Laravel that makes it easy to parse, analyze, and manipulate Blade templates.
 
-## Parsing a Blade Document
+The library is composed of many major components:
 
-To parse a document, first create an instance of the Blade parser:
+* **Parser**: A Blade parser that produces a list of nodes, which can be analyzed to help make decisions surrounding a template.
+* **Documents**: A powerful abstraction that makes it much simpler to interact with the details of a single parsed Blade template.
+* **Workspaces**: A simple set of APIs that make it effortless to work with multiple parsed Blade templates at once.
+* **Compiler**: A highly configurable Blade compiler implementation, with support for precompilers, extensions, and existing third-party packages.
+* **Validator**: An extensible system for validating Blade documents, with default validators capable of detecting unpaired conditions, invalid component parameter spacing, and much more.
 
-```php
-use Stillat\BladeParser\Parsers\Blade;
+## Simple to Use
 
-$parser = new Blade();
-
-```
-
-Once you have a parser instance, you may use the `parse($input)` method to receive an instance of `Stillat\BladeParser\Documents\Template`:
-
-```php
-use Stillat\BladeParser\Parsers\Blade;
-
-$parser = new Blade();
-
-$document = $parser->parse('@extends("layout")');
-
-```
-
-The `Template` document instance contains information about the parsed Blade template. To work with the document, you must implement the `Stillat\BladeParser\Visitors\AbstractNodeVisitor` interface:
+Parsing Blade templates is incredibly simple using the Documents API. As an example, this is all that is needed to parse a template:
 
 ```php
-
-use Stillat\BladeParser\Nodes\Node;
-use Stillat\BladeParser\Visitors\AbstractNodeVisitor;
-
-class MyVisitor extends AbstractNodeVisitor
-{
-
-    public function onEnter(Node $node)
-    {
-        echo $node->innerContent;
-    }
-}
-
-
+<?php
+ 
+use Stillat\BladeParser\Document\Document;
+ 
+$template = <<<'BLADE'
+    Hello, {{ $world }}
+BLADE;
+ 
+$document = Document::fromText($template);
 ```
 
-Once you have created your visitor, you must ask the document for a `TemplateTraverser` instance, add your new visitor, and then call the `traverse()` method:
+The `Document` class provides a powerful abstraction, making it simple to quickly retrieve information about a template.
+
+For instance, if we wanted to extract all the components from our template we could do this:
 
 ```php
-$traverser = $document->getTraverser();
-$traverser->addVisitor(new MyVisitor());
+<?php
 
-$traverser->traverse();
+// Do something with all component tags in the template.
+$document->getComponents()
+          ->each(fn($node) => ...);
 ```
 
-The `onEnter` method within all added traversers will be invoked with the document's nodes.
-
-The built-in `Stillat\BladeParser\Visitors\PrinterNodeVisitor` and the `Stillat\BladeParser\Printers\Php\Printer` demonstrate advanced usage of the traverser mechanisms.
-
-## Component Details Resolver
-
-The provided PHP compiler (printer) requires an instance of `Stillat\BladeParser\Contracts\ComponentDetailsResovlerContract`. This interface is responsible for providing information about the component's class name, properties, data, and attributes. This resolver will be environment specific, you may use the mocked test resolver at `tests/AppComponentNameFinder.php` as an example.
-
-## Using the Default PHP Compiler
-
-To compile a Blade document from a collection of previously parsed nodes, you will first need to create an instance of `Stillat\BladeParser\Contracts\ComponentDetailsResovlerContract`. Once you have this interface implemented, you may set up a compiler like so:
+If we were only interested in a component named `alert`, we could instead use:
 
 ```php
-use Stillat\BladeParser\Compilers\PhpCompiler;
+<?php
 
-$compiler = new PhpCompiler($yourComponentDetailsResolverInstance);
-
-
-$compiledString = $compiler->compileString('@extends("some_file")');
-
+// Find all "alert" components.
+$document->findComponentsByTagName('alert')
+         ->each(fn($node) => ...);
 ```
 
-## Known Issues
+These examples hardly scratch the surface, and you are encouraged to read through the [Documentation](https://bladeparser.com/).
 
-Not all of the details provided in the `Node` instances are 100% accurate at this time. Pull requests are welcomed!
+## Built-in Validation Command
+
+This library also ships with a configurable `blade:validate` Artisan command which can be used to validate all Blade templates within a project.
+
+To configure the command, you will need to publish its configuration files using the following command:
+
+```bash
+php artisan vendor:publish --tag=blade
+```
+
+To run the validation against your project, you can issue the following Artisan command:
+
+```bash
+php artisan blade:validate
+```
+
+If any validation issues were detected they will be displayed in your terminal.
+
+There are many configuration options available, and if you'd like to learn more you can find them documented in the [Configuring the Validate Command](https://bladeparser.com/docs/v1/the-validate-command#configuring-the-validate-command) article.
 
 ## License
 

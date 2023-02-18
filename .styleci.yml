@@ -1,7 +1,0 @@
-php:
-  preset: laravel
-js:
-  finder:
-    not-name:
-      - webpack.mix.js
-css: true
