@@ -72,7 +72,7 @@ class CoreDirectiveRetriever
                 $directiveName = mb_substr($directiveName, 7);
             }
 
-            $directiveName = Str::lcfirst($directiveName);
+            $directiveName = StringUtilities::lcfirst($directiveName);
 
             $this->directiveNames[] = $directiveName;
 

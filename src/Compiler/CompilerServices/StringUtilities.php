@@ -8,6 +8,16 @@ use Stillat\BladeParser\Parser\AbstractParser;
 class StringUtilities
 {
     /**
+     * Lowercases the first character of the input string.
+     *
+     * @param  string  $value The value.
+     */
+    public static function lcfirst(string $value): string
+    {
+        return mb_strtolower(mb_substr($value, 0, 1)).mb_substr($value, 1);
+    }
+
+    /**
      * Safely wraps the provided value in the provided quote style, if it is not already.
      *
      * @param  string  $value The value to wrap.
