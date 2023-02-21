@@ -30,7 +30,7 @@ class NodeCompilationValidator extends AbstractNodeValidator
         if ($node instanceof EchoNode) {
             $result = $syntaxValidator->checkString($node->content, $node->position->startLine);
         } elseif ($node instanceof PhpBlockNode) {
-            $result = $syntaxValidator->checkString('<?php '.$node->innerContent, $node->position->startLine);
+            $result = $syntaxValidator->checkString('<?php '.$node->innerContent.' ?>', $node->position->startLine);
         }
         $result->node = $node;
 

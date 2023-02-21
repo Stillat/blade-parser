@@ -25,6 +25,18 @@ BLADE;
         $this->assertSame('Anticipated PHP compilation error: [syntax error, unexpected token ")"] near [{{ $world+++ }}]', $results[1]->message);
     }
 
+    public function testNodeCompilationWithPhpBlocks()
+    {
+        $template = <<<'BLADE'
+@php $count = 1 @endphp
+BLADE;
+        $results = Document::fromText($template)
+            ->addValidator(new NodeCompilationValidator)
+            ->validate()->getValidationErrors();
+
+        $this->assertCount(0, $results);
+    }
+
     public function testNodeCompilationValidatorDoesNotDetectIssues()
     {
         $template = <<<'BLADE'
