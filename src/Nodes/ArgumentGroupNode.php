@@ -2,7 +2,9 @@
 
 namespace Stillat\BladeParser\Nodes;
 
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use Stillat\BladeParser\Compiler\CompilerServices\StringSplitter;
 use Stillat\BladeParser\Compiler\CompilerServices\StringUtilities;
 
 class ArgumentGroupNode extends AbstractNode
@@ -57,6 +59,31 @@ class ArgumentGroupNode extends AbstractNode
         $this->innerContent = $innerContent;
         $this->content = $args;
         $this->owner->updateSourceContent();
+    }
+
+    /**
+     * Returns an array containing individual argument values.
+     *
+     * This method will split the content on commas, while
+     * preserving arrays, nested structures and strings.
+     */
+    public function getValues(): Collection
+    {
+        if ($this->contentType == ArgumentContentType::Json) {
+            return collect([$this->innerContent]);
+        }
+
+        $results = (new StringSplitter())->split($this->innerContent);
+        $lastIndex = count($results) - 1;
+
+        return collect($results)->map(function ($value, $i) use ($lastIndex) {
+            if ($i == $lastIndex) {
+                return $value;
+            }
+
+            // Remove the trailing ','
+            return mb_substr(rtrim($value), 0, -1);
+        });
     }
 
     public function clone(?DirectiveNode $newOwner = null): ArgumentGroupNode
