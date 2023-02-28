@@ -3,9 +3,11 @@
 namespace Stillat\BladeParser\Tests\Parser;
 
 use Stillat\BladeParser\Compiler\CompilerServices\CoreDirectiveRetriever;
+use Stillat\BladeParser\Nodes\Components\ComponentNode;
 use Stillat\BladeParser\Nodes\DirectiveNode;
 use Stillat\BladeParser\Nodes\EchoNode;
 use Stillat\BladeParser\Nodes\EchoType;
+use Stillat\BladeParser\Nodes\LiteralNode;
 use Stillat\BladeParser\Nodes\PhpBlockNode;
 use Stillat\BladeParser\Nodes\VerbatimNode;
 use Stillat\BladeParser\Tests\ParserTestCase;
@@ -30,6 +32,26 @@ class BasicParserNodesTest extends ParserTestCase
 
         $this->assertLiteralContent($nodes[0], 'Start ');
         $this->assertLiteralContent($nodes[2], ' End');
+
+        $this->assertInstanceOf(DirectiveNode::class, $nodes[1]);
+
+        /** @var DirectiveNode $directive */
+        $directive = $nodes[1];
+
+        $this->assertSame($directiveName, $directive->content);
+        $this->assertNull($directive->arguments);
+    }
+
+    /**
+     * @dataProvider coreDirectives
+     */
+    public function testCoreDirectivesWithMultiByteCharacters(string $directiveName)
+    {
+        $template = '🐘 @'.$directiveName.' 🐘';
+        $nodes = $this->parseNodes($template);
+
+        $this->assertLiteralContent($nodes[0], '🐘 ');
+        $this->assertLiteralContent($nodes[2], ' 🐘');
 
         $this->assertInstanceOf(DirectiveNode::class, $nodes[1]);
 
@@ -73,6 +95,18 @@ EOT;
         $this->assertEchoContent($nodes[0], '{{ $one }}');
         $this->assertEchoContent($nodes[1], '{{ $two }}');
         $this->assertEchoContent($nodes[2], '{{ $three }}');
+    }
+
+    public function testItParsesComponentsWithMultiByteCharacters()
+    {
+        $nodes = $this->parseNodes('<x-alert>🐘🐘🐘🐘</x-alert>');
+        $this->assertCount(3, $nodes);
+        $this->assertInstanceOf(ComponentNode::class, $nodes[0]);
+        $this->assertInstanceOf(LiteralNode::class, $nodes[1]);
+        $this->assertLiteralContent($nodes[1], '🐘🐘🐘🐘');
+        $this->assertInstanceOf(ComponentNode::class, $nodes[2]);
+        $this->assertSame('</x-alert>', $nodes[2]->content);
+        $this->assertSame('<x-alert>', $nodes[0]->content);
     }
 
     public function testItParsesNeighboringNodesWithLiterals()

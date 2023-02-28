@@ -309,6 +309,26 @@ class DocumentParser extends AbstractParser
 
         $bladeCandidates = $bladeCandidates[0];
 
+        // Convert our regex offsets to multibyte offsets.
+        $lastOffset = 0;
+
+        for ($i = 0; $i < count($bladeCandidates); $i++) {
+            $candidate = $bladeCandidates[$i];
+
+            if ($candidate[1] == 0) {
+                continue;
+            }
+
+            $offset = mb_strpos($this->content, $candidate[0], $lastOffset + 1);
+
+            if ($offset === false) {
+                $offset = $candidate[1];
+            }
+            $bladeCandidates[$i][1] = $offset;
+            $candidate[1] = $offset;
+            $lastOffset = $offset + 1;
+        }
+
         $directiveNames = collect($this->getDirectiveNames())->map(function ($name) {
             return mb_strtolower($name);
         })->flip()->all();
@@ -472,6 +492,7 @@ class DocumentParser extends AbstractParser
             }
         }
         $content = mb_substr($this->content, $start, $end - $start);
+
         $bladeLiteralNode = new LiteralNode();
         $bladeLiteralNode->position = $this->makePosition($start, $start + mb_strlen($content) - 1);
         $bladeLiteralNode->content = $content;
