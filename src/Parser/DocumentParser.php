@@ -78,6 +78,8 @@ class DocumentParser extends AbstractParser
 
     private array $coreDirectives = [];
 
+    private bool $onlyComponents = false;
+
     public function __construct()
     {
         $this->componentParser = new ComponentParser();
@@ -159,6 +161,13 @@ class DocumentParser extends AbstractParser
     public function withoutCoreDirectives(): DocumentParser
     {
         $this->coreDirectives = [];
+
+        return $this;
+    }
+
+    public function onlyParseComponents(bool $onlyComponents = true): DocumentParser
+    {
+        $this->onlyComponents = $onlyComponents;
 
         return $this;
     }
@@ -301,7 +310,14 @@ class DocumentParser extends AbstractParser
             $customComponentPattern = '|'.implode('|', $customComponentPatterns);
         }
 
-        preg_match_all('/(@?{{--|@?{{{|@?{{|<\?php|<\?=|@?{!!|@+|<x-|<\/x-|<x:|<\/x:'.$customComponentPattern.')/m', $this->content, $bladeCandidates, PREG_OFFSET_CAPTURE);
+        $componentPattern = '<x-|<\/x-|<x:|<\/x:'.$customComponentPattern;
+        $generalBladePattern = '@?{{--|@?{{{|@?{{|<\?php|<\?=|@?{!!|@+|'.$componentPattern;
+
+        if ($this->onlyComponents) {
+            $generalBladePattern = $componentPattern;
+        }
+
+        preg_match_all('/('.$generalBladePattern.')/m', $this->content, $bladeCandidates, PREG_OFFSET_CAPTURE);
 
         if (! is_array($bladeCandidates) || count($bladeCandidates) != 2) {
             return;
