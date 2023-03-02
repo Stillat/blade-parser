@@ -5,6 +5,7 @@ namespace Stillat\BladeParser\Tests\Parser;
 use Stillat\BladeParser\Nodes\Components\ComponentNode;
 use Stillat\BladeParser\Nodes\Components\ParameterNode;
 use Stillat\BladeParser\Nodes\Components\ParameterType;
+use Stillat\BladeParser\Nodes\LiteralNode;
 use Stillat\BladeParser\Tests\ParserTestCase;
 
 class TagComponentsTest extends ParserTestCase
@@ -421,5 +422,20 @@ EOT;
         $this->assertSame('::class', $paramOne->name);
         $this->assertSame(':class', $paramOne->materializedName);
         $this->assertSame(ParameterType::EscapedParameter, $paramOne->type);
+    }
+
+    public function testParserCanBeConfiguredToOnlyParseComponents()
+    {
+        $template = <<<'EOT'
+<x-alert>
+    {{ $title }} @if ($this) @endif
+</x-alert>
+EOT;
+        $nodes = $this->parser()->onlyParseComponents()->parse($template);
+
+        $this->assertCount(3, $nodes);
+        $this->assertInstanceOf(ComponentNode::class, $nodes[0]);
+        $this->assertInstanceOf(LiteralNode::class, $nodes[1]);
+        $this->assertInstanceOf(ComponentNode::class, $nodes[2]);
     }
 }
