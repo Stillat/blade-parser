@@ -4,6 +4,7 @@ namespace Stillat\BladeParser\Nodes;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use Stillat\BladeParser\Compiler\CompilerServices\ArgStringSplitter;
 use Stillat\BladeParser\Compiler\CompilerServices\StringSplitter;
 use Stillat\BladeParser\Compiler\CompilerServices\StringUtilities;
 
@@ -84,6 +85,15 @@ class ArgumentGroupNode extends AbstractNode
             // Remove the trailing ','
             return mb_substr(rtrim($value), 0, -1);
         });
+    }
+
+    public function getArgValues(): Collection
+    {
+        if ($this->contentType == ArgumentContentType::Json) {
+            return collect([$this->innerContent]);
+        }
+
+        return collect((new ArgStringSplitter())->split($this->innerContent));
     }
 
     public function clone(?DirectiveNode $newOwner = null): ArgumentGroupNode
