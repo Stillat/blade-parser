@@ -131,6 +131,39 @@ class ComponentNode extends AbstractNode
         })->implode(' ');
     }
 
+    /**
+     * Returns true if the component node represents a slot component.
+     */
+    public function isSlot(): bool
+    {
+        return $this->tagName === 'slot';
+    }
+
+    /**
+     * Returns the component's tag name.
+     */
+    public function getTagName(): string
+    {
+        return $this->tagName;
+    }
+
+    public function getName(): string|ParameterNode
+    {
+        if (! $this->isSlot()) {
+            return $this->name;
+        }
+
+        if (Str::contains($this->name, ':')) {
+            return Str::after($this->name, ':');
+        }
+
+        if ($this->hasParameter('name')) {
+            return $this->getParameter('name');
+        }
+
+        return '';
+    }
+
     public function clone(): ComponentNode
     {
         $component = new ComponentNode();

@@ -37,4 +37,31 @@ class ComponentReflectionTest extends ParserTestCase
         $this->assertFalse($component->hasParameter('some_parameter'));
         $this->assertTrue($component->hasParameter('message'));
     }
+
+    public function testComponentSlotInformation()
+    {
+        $template = <<<'BLADE'
+<x-input-with-slot>
+    <x-slot:input class="text-input-lg" :name="'my_form_field'" data-test="data">Test</x-slot:input>
+</x-input-with-slot>
+BLADE;
+
+        $slot = $this->getDocument($template)->findComponentByTagName('slot');
+
+        $this->assertTrue($slot->isSlot());
+        $this->assertSame('slot', $slot->getTagName());
+        $this->assertSame('input', $slot->getName());
+
+        $template = <<<'BLADE'
+<x-input-with-slot>
+    <x-slot :name="'my_form_field'" class="text-input-lg" :name="'my_form_field'" data-test="data">Test</x-slot>
+</x-input-with-slot>
+BLADE;
+
+        $slot = $this->getDocument($template)->findComponentByTagName('slot');
+
+        $this->assertTrue($slot->isSlot());
+        $this->assertSame('slot', $slot->getTagName());
+        $this->assertSame("'my_form_field'", $slot->getName()->value);
+    }
 }

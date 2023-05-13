@@ -947,6 +947,106 @@ EOT;
         $this->assertSame($expected, $result);
     }
 
+    public function testNameAttributeCanBeUsedIfUsingShortSlotNames()
+    {
+        $blade = <<<'EOT'
+<x-input-with-slot>
+    <x-slot:input name="my_form_field" class="text-input-lg" data-test="data">Test</x-slot:input>
+</x-input-with-slot>
+EOT;
+
+        $expected = <<<'EXP'
+##BEGIN-COMPONENT-CLASS##@component('Stillat\BladeParser\Tests\Compiler\InputWithSlot', 'input-with-slot', [])
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag && $constructor = (new ReflectionClass(Stillat\BladeParser\Tests\Compiler\InputWithSlot::class))->getConstructor()): ?>
+<?php $attributes = $attributes->except(collect($constructor->getParameters())->map->getName()->all()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
+     @slot('input', null, ['name' => 'my_form_field','class' => 'text-input-lg','data-test' => 'data']) Test @endslot
+ @endComponentClass##END-COMPONENT-CLASS##
+EXP;
+
+        $result = $this->compiler([
+            'input-with-slot' => InputWithSlot::class,
+        ])->compile($blade);
+
+        $this->assertSame($expected, $result);
+    }
+
+    public function testNameAttributeCantBeUsedIfNotUsingShortSlotNames()
+    {
+        $blade = <<<'EOT'
+<x-input-with-slot>
+    <x-slot name="input" class="text-input-lg" data-test="data">Test</x-slot>
+</x-input-with-slot>
+EOT;
+
+        $expected = <<<'EXP'
+##BEGIN-COMPONENT-CLASS##@component('Stillat\BladeParser\Tests\Compiler\InputWithSlot', 'input-with-slot', [])
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag && $constructor = (new ReflectionClass(Stillat\BladeParser\Tests\Compiler\InputWithSlot::class))->getConstructor()): ?>
+<?php $attributes = $attributes->except(collect($constructor->getParameters())->map->getName()->all()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
+     @slot('input', null, ['class' => 'text-input-lg','data-test' => 'data']) Test @endslot
+ @endComponentClass##END-COMPONENT-CLASS##
+EXP;
+
+        $result = $this->compiler([
+            'input-with-slot' => InputWithSlot::class,
+        ])->compile($blade);
+
+        $this->assertSame($expected, $result);
+    }
+
+    public function testBoundNameAttributeCanBeUsedIfUsingShortSlotNames()
+    {
+        $blade = <<<'EOT'
+<x-input-with-slot>
+    <x-slot:input :name="'my_form_field'" class="text-input-lg" data-test="data">Test</x-slot:input>
+</x-input-with-slot>
+EOT;
+
+        $expected = <<<'EXP'
+##BEGIN-COMPONENT-CLASS##@component('Stillat\BladeParser\Tests\Compiler\InputWithSlot', 'input-with-slot', [])
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag && $constructor = (new ReflectionClass(Stillat\BladeParser\Tests\Compiler\InputWithSlot::class))->getConstructor()): ?>
+<?php $attributes = $attributes->except(collect($constructor->getParameters())->map->getName()->all()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
+     @slot('input', null, ['name' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute('my_form_field'),'class' => 'text-input-lg','data-test' => 'data']) Test @endslot
+ @endComponentClass##END-COMPONENT-CLASS##
+EXP;
+
+        $result = $this->compiler([
+            'input-with-slot' => InputWithSlot::class,
+        ])->compile($blade);
+
+        $this->assertSame($expected, $result);
+    }
+
+    public function testBoundNameAttributeCanBeUsedIfUsingShortSlotNamesAndNotFirstAttribute()
+    {
+        $blade = <<<'EOT'
+<x-input-with-slot>
+    <x-slot:input class="text-input-lg" :name="'my_form_field'" data-test="data">Test</x-slot:input>
+</x-input-with-slot>
+EOT;
+
+        $expected = <<<'EXP'
+##BEGIN-COMPONENT-CLASS##@component('Stillat\BladeParser\Tests\Compiler\InputWithSlot', 'input-with-slot', [])
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag && $constructor = (new ReflectionClass(Stillat\BladeParser\Tests\Compiler\InputWithSlot::class))->getConstructor()): ?>
+<?php $attributes = $attributes->except(collect($constructor->getParameters())->map->getName()->all()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
+     @slot('input', null, ['class' => 'text-input-lg','name' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute('my_form_field'),'data-test' => 'data']) Test @endslot
+ @endComponentClass##END-COMPONENT-CLASS##
+EXP;
+
+        $result = $this->compiler([
+            'input-with-slot' => InputWithSlot::class,
+        ])->compile($blade);
+
+        $this->assertSame($expected, $result);
+    }
+
     protected function mockViewFactory($existsSucceeds = true)
     {
         $container = new Container;
@@ -996,5 +1096,13 @@ class TestProfileComponent extends Component
     public function render()
     {
         return 'profile';
+    }
+}
+
+class InputWithSlot extends Component
+{
+    public function render()
+    {
+        return 'input';
     }
 }
