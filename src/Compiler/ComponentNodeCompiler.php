@@ -115,20 +115,27 @@ class ComponentNodeCompiler
         }
 
         $attributes = $this->toAttributeArray($componentNode);
-        unset($attributes['name']);
+
+        if (! Str::contains($componentNode->name, ':')) {
+            unset($attributes['name']);
+        }
 
         return " @slot({$name}, null, [".$this->attributesToString($attributes).']) ';
     }
 
     protected function getSlotName(ComponentNode $componentNode): string|ParameterNode
     {
+        if (Str::contains($componentNode->name, ':')) {
+            return Str::after($componentNode->name, ':');
+        }
+
         $name = $componentNode->getParameter('name');
 
         if ($name != null) {
             return $name;
         }
 
-        return Str::after($componentNode->name, ':');
+        return '';
     }
 
     protected function compileSelfClosingTag(ComponentNode $component): string
