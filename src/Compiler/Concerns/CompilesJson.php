@@ -17,7 +17,7 @@ trait CompilesJson
     #[CompilesDirective(StructureType::EchoHelper, ArgumentRequirement::Required)]
     protected function compileJson(DirectiveNode $node): string
     {
-        $parts = explode(',', $this->getDirectiveArgsInnerContent($node));
+        $parts = $node->arguments?->getArgValues() ?? [''];
 
         $options = isset($parts[1]) ? trim($parts[1]) : $this->encodingOptions;
 
