@@ -10,10 +10,10 @@ use Stillat\BladeParser\Tests\ParserTestCase;
 
 class NodeTransformerTest extends ParserTestCase
 {
-    private function transform(string $template): string
+    private function transform(string $template, bool $withCoreDirectives): string
     {
         $doc = Document::fromText($template, documentOptions: new DocumentOptions(
-            withCoreDirectives: false,
+            withCoreDirectives: $withCoreDirectives,
             customDirectives: ['custom', 'endcustom']
         ))->resolveStructures();
 
@@ -32,7 +32,7 @@ The beginning.
 The end.
 BLADE;
 
-        $result = $this->transform($blade);
+        $result = $this->transform($blade, true);
 
         $expected = <<<'EXPECTED'
 The beginning.
@@ -67,7 +67,32 @@ BLADE;
         $blade = $template.$insert.$template;
         $expected = $template.$insertExpected.$template;
 
-        $this->assertSame($expected, $this->transform($blade));
+        $this->assertSame($expected, $this->transform($blade, true));
+    }
+
+    /**
+     * @dataProvider templateProvider
+     */
+    public function testNodeTransformerCanTransformNodesWithoutCoreDirectives($template)
+    {
+        $insert = <<<'BLADE'
+
+@custom
+    Hello, world!
+@endcustom
+
+BLADE;
+
+        $insertExpected = <<<'BLADE'
+
+@include("something-here")
+
+BLADE;
+
+        $blade = $template.$insert.$template;
+        $expected = $template.$insertExpected.$template;
+
+        $this->assertSame($expected, $this->transform($blade, false));
     }
 
     public function templateProvider(): array
