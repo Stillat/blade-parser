@@ -24,9 +24,9 @@ class BladeJsonTest extends ParserTestCase
 
     public function testComplexJsonExpressionsCanBeCompiled()
     {
-        $string = 'var foo @json(DB::query()->selectRaw("1, CONCAT(2, \' \', 3) AS name")->get())';
+        $string = 'var foo = @json(DB::query()->selectRaw("1, CONCAT(2, \' \', 3) AS name")->get())';
         $expected = <<<'EXPECTED'
-var foo <?php echo json_encode(DB::query()->selectRaw("1, CONCAT(2, ' ', 3) AS name")->get(), 15, 512) ?>
+var foo = <?php echo json_encode(DB::query()->selectRaw("1, CONCAT(2, ' ', 3) AS name")->get(), 15, 512) ?>
 EXPECTED;
 
         $this->assertEquals($expected, $this->compiler->compileString($string));
