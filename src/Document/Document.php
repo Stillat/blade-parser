@@ -310,10 +310,22 @@ class Document
      * @param  string  $document The template content.
      * @param  string|null  $filePath An optional file path.
      * @param  string[]  $customComponentTags A list of custom component tag names.
+     * @param  DocumentOptions|null  $documentOptions Custom document options, if any.
      */
-    public static function fromText(string $document, ?string $filePath = null, array $customComponentTags = []): Document
+    public static function fromText(string $document, ?string $filePath = null, array $customComponentTags = [], ?DocumentOptions $documentOptions = null): Document
     {
         $parser = DocumentParserFactory::makeDocumentParser();
+
+        if ($documentOptions) {
+            if (! $documentOptions->withCoreDirectives) {
+                $parser->withoutCoreDirectives();
+            }
+
+            if (count($documentOptions->customDirectives) > 0) {
+                $parser->setDirectiveNames($documentOptions->customDirectives);
+            }
+        }
+
         $parser->registerCustomComponentTags($customComponentTags);
         $parser->parse($document);
 
