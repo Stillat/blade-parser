@@ -96,4 +96,75 @@ EXPECTED;
 
         $this->assertEquals($expected, $this->compiler->compileString($string));
     }
+
+    public function testCompilationOfMixedPhpStatements()
+    {
+        $string = '@php($set = true) @php ($hello = \'hi\') @php echo "Hello world" @endphp';
+        $expected = '<?php ($set = true); ?> <?php ($hello = \'hi\'); ?> <?php echo "Hello world" ?>';
+
+        $this->assertEquals($expected, $this->compiler->compileString($string));
+    }
+
+    public function testCompilationOfMixedUsageStatements()
+    {
+        $string = <<<'BLADE'
+@php (
+        $classes = [
+            'admin-font-mono', // Font weight
+        ])
+    @endphp
+BLADE;
+
+        $expected = <<<'EXPECTED'
+<?php (
+        $classes = [
+            'admin-font-mono', // Font weight
+        ]); ?>
+    
+EXPECTED;
+
+        $this->assertEquals($expected, $this->compiler->compileString($string));
+    }
+
+    public function testMultilinePhpStatementsWithParenthesesCanBeCompiled()
+    {
+        $string = '@php ('
+            ."\n    \$classes = ["
+            ."\n        'admin-font-mono'"
+            ."\n    ])"
+            ."\n@endphp"
+            ."\n"
+            ."\n<span class=\"{{ implode(' ', \$classes) }}\">Laravel</span>";
+
+        $expected = <<<'EXPECTED'
+<?php (
+    $classes = [
+        'admin-font-mono'
+    ]); ?>
+
+
+<span class="<?php echo e(implode(' ', $classes)); ?>">Laravel</span>
+EXPECTED;
+
+        $this->assertEquals($expected, $this->compiler->compileString($string));
+    }
+
+    public function testMixedOfPhpStatementsCanBeCompiled()
+    {
+        $string = '@php($total = 0)'
+            ."\n{{-- ... --}}"
+            ."\n<div>{{ \$total }}</div>"
+            ."\n@php"
+            ."\n    // ..."
+            ."\n@endphp";
+
+        $expected = <<<'EXPECTED'
+<?php ($total = 0); ?>
+
+<div><?php echo e($total); ?></div>
+<?php // ... ?>
+EXPECTED;
+
+        $this->assertEquals($expected, $this->compiler->compileString($string));
+    }
 }
