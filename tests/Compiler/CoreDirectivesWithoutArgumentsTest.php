@@ -19,7 +19,7 @@ class CoreDirectivesWithoutArgumentsTest extends ParserTestCase
 
     public function coreDirectives(): array
     {
-        return collect(array_diff(CoreDirectiveRetriever::instance()->getDirectiveNames(), ['foreach', 'forelse', 'endverbatim']))->map(function ($name) {
+        return collect(array_diff(CoreDirectiveRetriever::instance()->getDirectiveNames(), ['foreach', 'forelse', 'endverbatim', 'use']))->map(function ($name) {
             return ['@'.$name];
         })->all();
     }

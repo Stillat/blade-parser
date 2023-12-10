@@ -89,6 +89,19 @@ class StringUtilities
         return $value;
     }
 
+    public static function unwrapString(string $value): string
+    {
+        if (Str::startsWith($value, '"') && Str::endsWith($value, '"')) {
+            return mb_substr($value, 1, -1);
+        }
+
+        if (Str::startsWith($value, "'") && Str::endsWith($value, "'")) {
+            return mb_substr($value, 1, -1);
+        }
+
+        return $value;
+    }
+
     /**
      * Tests if the provided value has leading whitespace.
      *

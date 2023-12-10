@@ -27,6 +27,7 @@ use Stillat\BladeParser\Compiler\Concerns\CompilesRawPhp;
 use Stillat\BladeParser\Compiler\Concerns\CompilesStacks;
 use Stillat\BladeParser\Compiler\Concerns\CompilesStyles;
 use Stillat\BladeParser\Compiler\Concerns\CompilesTranslations;
+use Stillat\BladeParser\Compiler\Concerns\CompilesUseStatements;
 use Stillat\BladeParser\Compiler\Concerns\CompilesVerbatim;
 use Stillat\BladeParser\Compiler\Concerns\ManagesCustomConditions;
 use Stillat\BladeParser\Compiler\Concerns\ManagesCustomDirectives;
@@ -54,8 +55,9 @@ class Compiler
         CompilesErrors, CompilesFragments, CompilesHelpers, CompilesIncludes,
         CompilesInjections, CompilesJs, CompilesJson, CompilesLayouts,
         CompilesLoops, CompilesRawPhp, CompilesStacks, CompilesStyles,
-        CompilesTranslations, CompilesVerbatim, InteractsWithBladeErrors,
-        ManagesCustomConditions, ManagesCustomDirectives, ReflectsClosures;
+        CompilesTranslations, CompilesUseStatements, CompilesVerbatim,
+        InteractsWithBladeErrors, ManagesCustomConditions, ManagesCustomDirectives,
+        ReflectsClosures;
 
     private LoopVariablesExtractor $loopExtractor;
 
