@@ -10,7 +10,7 @@ trait ResolvesStructureDocuments
     private function resolveStructureDocuments(array $nodes): void
     {
         foreach ($nodes as $node) {
-            if (! ($node instanceof DirectiveNode || $node instanceof  ComponentNode)) {
+            if (! ($node instanceof DirectiveNode || $node instanceof ComponentNode)) {
                 continue;
             }
             if ($node->isClosedBy == null) {

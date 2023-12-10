@@ -31,7 +31,7 @@ enum ConstructContext
 
     public static function fromNode(AbstractNode $node): ConstructContext
     {
-        if ($node instanceof  DirectiveNode) {
+        if ($node instanceof DirectiveNode) {
             if ($node->getIsConditionDirective()) {
                 return ConstructContext::Condition;
             }

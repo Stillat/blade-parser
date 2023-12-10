@@ -19,8 +19,8 @@ use Stillat\BladeParser\Workspaces\Concerns\ValidatesWorkspaces;
 
 class Workspace
 {
-    use ValidatesWorkspaces, ProxiesDocumentCalls, ManagesWorkspaceErrors,
-        CompilesWorkspace;
+    use CompilesWorkspace, ManagesWorkspaceErrors, ProxiesDocumentCalls,
+        ValidatesWorkspaces;
 
     /**
      * Indicates if the workspace should resolve structures on document instances.

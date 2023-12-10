@@ -40,8 +40,8 @@ class InconsistentDirectiveCasingTest extends ParserTestCase
         }
 
         $results = Document::fromText("@{$directiveName}")
-        ->addValidator(new InconsistentDirectiveCasingValidator)
-        ->validate()->getValidationErrors();
+            ->addValidator(new InconsistentDirectiveCasingValidator)
+            ->validate()->getValidationErrors();
 
         $this->assertCount(0, $results);
     }

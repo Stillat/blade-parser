@@ -13,9 +13,9 @@ class AppendState
      * @param  string  $value The node's compiled value.
      */
     public function __construct(public AbstractNode $node,
-                                public int $beforeLineNumber,
-                                public int $afterLineNumber,
-                                public string $value)
+        public int $beforeLineNumber,
+        public int $afterLineNumber,
+        public string $value)
     {
     }
 }

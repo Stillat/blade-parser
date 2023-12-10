@@ -49,7 +49,7 @@ class PhpSyntaxValidator
      * @param  Document  $document The document instance.
      * @param  int|null  $originalLine An optional line number that will be used instead of any reported PHP line numbers.
      */
-    public function checkDocument(Document $document, ?int $originalLine = null): PhpSyntaxValidationResult
+    public function checkDocument(Document $document, int $originalLine = null): PhpSyntaxValidationResult
     {
         $this->resetState();
         $syntaxResult = new PhpSyntaxValidationResult();
@@ -107,7 +107,7 @@ class PhpSyntaxValidator
      * @param  string  $content The value to check.
      * @param  int|null  $originalLine An optional line number that will be used instead of any reported PHP line number.
      */
-    public function checkString(string $content, ?int $originalLine = null): PhpSyntaxValidationResult
+    public function checkString(string $content, int $originalLine = null): PhpSyntaxValidationResult
     {
         return $this->checkDocument(Document::fromText($content), $originalLine);
     }

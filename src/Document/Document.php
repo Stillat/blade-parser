@@ -29,9 +29,9 @@ use Stillat\BladeParser\Validation\ValidationResult;
 
 class Document
 {
-    use Macroable, QueriesGeneralNodes, ManagesDocumentStructures,
-        ManagesTextExtraction, InteractsWithBladeErrors,
-        ManagesDocumentValidation;
+    use InteractsWithBladeErrors, Macroable, ManagesDocumentStructures,
+        ManagesDocumentValidation, ManagesTextExtraction,
+        QueriesGeneralNodes;
 
     private ?Utf8StringIterator $docString = null;
 
@@ -312,7 +312,7 @@ class Document
      * @param  string[]  $customComponentTags A list of custom component tag names.
      * @param  DocumentOptions|null  $documentOptions Custom document options, if any.
      */
-    public static function fromText(string $document, ?string $filePath = null, array $customComponentTags = [], ?DocumentOptions $documentOptions = null): Document
+    public static function fromText(string $document, string $filePath = null, array $customComponentTags = [], DocumentOptions $documentOptions = null): Document
     {
         $parser = DocumentParserFactory::makeDocumentParser();
 

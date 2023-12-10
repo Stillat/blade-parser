@@ -3,13 +3,14 @@
 namespace Stillat\BladeParser\Tests\Compiler;
 
 use Illuminate\View\ComponentAttributeBag;
+use Stillat\BladeParser\Compiler\CompilerServices\StringUtilities;
 use Stillat\BladeParser\Tests\ParserTestCase;
 
 class BladePropsTest extends ParserTestCase
 {
     public function testPropsAreCompiled()
     {
-        $this->assertSame('<?php $attributes ??= new \Illuminate\View\ComponentAttributeBag; ?>
+        $this->assertSame(StringUtilities::normalizeLineEndings('<?php $attributes ??= new \Illuminate\View\ComponentAttributeBag; ?>
 <?php foreach($attributes->onlyProps([\'one\' => true, \'two\' => \'string\']) as $__key => $__value) {
     $$__key = $$__key ?? $__value;
 } ?>
@@ -21,7 +22,7 @@ class BladePropsTest extends ParserTestCase
 <?php foreach ($attributes as $__key => $__value) {
     if (array_key_exists($__key, $__defined_vars)) unset($$__key);
 } ?>
-<?php unset($__defined_vars); ?>', $this->compiler->compileString('@props([\'one\' => true, \'two\' => \'string\'])'));
+<?php unset($__defined_vars); ?>'), StringUtilities::normalizeLineEndings($this->compiler->compileString('@props([\'one\' => true, \'two\' => \'string\'])')));
     }
 
     public function testPropsAreExtractedFromParentAttributesCorrectly()

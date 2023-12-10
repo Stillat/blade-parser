@@ -12,7 +12,7 @@ use Stillat\BladeParser\Validation\Validators\Concerns\CanIgnoreDirectives;
 
 class InconsistentDirectiveCasingValidator extends AbstractNodeValidator
 {
-    use CanIgnoreDirectives, AcceptsCustomDirectives;
+    use AcceptsCustomDirectives, CanIgnoreDirectives;
 
     protected array $coreDirectives = [];
 

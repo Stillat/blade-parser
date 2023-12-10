@@ -9,6 +9,7 @@ use Illuminate\View\Component;
 use Illuminate\View\ComponentAttributeBag;
 use InvalidArgumentException;
 use Mockery as m;
+use Stillat\BladeParser\Compiler\CompilerServices\StringUtilities;
 use Stillat\BladeParser\Compiler\ComponentNodeCompiler;
 use Stillat\BladeParser\Compiler\ComponentTagCompiler;
 use Stillat\BladeParser\Contracts\CustomComponentTagCompiler;
@@ -132,7 +133,7 @@ EXPECTED;
             'alert' => TestAlertComponent::class,
         ])->compileTags($template);
 
-        $this->assertSame($expected, $result);
+        $this->assertSame(StringUtilities::normalizeLineEndings($expected), StringUtilities::normalizeLineEndings($result));
     }
 
     public function testBasicComponentWithEmptyAttributesParsing()
@@ -154,7 +155,7 @@ EXPECTED;
             'alert' => TestAlertComponent::class,
         ])->compile($template);
 
-        $this->assertSame($expected, $result);
+        $this->assertSame(StringUtilities::normalizeLineEndings($expected), StringUtilities::normalizeLineEndings($result));
     }
 
     public function testDataCamelCasing()
@@ -173,7 +174,7 @@ EXPECTED;
 
         $result = $this->compiler(['profile' => TestProfileComponent::class])->compile($template);
 
-        $this->assertSame($expected, $result);
+        $this->assertSame(StringUtilities::normalizeLineEndings($expected), StringUtilities::normalizeLineEndings($result));
     }
 
     public function testColonData()
@@ -192,7 +193,7 @@ EXPECTED;
 
         $result = $this->compiler(['profile' => TestProfileComponent::class])->compile($template);
 
-        $this->assertSame($expected, $result);
+        $this->assertSame(StringUtilities::normalizeLineEndings($expected), StringUtilities::normalizeLineEndings($result));
     }
 
     public function testEscapedColonAttribute()
@@ -211,7 +212,7 @@ EXPECTED;
 
         $result = $this->compiler(['profile' => TestProfileComponent::class])->compile($template);
 
-        $this->assertSame($expected, $result);
+        $this->assertSame(StringUtilities::normalizeLineEndings($expected), StringUtilities::normalizeLineEndings($result));
     }
 
     public function testColonAttributesIsEscapedIfStrings()
@@ -230,7 +231,7 @@ EXPECTED;
 
         $result = $this->compiler(['profile' => TestProfileComponent::class])->compile($template);
 
-        $this->assertSame($expected, $result);
+        $this->assertSame(StringUtilities::normalizeLineEndings($expected), StringUtilities::normalizeLineEndings($result));
     }
 
     public function testColonNestedComponentParsing()
@@ -249,7 +250,7 @@ EXPECTED;
 
         $result = $this->compiler(['foo:alert' => TestAlertComponent::class])->compile($template);
 
-        $this->assertSame($expected, $result);
+        $this->assertSame(StringUtilities::normalizeLineEndings($expected), StringUtilities::normalizeLineEndings($result));
     }
 
     public function testColonStartingNestedComponentParsing()
@@ -268,7 +269,7 @@ EXPECTED;
 
         $result = $this->compiler(['foo:alert' => TestAlertComponent::class])->compile($template);
 
-        $this->assertSame($expected, $result);
+        $this->assertSame(StringUtilities::normalizeLineEndings($expected), StringUtilities::normalizeLineEndings($result));
     }
 
     public function testSelfClosingComponentsCanBeCompiled()
@@ -288,7 +289,7 @@ EXPECTED;
 
         $result = $this->compiler(['alert' => TestAlertComponent::class])->compile($template);
 
-        $this->assertSame($expected, $result);
+        $this->assertSame(StringUtilities::normalizeLineEndings($expected), StringUtilities::normalizeLineEndings($result));
     }
 
     public function testClassNamesCanBeGuessed()
@@ -338,7 +339,7 @@ EXPECTED;
 
         $result = $this->compiler(['alert' => TestAlertComponent::class])->compile($template);
 
-        $this->assertSame($expected, $result);
+        $this->assertSame(StringUtilities::normalizeLineEndings($expected), StringUtilities::normalizeLineEndings($result));
     }
 
     public function testSelfClosingComponentsCanBeCompiledWithDataAndAttributes()
@@ -360,7 +361,7 @@ EXPECTED;
 
         $result = $this->compiler(['alert' => TestAlertComponent::class])->compile($template);
 
-        $this->assertSame($expected, $result);
+        $this->assertSame(StringUtilities::normalizeLineEndings($expected), StringUtilities::normalizeLineEndings($result));
     }
 
     public function testComponentCanReceiveAttributeBag()
@@ -379,7 +380,7 @@ EXPECTED;
 
         $result = $this->compiler(['profile' => TestProfileComponent::class])->compile($template);
 
-        $this->assertSame($expected, $result);
+        $this->assertSame(StringUtilities::normalizeLineEndings($expected), StringUtilities::normalizeLineEndings($result));
     }
 
     public function testSelfClosingComponentCanReceiveAttributeBag()
@@ -399,7 +400,7 @@ EXPECTED;
 
         $result = $this->compiler(['alert' => TestAlertComponent::class])->compile($template);
 
-        $this->assertSame($expected, $result);
+        $this->assertSame(StringUtilities::normalizeLineEndings($expected), StringUtilities::normalizeLineEndings($result));
     }
 
     public function testComponentsCanHaveAttachedWord()
@@ -420,7 +421,7 @@ EXPECTED;
 
         $result = $this->compiler(['profile' => TestProfileComponent::class])->compile($template);
 
-        $this->assertSame($expected, $result);
+        $this->assertSame(StringUtilities::normalizeLineEndings($expected), StringUtilities::normalizeLineEndings($result));
     }
 
     public function testSelfClosingComponentsCanHaveAttachedWord()
@@ -440,7 +441,7 @@ EXPECTED;
 
         $result = $this->compiler(['alert' => TestAlertComponent::class])->compile($template);
 
-        $this->assertSame($expected, $result);
+        $this->assertSame(StringUtilities::normalizeLineEndings($expected), StringUtilities::normalizeLineEndings($result));
     }
 
     public function testSelfClosingComponentsCanBeCompiledWithBoundData()
@@ -462,7 +463,7 @@ EXPECTED;
 
         $result = $this->compiler(['alert' => TestAlertComponent::class])->compile($template);
 
-        $this->assertSame($expected, $result);
+        $this->assertSame(StringUtilities::normalizeLineEndings($expected), StringUtilities::normalizeLineEndings($result));
     }
 
     public function testPairedComponentTags()
@@ -485,7 +486,7 @@ EXPECTED;
 
         $result = $this->compiler(['alert' => TestAlertComponent::class])->compile($template);
 
-        $this->assertSame($expected, $result);
+        $this->assertSame(StringUtilities::normalizeLineEndings($expected), StringUtilities::normalizeLineEndings($result));
     }
 
     public function testClasslessComponents()
@@ -512,7 +513,7 @@ EXPECTED;
 
         $result = $this->compiler()->compile($template);
 
-        $this->assertSame($expected, $result);
+        $this->assertSame(StringUtilities::normalizeLineEndings($expected), StringUtilities::normalizeLineEndings($result));
     }
 
     public function testClasslessComponentsWithIndexView()
@@ -539,7 +540,7 @@ EXPECTED;
 
         $result = $this->compiler()->compile($template);
 
-        $this->assertSame($expected, $result);
+        $this->assertSame(StringUtilities::normalizeLineEndings($expected), StringUtilities::normalizeLineEndings($result));
     }
 
     public function testPackagesClasslessComponents()
@@ -566,7 +567,7 @@ EXPECTED;
 
         $result = $this->compiler()->compile($template);
 
-        $this->assertSame($expected, $result);
+        $this->assertSame(StringUtilities::normalizeLineEndings($expected), StringUtilities::normalizeLineEndings($result));
     }
 
     public function testClasslessComponentsWithAnonymousComponentNamespaces()
@@ -605,7 +606,7 @@ EXPECTED;
 
         $result = $compiler->compile($template);
 
-        $this->assertSame($expected, $result);
+        $this->assertSame(StringUtilities::normalizeLineEndings($expected), StringUtilities::normalizeLineEndings($result));
     }
 
     public function testClasslessComponentsWithAnonymousComponentNamespaceWithIndexView()
@@ -644,7 +645,7 @@ EXPECTED;
 
         $result = $compiler->compile($template);
 
-        $this->assertSame($expected, $result);
+        $this->assertSame(StringUtilities::normalizeLineEndings($expected), StringUtilities::normalizeLineEndings($result));
     }
 
     public function testClasslessComponentsWithAnonymousComponentPath()
@@ -678,7 +679,7 @@ EXPECTED;
 
         $result = $compiler->compileTags('<x-panel />');
 
-        $this->assertSame($expected, $result);
+        $this->assertSame(StringUtilities::normalizeLineEndings($expected), StringUtilities::normalizeLineEndings($result));
     }
 
     public function testCompilingRawEchoInsideParameterContent()
@@ -697,7 +698,7 @@ EOT;
 @endComponentClass##END-COMPONENT-CLASS##
 EXPECTED;
 
-        $this->assertSame($expected, $this->compiler(['alert' => TestAlertComponent::class])->compile($template));
+        $this->assertSame(StringUtilities::normalizeLineEndings($expected), StringUtilities::normalizeLineEndings($this->compiler(['alert' => TestAlertComponent::class])->compile($template)));
     }
 
     public function testCompilingTripeEchoInsideParameterContent()
@@ -716,7 +717,7 @@ EOT;
 @endComponentClass##END-COMPONENT-CLASS##
 EXPECTED;
 
-        $this->assertSame($expected, $this->compiler(['alert' => TestAlertComponent::class])->compile($template));
+        $this->assertSame(StringUtilities::normalizeLineEndings($expected), StringUtilities::normalizeLineEndings($this->compiler(['alert' => TestAlertComponent::class])->compile($template)));
     }
 
     public function testClasslessIndexComponentsWithAnonymousComponentPath()
@@ -750,7 +751,7 @@ EXPECTED;
 
         $result = $compiler->compileTags('<x-panel />');
 
-        $this->assertSame($expected, $result);
+        $this->assertSame(StringUtilities::normalizeLineEndings($expected), StringUtilities::normalizeLineEndings($result));
     }
 
     public function testItThrowsAnExceptionForNonExistingAliases()
@@ -829,7 +830,7 @@ EOT;
 @endComponentClass##END-COMPONENT-CLASS##
 EXPECTED;
 
-        $this->assertSame($expected, $this->compiler(['alert' => TestAlertComponent::class])->registerCustomComponentTag('custom')->compile($template));
+        $this->assertSame(StringUtilities::normalizeLineEndings($expected), StringUtilities::normalizeLineEndings($this->compiler(['alert' => TestAlertComponent::class])->registerCustomComponentTag('custom')->compile($template)));
     }
 
     public function testCustomComponentsCanBeCompiledWithACustomCompiler()
@@ -868,7 +869,7 @@ Just an opening tag with [foo]Just a closing tag.
 <?php endif; ?>
 <?php $component->withAttributes(['attributes' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($attributes),'wire:model' => 'foo']); ?> @endComponentClass##END-COMPONENT-CLASS##
 EOT;
-        $this->assertSame($result, $expected);
+        $this->assertSame(StringUtilities::normalizeLineEndings($result), StringUtilities::normalizeLineEndings($expected));
     }
 
     public function testCustomComponentsCanBeCompiledAndCoreComponentsIgnored()
@@ -903,7 +904,7 @@ Just an opening tag with [foo]Just a closing tag.
 
 <x-alert {!! $attributes !!} wire:model="foo"></x-alert>
 EOT;
-        $this->assertSame($result, $expected);
+        $this->assertSame(StringUtilities::normalizeLineEndings($expected), StringUtilities::normalizeLineEndings($result));
     }
 
     public function testReturningNullFromACustomCompilerResultsInDefaultCompilerBehavior()
@@ -944,7 +945,7 @@ EOT;
 A custom compiler result.
 EOT;
 
-        $this->assertSame($expected, $result);
+        $this->assertSame(StringUtilities::normalizeLineEndings($expected), StringUtilities::normalizeLineEndings($result));
     }
 
     public function testNameAttributeCanBeUsedIfUsingShortSlotNames()
@@ -969,7 +970,7 @@ EXP;
             'input-with-slot' => InputWithSlot::class,
         ])->compile($blade);
 
-        $this->assertSame($expected, $result);
+        $this->assertSame(StringUtilities::normalizeLineEndings($expected), StringUtilities::normalizeLineEndings($result));
     }
 
     public function testNameAttributeCantBeUsedIfNotUsingShortSlotNames()
@@ -994,7 +995,7 @@ EXP;
             'input-with-slot' => InputWithSlot::class,
         ])->compile($blade);
 
-        $this->assertSame($expected, $result);
+        $this->assertSame(StringUtilities::normalizeLineEndings($expected), StringUtilities::normalizeLineEndings($result));
     }
 
     public function testBoundNameAttributeCanBeUsedIfUsingShortSlotNames()
@@ -1019,7 +1020,7 @@ EXP;
             'input-with-slot' => InputWithSlot::class,
         ])->compile($blade);
 
-        $this->assertSame($expected, $result);
+        $this->assertSame(StringUtilities::normalizeLineEndings($expected), StringUtilities::normalizeLineEndings($result));
     }
 
     public function testBoundNameAttributeCanBeUsedIfUsingShortSlotNamesAndNotFirstAttribute()
@@ -1044,7 +1045,7 @@ EXP;
             'input-with-slot' => InputWithSlot::class,
         ])->compile($blade);
 
-        $this->assertSame($expected, $result);
+        $this->assertSame(StringUtilities::normalizeLineEndings($expected), StringUtilities::normalizeLineEndings($result));
     }
 
     protected function mockViewFactory($existsSucceeds = true)

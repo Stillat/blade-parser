@@ -49,13 +49,13 @@ use Stillat\BladeParser\Parser\DocumentParser;
 
 class Compiler
 {
-    use CompilesEchos, CompilesLayouts, CompilesClasses,
-        CompilesConditionals, CompilesAuthorizations, CompilesComponents,
+    use CompilesAuthorizations, CompilesClasses, CompilesComponents,
+        CompilesConditionals, CompilesCustomDirectives, CompilesEchos,
         CompilesErrors, CompilesFragments, CompilesHelpers, CompilesIncludes,
-        CompilesInjections, CompilesJs, CompilesJson, CompilesTranslations,
-        CompilesStacks, CompilesRawPhp, CompilesLoops, ReflectsClosures,
-        ManagesCustomDirectives, ManagesCustomConditions, CompilesCustomDirectives,
-        InteractsWithBladeErrors, CompilesVerbatim, CompilesStyles;
+        CompilesInjections, CompilesJs, CompilesJson, CompilesLayouts,
+        CompilesLoops, CompilesRawPhp, CompilesStacks, CompilesStyles,
+        CompilesTranslations, CompilesVerbatim, InteractsWithBladeErrors,
+        ManagesCustomConditions, ManagesCustomDirectives, ReflectsClosures;
 
     private LoopVariablesExtractor $loopExtractor;
 
@@ -727,7 +727,7 @@ class Compiler
                 }
             } elseif ($node instanceof PhpTagNode) {
                 $this->appendToBuffer($node, $node->content);
-            } elseif ($node instanceof  PhpBlockNode) {
+            } elseif ($node instanceof PhpBlockNode) {
                 $this->appendToBuffer($node, '<?php '.trim($node->innerContent).' ?>');
             } elseif ($node instanceof VerbatimNode) {
                 $this->appendToBuffer($node, $node->innerContent);

@@ -17,9 +17,9 @@ use Stillat\BladeParser\Nodes\DirectiveNode;
 
 class StructurePairAnalyzer
 {
-    use ScansForClosingPairs, ManagesDirectiveIndexes, ManagesConditionMetaData,
-        PairsConditionalStructures, ConstructsConditions, ConstructsForElse,
-        ConstructsSwitchStatements, ResolvesStructureDocuments, PairsComponentTags;
+    use ConstructsConditions, ConstructsForElse, ConstructsSwitchStatements,
+        ManagesConditionMetaData, ManagesDirectiveIndexes, PairsComponentTags,
+        PairsConditionalStructures, ResolvesStructureDocuments, ScansForClosingPairs;
 
     private Document $document;
 

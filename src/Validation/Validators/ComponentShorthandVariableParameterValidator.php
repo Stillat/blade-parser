@@ -23,7 +23,7 @@ class ComponentShorthandVariableParameterValidator extends AbstractNodeValidator
      */
     public function validate(AbstractNode $node): ValidationResult|array|null
     {
-        if (! $node instanceof  ComponentNode || ! $node->hasParameters()) {
+        if (! $node instanceof ComponentNode || ! $node->hasParameters()) {
             return null;
         }
 

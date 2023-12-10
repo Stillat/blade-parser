@@ -12,8 +12,8 @@ use Stillat\BladeParser\Nodes\VerbatimNode;
 
 trait QueriesGeneralNodes
 {
-    use QueriesComponents, QueriesComponents,
-        QueriesGenerics, QueriesComments,
+    use QueriesComments, QueriesComponents,
+        QueriesComponents, QueriesGenerics,
         QueriesRelativeNodes, QueriesStructures;
 
     private bool $hasResolvedStructures = false;

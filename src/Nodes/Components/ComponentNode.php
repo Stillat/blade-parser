@@ -13,7 +13,7 @@ use Stillat\BladeParser\Parser\ComponentParser;
 
 class ComponentNode extends AbstractNode
 {
-    use ManagesComponentParameters, ManagesComponentMetaData, ContainsDocumentText;
+    use ContainsDocumentText, ManagesComponentMetaData, ManagesComponentParameters;
 
     public string $componentPrefix = 'x';
 
