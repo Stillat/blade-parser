@@ -203,6 +203,7 @@ class Compiler
     {
         return implode("\n", [
             '<?php if (isset($component)) { $__componentOriginal'.$hash.' = $component; } ?>',
+            '<?php if (isset($attributes)) { $__attributesOriginal'.$hash.' = $attributes; } ?>',
             '<?php $component = '.$component.'::resolve('.($data ?: '[]').' + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? (array) $attributes->getIterator() : [])); ?>',
             '<?php $component->withName('.$alias.'); ?>',
             '<?php if ($component->shouldRender()): ?>',

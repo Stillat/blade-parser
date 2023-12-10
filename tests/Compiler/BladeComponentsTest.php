@@ -18,6 +18,7 @@ class BladeComponentsTest extends ParserTestCase
     public function testClassComponentsAreCompiled()
     {
         $this->assertSame('<?php if (isset($component)) { $__componentOriginald797ca481a3632d6131474d33f4e32d7 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginald797ca481a3632d6131474d33f4e32d7 = $attributes; } ?>
 <?php $component = Stillat\BladeParser\Tests\Compiler\ComponentStub::class::resolve(["foo" => "bar"] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? (array) $attributes->getIterator() : [])); ?>
 <?php $component->withName(\'test\'); ?>
 <?php if ($component->shouldRender()): ?>
@@ -36,6 +37,10 @@ class BladeComponentsTest extends ParserTestCase
         $this->compiler->newComponentHash('foo');
 
         $this->assertSame('<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal79aef92e83454121ab6e5f64077e7d8a)): ?>
+<?php $attributes = $__attributesOriginal79aef92e83454121ab6e5f64077e7d8a; ?>
+<?php unset($__attributesOriginal79aef92e83454121ab6e5f64077e7d8a); ?>
 <?php endif; ?>
 <?php if (isset($__componentOriginal79aef92e83454121ab6e5f64077e7d8a)): ?>
 <?php $component = $__componentOriginal79aef92e83454121ab6e5f64077e7d8a; ?>

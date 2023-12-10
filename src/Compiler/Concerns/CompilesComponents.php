@@ -44,6 +44,10 @@ trait CompilesComponents
 
         return $this->compileEndComponent()."\n".implode("\n", [
             '<?php endif; ?>',
+            '<?php if (isset($__attributesOriginal'.$hash.')): ?>',
+            '<?php $attributes = $__attributesOriginal'.$hash.'; ?>',
+            '<?php unset($__attributesOriginal'.$hash.'); ?>',
+            '<?php endif; ?>',
             '<?php if (isset($__componentOriginal'.$hash.')): ?>',
             '<?php $component = $__componentOriginal'.$hash.'; ?>',
             '<?php unset($__componentOriginal'.$hash.'); ?>',

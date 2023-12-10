@@ -810,7 +810,7 @@ EXPECTED;
         eval(" ?> $template <?php ");
         ob_get_clean();
 
-        $this->assertNull($attributes->get('userId'));
+        $this->assertSame($attributes->get('userId'), 'bar');
         $this->assertSame($attributes->get('other'), 'ok');
     }
 
