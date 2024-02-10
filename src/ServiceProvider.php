@@ -27,6 +27,7 @@ class ServiceProvider extends BaseServiceProvider
             /** @var BladeCompilerDetailsFetcher $fetcher */
             $fetcher = app(BladeCompilerDetailsFetcher::class);
 
+            $compiler->setCustomDirectives($fetcher->getCustomDirectives());
             $compiler->setAnonymousComponentPaths($fetcher->getAnonymousComponentPaths());
             $compiler->setAnonymousComponentNamespaces($fetcher->getAnonymousComponentNamespaces());
             $compiler->setClassComponentAliases($fetcher->getClassComponentAliases());

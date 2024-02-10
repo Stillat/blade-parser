@@ -18,6 +18,11 @@ class BladeCompilerDetailsFetcher
         $this->reflection = new ReflectionClass(BladeCompiler::class);
     }
 
+    public function getCustomDirectives(): array
+    {
+        return $this->compiler->getCustomDirectives();
+    }
+
     /**
      * Retrieves the Blade precompilers.
      *
