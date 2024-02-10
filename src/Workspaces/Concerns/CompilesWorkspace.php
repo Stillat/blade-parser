@@ -2,6 +2,7 @@
 
 namespace Stillat\BladeParser\Workspaces\Concerns;
 
+use Exception;
 use Illuminate\Support\Str;
 use Stillat\BladeParser\Compiler\AppendState;
 use Stillat\BladeParser\Contracts\PathFormatter;
@@ -135,29 +136,40 @@ trait CompilesWorkspace
     {
         $outputDirectory = Paths::normalizePathWithTrailingSlash($outputDirectory);
         $this->lastTempDirectory = $outputDirectory;
+        $createdDirs = [];
 
-        /** @var Document $doc */
-        foreach ($this->getDocuments() as $doc) {
-            $compilePath = $outputDirectory.$this->pathFormatter->getPath($doc);
-            $options = $this->getCompilerOptions();
+        try {
+            /** @var Document $doc */
+            foreach ($this->getDocuments() as $doc) {
+                $compilePath = $outputDirectory.$this->pathFormatter->getPath($doc);
+                $options = $this->getCompilerOptions();
 
-            $this->docSourceMaps[$compilePath] = [];
-            $options->appendCallbacks[] = function (AppendState $state) use ($compilePath) {
-                for ($i = $state->beforeLineNumber; $i <= $state->afterLineNumber; $i++) {
-                    $this->docSourceMaps[$compilePath][$i] = $state->node->position->startLine;
+                $this->docSourceMaps[$compilePath] = [];
+                $options->appendCallbacks[] = function (AppendState $state) use ($compilePath) {
+                    for ($i = $state->beforeLineNumber; $i <= $state->afterLineNumber; $i++) {
+                        $this->docSourceMaps[$compilePath][$i] = $state->node->position->startLine;
+                    }
+                };
+                $result = $doc->compile($options);
+
+                $dir = Paths::normalizePathWithTrailingSlash(Str::afterLast(Paths::normalizePath($compilePath), '/'));
+                $createdDirs[] = $dir;
+
+                if (! file_exists($dir)) {
+                    @mkdir($dir, 0755, true);
                 }
-            };
-            $result = $doc->compile($options);
 
-            $dir = Paths::normalizePathWithTrailingSlash(Str::afterLast(Paths::normalizePath($compilePath), '/'));
-
-            if (! file_exists($dir)) {
-                @mkdir($dir, 0755, true);
+                file_put_contents($compilePath, $result);
+                $this->compiledFiles[$compilePath] = $doc->getFilePath();
+                $this->compiledDocuments[$compilePath] = $doc;
             }
+        } catch (Exception $e) {
+            foreach ($createdDirs as $dir) {
+                @rmdir($dir);
+            }
+            $this->removeCompiledFiles();
 
-            file_put_contents($compilePath, $result);
-            $this->compiledFiles[$compilePath] = $doc->getFilePath();
-            $this->compiledDocuments[$compilePath] = $doc;
+            throw $e;
         }
     }
 
