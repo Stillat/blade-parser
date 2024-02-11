@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use Stillat\BladeParser\Document\Document;
 use Stillat\BladeParser\Errors\BladeError;
 use Stillat\BladeParser\Errors\ErrorFamily;
+use Stillat\BladeParser\Providers\ValidatorServiceProvider;
 use Stillat\BladeParser\Validation\Workspaces\PhpStanWrapper;
 use Stillat\BladeParser\Workspaces\Workspace;
 
@@ -31,7 +32,7 @@ class ValidateBladeCommand extends Command
         $totalStart = microtime(true);
         $bladeStart = microtime(true);
         $workspace->withCoreValidators()
-            ->ignoreDirectives(config('blade.validation.ignore_directives', []))
+            ->ignoreDirectives(ValidatorServiceProvider::getIgnoreDirectives())
             ->addDirectory(resource_path('views'));
 
         $runMessage = "Running {$workspace->validator()->getValidatorCount()} validators against {$workspace->getFileCount()} files.";

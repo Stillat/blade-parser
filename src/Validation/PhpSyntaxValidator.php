@@ -12,6 +12,7 @@ use Stillat\BladeParser\Document\DocumentOptions;
 use Stillat\BladeParser\Nodes\AbstractNode;
 use Stillat\BladeParser\Nodes\DirectiveNode;
 use Stillat\BladeParser\Nodes\LiteralNode;
+use Stillat\BladeParser\Providers\ValidatorServiceProvider;
 
 class PhpSyntaxValidator
 {
@@ -29,7 +30,7 @@ class PhpSyntaxValidator
     {
         $this->compilerOptions = new DocumentCompilerOptions();
         $this->compilerOptions->throwExceptionOnUnknownComponentClass = false;
-        $this->compilerOptions->ignoreDirectives = config('blade.validation.ignore_directives', []);
+        $this->compilerOptions->ignoreDirectives = ValidatorServiceProvider::getIgnoreDirectives();
         $this->compilerOptions->appendCallbacks[] = function (AppendState $state) {
             for ($i = $state->beforeLineNumber; $i <= $state->afterLineNumber; $i++) {
                 $this->sourceMap[$i] = $state->node->position->startLine;
@@ -113,7 +114,7 @@ class PhpSyntaxValidator
     public function checkString(string $content, ?int $originalLine = null): PhpSyntaxValidationResult
     {
         return $this->checkDocument(
-            Document::fromText($content, documentOptions: new DocumentOptions(ignoreDirectives: config('blade.validation.ignore_directives', []))), $originalLine
+            Document::fromText($content, documentOptions: new DocumentOptions(ignoreDirectives: ValidatorServiceProvider::getIgnoreDirectives())), $originalLine
         );
     }
 

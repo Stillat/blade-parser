@@ -120,7 +120,7 @@ trait CompilesWorkspace
 
         $options = new DocumentCompilerOptions();
         $options->throwExceptionOnUnknownComponentClass = false;
-        $options->ignoreDirectives = config('blade.validation.ignore_directives', []);
+        $options->ignoreDirectives = $this->ignoreDirectives;
 
         return $options;
     }
