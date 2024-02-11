@@ -8,9 +8,11 @@ use ParseError;
 use Stillat\BladeParser\Compiler\AppendState;
 use Stillat\BladeParser\Document\Document;
 use Stillat\BladeParser\Document\DocumentCompilerOptions;
+use Stillat\BladeParser\Document\DocumentOptions;
 use Stillat\BladeParser\Nodes\AbstractNode;
 use Stillat\BladeParser\Nodes\DirectiveNode;
 use Stillat\BladeParser\Nodes\LiteralNode;
+use Stillat\BladeParser\Providers\ValidatorServiceProvider;
 
 class PhpSyntaxValidator
 {
@@ -28,6 +30,7 @@ class PhpSyntaxValidator
     {
         $this->compilerOptions = new DocumentCompilerOptions();
         $this->compilerOptions->throwExceptionOnUnknownComponentClass = false;
+        $this->compilerOptions->ignoreDirectives = ValidatorServiceProvider::getIgnoreDirectives();
         $this->compilerOptions->appendCallbacks[] = function (AppendState $state) {
             for ($i = $state->beforeLineNumber; $i <= $state->afterLineNumber; $i++) {
                 $this->sourceMap[$i] = $state->node->position->startLine;
@@ -46,16 +49,17 @@ class PhpSyntaxValidator
     /**
      * Checks the provided document for any potential PHP syntax errors.
      *
-     * @param  Document  $document The document instance.
-     * @param  int|null  $originalLine An optional line number that will be used instead of any reported PHP line numbers.
+     * @param  Document  $document  The document instance.
+     * @param  int|null  $originalLine  An optional line number that will be used instead of any reported PHP line numbers.
      */
-    public function checkDocument(Document $document, int $originalLine = null): PhpSyntaxValidationResult
+    public function checkDocument(Document $document, ?int $originalLine = null): PhpSyntaxValidationResult
     {
         $this->resetState();
         $syntaxResult = new PhpSyntaxValidationResult();
 
         try {
             $compiled = $document->compile($this->compilerOptions);
+
             $error = $this->checkForErrors($compiled);
 
             if ($error == null || Str::contains($error->getMessage(), 'end of input')) {
@@ -104,18 +108,20 @@ class PhpSyntaxValidator
     /**
      * Checks the provided content for any potential PHP syntax errors.
      *
-     * @param  string  $content The value to check.
-     * @param  int|null  $originalLine An optional line number that will be used instead of any reported PHP line number.
+     * @param  string  $content  The value to check.
+     * @param  int|null  $originalLine  An optional line number that will be used instead of any reported PHP line number.
      */
-    public function checkString(string $content, int $originalLine = null): PhpSyntaxValidationResult
+    public function checkString(string $content, ?int $originalLine = null): PhpSyntaxValidationResult
     {
-        return $this->checkDocument(Document::fromText($content), $originalLine);
+        return $this->checkDocument(
+            Document::fromText($content, documentOptions: new DocumentOptions(ignoreDirectives: ValidatorServiceProvider::getIgnoreDirectives())), $originalLine
+        );
     }
 
     /**
      * Attempts to locate any PHP syntax errors within the provided content.
      *
-     * @param  string  $content The PHP content.
+     * @param  string  $content  The PHP content.
      */
     private function checkForErrors(string $content): ?ParseError
     {

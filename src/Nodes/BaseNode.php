@@ -43,7 +43,7 @@ class BaseNode
     /**
      * Clones basic details to the provided target node.
      *
-     * @param  BaseNode  $node The target node to copy to.
+     * @param  BaseNode  $node  The target node to copy to.
      */
     public function copyBasicDetailsTo(BaseNode $node): void
     {

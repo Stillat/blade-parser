@@ -92,7 +92,7 @@ class BladeValidator
      *
      * @internal
      *
-     * @param  AbstractNodeValidator[]  $instances The node validator instances.
+     * @param  AbstractNodeValidator[]  $instances  The node validator instances.
      * @return $this
      */
     public function setCoreValidatorInstances(array $instances): BladeValidator
@@ -110,7 +110,7 @@ class BladeValidator
      *
      * @internal
      *
-     * @param  AbstractDocumentValidator[]  $instances The document validator instances.
+     * @param  AbstractDocumentValidator[]  $instances  The document validator instances.
      * @return $this
      */
     public function setCoreDocumentValidatorInstances(array $instances): BladeValidator
@@ -174,7 +174,7 @@ class BladeValidator
     /**
      * Tests if the `BladeValidator` instance contains the provided validator.
      *
-     * @param  AbstractNodeValidator  $validator The validator to check.
+     * @param  AbstractNodeValidator  $validator  The validator to check.
      */
     public function hasValidatorInstance(AbstractNodeValidator $validator): bool
     {
@@ -190,7 +190,7 @@ class BladeValidator
     /**
      * Tests if the `BladeValidator` instance contains the provided validator.
      *
-     * @param  AbstractDocumentValidator  $validator The validator to check.
+     * @param  AbstractDocumentValidator  $validator  The validator to check.
      */
     public function hasDocumentValidatorInstance(AbstractDocumentValidator $validator): bool
     {
@@ -207,7 +207,7 @@ class BladeValidator
      * Tests if the `BladeValidator` instance contains any validator
      * instance with the provided class name.
      *
-     * @param  string  $validatorClass The class name to check.
+     * @param  string  $validatorClass  The class name to check.
      */
     public function hasValidatorClass(string $validatorClass): bool
     {
@@ -217,7 +217,7 @@ class BladeValidator
     /**
      * Removes a validator instance with the provided validator class name.
      *
-     * @param  string  $validatorClass The validator class name.
+     * @param  string  $validatorClass  The validator class name.
      * @return $this
      */
     public function removeValidator(string $validatorClass): BladeValidator
@@ -238,7 +238,7 @@ class BladeValidator
     /**
      * Registers a document validator with the `BladeValidator` instance.
      *
-     * @param  AbstractDocumentValidator  $validator The validator instance.
+     * @param  AbstractDocumentValidator  $validator  The validator instance.
      * @return $this
      */
     public function addDocumentValidator(AbstractDocumentValidator $validator): BladeValidator
@@ -262,7 +262,7 @@ class BladeValidator
     /**
      * Registers multiple document validators with the `BladeValidator` instance.
      *
-     * @param  AbstractDocumentValidator[]  $validators The document validator instances.
+     * @param  AbstractDocumentValidator[]  $validators  The document validator instances.
      * @return $this
      */
     public function addDocumentValidators(array $validators): BladeValidator
@@ -277,7 +277,7 @@ class BladeValidator
     /**
      * Registers a single node validator instance with the `BladeValidator` instance.
      *
-     * @param  AbstractNodeValidator  $validator The node validator instance.
+     * @param  AbstractNodeValidator  $validator  The node validator instance.
      * @return $this
      */
     public function addValidator(AbstractNodeValidator $validator): BladeValidator
@@ -301,7 +301,7 @@ class BladeValidator
     /**
      * Adds the validators to validator instance.
      *
-     * @param  AbstractNodeValidator[]  $validators The validators.
+     * @param  AbstractNodeValidator[]  $validators  The validators.
      */
     public function addValidators(array $validators): BladeValidator
     {
@@ -333,7 +333,7 @@ class BladeValidator
     /**
      * Runs all registered node validators against the provided node list.
      *
-     * @param  AbstractNode[]  $nodes The nodes to validate.
+     * @param  AbstractNode[]  $nodes  The nodes to validate.
      */
     public function validateNodes(array $nodes): Collection
     {
@@ -368,7 +368,7 @@ class BladeValidator
      * This method will *not* automatically run registered node validators
      * against the document's nodes.
      *
-     * @param  Document  $document The document to validate.
+     * @param  Document  $document  The document to validate.
      */
     public function validateDocument(Document $document): Collection
     {

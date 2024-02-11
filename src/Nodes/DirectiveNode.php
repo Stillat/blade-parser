@@ -225,7 +225,7 @@ class DirectiveNode extends AbstractNode
      *
      * This method does not verify if the provided name is recognized as a directive.
      *
-     * @param  string  $name The new directive name.
+     * @param  string  $name  The new directive name.
      */
     public function setName(string $name): void
     {

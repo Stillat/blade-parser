@@ -43,7 +43,7 @@ class FragmentsDocumentParser extends BaseFragmentParser
     /**
      * Sets the internal ranges to ignore while parsing.
      *
-     * @param  array  $ignoreRanges The ranges to ignore.
+     * @param  array  $ignoreRanges  The ranges to ignore.
      */
     public function setIgnoreRanges(array $ignoreRanges): void
     {
@@ -53,7 +53,7 @@ class FragmentsDocumentParser extends BaseFragmentParser
     /**
      * Parses an HTML fragment at the provided index.
      *
-     * @param  int  $index The location to begin parsing.
+     * @param  int  $index  The location to begin parsing.
      */
     private function parseFragment(int $index): void
     {
@@ -230,7 +230,7 @@ class FragmentsDocumentParser extends BaseFragmentParser
     /**
      * Parses the input value and returns a list of fragments.
      *
-     * @param  string  $value The value to parse.
+     * @param  string  $value  The value to parse.
      * @return HtmlFragment[]
      */
     public function parse(string $value): array

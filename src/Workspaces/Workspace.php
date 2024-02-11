@@ -10,6 +10,7 @@ use RecursiveIteratorIterator;
 use SplFileInfo;
 use Stillat\BladeParser\Contracts\PathFormatter;
 use Stillat\BladeParser\Document\Document;
+use Stillat\BladeParser\Document\DocumentOptions;
 use Stillat\BladeParser\Errors\BladeError;
 use Stillat\BladeParser\Support\Utilities\Paths;
 use Stillat\BladeParser\Workspaces\Concerns\CompilesWorkspace;
@@ -69,6 +70,8 @@ class Workspace
      */
     protected array $workspaceDirectories = [];
 
+    protected array $ignoreDirectives = [];
+
     public function __construct()
     {
         $this->withPathFormatter(new TempPathFormatter);
@@ -89,11 +92,18 @@ class Workspace
         return count($this->filePaths);
     }
 
+    public function ignoreDirectives(array $directives): Workspace
+    {
+        $this->ignoreDirectives = $directives;
+
+        return $this;
+    }
+
     /**
      * Recursively adds all Blade templates to the workspace
      * discovered within the provided directory.
      *
-     * @param  string  $directory The path.
+     * @param  string  $directory  The path.
      * @return $this
      */
     public function addDirectory(string $directory): Workspace
@@ -125,7 +135,7 @@ class Workspace
      * configured Blade extension, the file
      * will *not* be added to the workspace.
      *
-     * @param  string  $path The file path.
+     * @param  string  $path  The file path.
      * @return $this
      */
     public function addFile(string $path): Workspace
@@ -142,7 +152,7 @@ class Workspace
             $this->workspaceDirectories[] = $dirName;
         }
 
-        $document = Document::fromText(file_get_contents($path), $path);
+        $document = Document::fromText(file_get_contents($path), $path, [], new DocumentOptions(ignoreDirectives: $this->ignoreDirectives));
 
         if ($this->shouldResolveStructures) {
             $document->resolveStructures();

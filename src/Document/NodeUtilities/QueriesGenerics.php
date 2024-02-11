@@ -17,7 +17,7 @@ trait QueriesGenerics
     /**
      * Finds all nodes of the provided type.
      *
-     * @param  string  $type The type to search.
+     * @param  string  $type  The type to search.
      */
     public function allOfType(string $type): NodeCollection
     {
@@ -35,7 +35,7 @@ trait QueriesGenerics
     /**
      * Finds all nodes that are not of the provided type.
      *
-     * @param  string  $type The type to search.
+     * @param  string  $type  The type to search.
      */
     public function allNotOfType(string $type): NodeCollection
     {
@@ -53,7 +53,7 @@ trait QueriesGenerics
     /**
      * Locates the first instance of the provided node type in the document.
      *
-     * @param  string  $type The node type.
+     * @param  string  $type  The node type.
      */
     public function firstOfType(string $type): ?AbstractNode
     {
@@ -69,7 +69,7 @@ trait QueriesGenerics
     /**
      * Tests if the document contains any node of the provided type.
      *
-     * @param  string  $type The desired type.
+     * @param  string  $type  The desired type.
      */
     public function hasAnyOfType(string $type): bool
     {
@@ -85,7 +85,7 @@ trait QueriesGenerics
     /**
      * Locates the last instance of the provided node type in the document.
      *
-     * @param  string  $type The node type.
+     * @param  string  $type  The node type.
      */
     public function lastOfType(string $type): ?AbstractNode
     {
@@ -97,7 +97,7 @@ trait QueriesGenerics
      *
      * Pattern searches exclude instances of `LiteralNode`.
      *
-     * @param  string[]  $pattern The desired pattern.
+     * @param  string[]  $pattern  The desired pattern.
      */
     public function findNodePattern(array $pattern): Collection
     {
@@ -138,8 +138,8 @@ trait QueriesGenerics
      *
      * @internal
      *
-     * @param  int  $index The start index.
-     * @param  int  $withoutLiteralCount The number of nodes to retrieve, not counting literals.
+     * @param  int  $index  The start index.
+     * @param  int  $withoutLiteralCount  The number of nodes to retrieve, not counting literals.
      */
     public function findNodesAt(int $index, int $withoutLiteralCount): NodeCollection
     {
@@ -193,7 +193,7 @@ trait QueriesGenerics
      *
      * @internal
      *
-     * @param  AbstractNode[]  $nodes The nodes.
+     * @param  AbstractNode[]  $nodes  The nodes.
      */
     public function getNodeSearchSpace(array $nodes): array
     {

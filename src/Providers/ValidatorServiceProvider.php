@@ -14,13 +14,18 @@ use Stillat\BladeParser\Validation\Workspaces\PhpStanWrapper;
 
 class ValidatorServiceProvider extends ServiceProvider
 {
+    public static function getIgnoreDirectives()
+    {
+        return array_merge(config('blade.validation.ignore_directives', []), ['livewire']);
+    }
+
     public function register()
     {
         $this->mergeConfigFrom(
             __DIR__.'/../../config/validation.php', 'blade.validation'
         );
 
-        $globalIgnoreDirectives = config('blade.validation.ignore_directives', []);
+        $globalIgnoreDirectives = self::getIgnoreDirectives();
         $globalCustomDirectives = config('blade.validation.custom_directives', []);
 
         $availableConfig = config('blade.validation.options');

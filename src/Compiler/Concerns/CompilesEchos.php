@@ -22,7 +22,7 @@ trait CompilesEchos
      * `Illuminate\View\Compilers\BladeCompiler::$echoHandlers`
      * protected property.
      *
-     * @param  array  $handlers The echo handlers.
+     * @param  array  $handlers  The echo handlers.
      */
     public function setEchoHandlers(array $handlers): void
     {

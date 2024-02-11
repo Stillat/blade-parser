@@ -19,7 +19,7 @@ class ComponentShorthandVariableParameterValidator extends AbstractNodeValidator
      * - Potential typos in shorthand variable syntax; i.e., `$:variable` instead of `:$variable`
      * - Explicitly assigning a value to a shorthand variable; i.e., `:$variable="value"`
      *
-     * @param  AbstractNode  $node The node to validate.
+     * @param  AbstractNode  $node  The node to validate.
      */
     public function validate(AbstractNode $node): ValidationResult|array|null
     {

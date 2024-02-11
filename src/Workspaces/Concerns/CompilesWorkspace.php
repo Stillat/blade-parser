@@ -2,6 +2,7 @@
 
 namespace Stillat\BladeParser\Workspaces\Concerns;
 
+use Exception;
 use Illuminate\Support\Str;
 use Stillat\BladeParser\Compiler\AppendState;
 use Stillat\BladeParser\Contracts\PathFormatter;
@@ -62,7 +63,7 @@ trait CompilesWorkspace
      * PathFormatter implementations are used to determine
      * what the final output file paths look like.
      *
-     * @param  PathFormatter  $formatter The path formatter.
+     * @param  PathFormatter  $formatter  The path formatter.
      */
     public function withPathFormatter(PathFormatter $formatter): Workspace
     {
@@ -86,7 +87,7 @@ trait CompilesWorkspace
     /**
      * Sets the workspace compiler options.
      *
-     * @param  DocumentCompilerOptions  $options The compiler options.
+     * @param  DocumentCompilerOptions  $options  The compiler options.
      */
     public function withCompilerOptions(DocumentCompilerOptions $options): Workspace
     {
@@ -119,6 +120,7 @@ trait CompilesWorkspace
 
         $options = new DocumentCompilerOptions();
         $options->throwExceptionOnUnknownComponentClass = false;
+        $options->ignoreDirectives = $this->ignoreDirectives;
 
         return $options;
     }
@@ -126,7 +128,7 @@ trait CompilesWorkspace
     /**
      * Compiles all discovered Blade templates within the workspace.
      *
-     * @param  string  $outputDirectory Where to store compiled files.
+     * @param  string  $outputDirectory  Where to store compiled files.
      *
      * @throws CompilationException
      * @throws UnsupportedNodeException
@@ -135,37 +137,48 @@ trait CompilesWorkspace
     {
         $outputDirectory = Paths::normalizePathWithTrailingSlash($outputDirectory);
         $this->lastTempDirectory = $outputDirectory;
+        $createdDirs = [];
 
-        /** @var Document $doc */
-        foreach ($this->getDocuments() as $doc) {
-            $compilePath = $outputDirectory.$this->pathFormatter->getPath($doc);
-            $options = $this->getCompilerOptions();
+        try {
+            /** @var Document $doc */
+            foreach ($this->getDocuments() as $doc) {
+                $compilePath = $outputDirectory.$this->pathFormatter->getPath($doc);
+                $options = $this->getCompilerOptions();
 
-            $this->docSourceMaps[$compilePath] = [];
-            $options->appendCallbacks[] = function (AppendState $state) use ($compilePath) {
-                for ($i = $state->beforeLineNumber; $i <= $state->afterLineNumber; $i++) {
-                    $this->docSourceMaps[$compilePath][$i] = $state->node->position->startLine;
+                $this->docSourceMaps[$compilePath] = [];
+                $options->appendCallbacks[] = function (AppendState $state) use ($compilePath) {
+                    for ($i = $state->beforeLineNumber; $i <= $state->afterLineNumber; $i++) {
+                        $this->docSourceMaps[$compilePath][$i] = $state->node->position->startLine;
+                    }
+                };
+                $result = $doc->compile($options);
+
+                $dir = Paths::normalizePathWithTrailingSlash(Str::afterLast(Paths::normalizePath($compilePath), '/'));
+                $createdDirs[] = $dir;
+
+                if (! file_exists($dir)) {
+                    @mkdir($dir, 0755, true);
                 }
-            };
-            $result = $doc->compile($options);
 
-            $dir = Paths::normalizePathWithTrailingSlash(Str::afterLast(Paths::normalizePath($compilePath), '/'));
-
-            if (! file_exists($dir)) {
-                @mkdir($dir, 0755, true);
+                file_put_contents($compilePath, $result);
+                $this->compiledFiles[$compilePath] = $doc->getFilePath();
+                $this->compiledDocuments[$compilePath] = $doc;
             }
+        } catch (Exception $e) {
+            foreach ($createdDirs as $dir) {
+                @rmdir($dir);
+            }
+            $this->removeCompiledFiles();
 
-            file_put_contents($compilePath, $result);
-            $this->compiledFiles[$compilePath] = $doc->getFilePath();
-            $this->compiledDocuments[$compilePath] = $doc;
+            throw $e;
         }
     }
 
     /**
      * Retrieves the original Blade template line number for the given compiled PHP line.
      *
-     * @param  string  $docPath The compiled path.
-     * @param  int  $phpLine The target PHP line.
+     * @param  string  $docPath  The compiled path.
+     * @param  int  $phpLine  The target PHP line.
      */
     public function getSourceLine(string $docPath, int $phpLine): ?int
     {
@@ -182,7 +195,7 @@ trait CompilesWorkspace
     /**
      * Retrieves a Document instance using the provided compiled path name.
      *
-     * @param  string  $path The compiled path.
+     * @param  string  $path  The compiled path.
      */
     public function getCompiledDocument(string $path): ?Document
     {

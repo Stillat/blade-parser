@@ -96,7 +96,7 @@ class ArgumentGroupNode extends AbstractNode
         return collect((new ArgStringSplitter())->split($this->innerContent));
     }
 
-    public function clone(DirectiveNode $newOwner = null): ArgumentGroupNode
+    public function clone(?DirectiveNode $newOwner = null): ArgumentGroupNode
     {
         $ownerToSet = $this->owner;
 

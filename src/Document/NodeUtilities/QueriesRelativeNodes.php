@@ -14,7 +14,7 @@ trait QueriesRelativeNodes
      *
      * Only the node's starting position is considered.
      *
-     * @param  int  $line The target line.
+     * @param  int  $line  The target line.
      */
     public function findAllNodesStartingOnLine(int $line): NodeCollection
     {
@@ -34,7 +34,7 @@ trait QueriesRelativeNodes
      *
      * @internal
      *
-     * @param  array|string  $directiveNames The directive names to break on.
+     * @param  array|string  $directiveNames  The directive names to break on.
      */
     public function partitionOnDirectives(array|string $directiveNames): PartitionResult
     {
@@ -81,7 +81,7 @@ trait QueriesRelativeNodes
      *
      * @internal
      *
-     * @param  AbstractNode  $node The node to split on.
+     * @param  AbstractNode  $node  The node to split on.
      */
     public function splitNodesOn(AbstractNode $node): array
     {
@@ -113,7 +113,7 @@ trait QueriesRelativeNodes
     /**
      * Gets all the nodes before the provided node.
      *
-     * @param  AbstractNode  $node The check node.
+     * @param  AbstractNode  $node  The check node.
      */
     public function getNodesBefore(AbstractNode $node): NodeCollection
     {
@@ -132,7 +132,7 @@ trait QueriesRelativeNodes
     /**
      * Gets all the nodes after the provided node.
      *
-     * @param  AbstractNode  $node The check node.
+     * @param  AbstractNode  $node  The check node.
      */
     public function getNodesAfter(AbstractNode $node): NodeCollection
     {
@@ -157,8 +157,8 @@ trait QueriesRelativeNodes
     /**
      * Retrieves all nodes between the provided nodes, including the provided nodes.
      *
-     * @param  AbstractNode  $a The start node.
-     * @param  AbstractNode  $b The end node.
+     * @param  AbstractNode  $a  The start node.
+     * @param  AbstractNode  $b  The end node.
      */
     public function getNodesBetweenInclusive(AbstractNode $a, AbstractNode $b): NodeCollection
     {
@@ -176,7 +176,7 @@ trait QueriesRelativeNodes
     /**
      * Retrieves all parent nodes for the provided node.
      *
-     * @param  AbstractNode  $node The node.
+     * @param  AbstractNode  $node  The node.
      */
     public function getAllParentNodesForNode(AbstractNode $node): NodeCollection
     {
@@ -196,8 +196,8 @@ trait QueriesRelativeNodes
     /**
      * Tests if the provided node has a parent of the requested type.
      *
-     * @param  AbstractNode  $node The node.
-     * @param  string  $type The type.
+     * @param  AbstractNode  $node  The node.
+     * @param  string  $type  The type.
      */
     public function getNodeHasParentOfType(AbstractNode $node, string $type): bool
     {
@@ -207,7 +207,7 @@ trait QueriesRelativeNodes
     /**
      * Tests if the provided node has a condition-like parent.
      *
-     * @param  AbstractNode  $node The node.
+     * @param  AbstractNode  $node  The node.
      */
     public function getNodeHasConditionParent(AbstractNode $node): bool
     {
@@ -217,7 +217,7 @@ trait QueriesRelativeNodes
     /**
      * Tests if the provided node has a `@forelse` directive parent.
      *
-     * @param  AbstractNode  $node The node.
+     * @param  AbstractNode  $node  The node.
      */
     public function getNodeHasForElseParent(AbstractNode $node): bool
     {
@@ -227,7 +227,7 @@ trait QueriesRelativeNodes
     /**
      * Tests if the provided node has a `@switch` directive parent.
      *
-     * @param  AbstractNode  $node The node.
+     * @param  AbstractNode  $node  The node.
      */
     public function getNodeHasSwitchParent(AbstractNode $node): bool
     {

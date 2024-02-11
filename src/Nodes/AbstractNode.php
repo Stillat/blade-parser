@@ -242,7 +242,7 @@ abstract class AbstractNode extends BaseNode
     /**
      * Sets the node's internal dirty state.
      *
-     * @param  bool  $isDirty The dirty status.
+     * @param  bool  $isDirty  The dirty status.
      */
     protected function setIsDirty(bool $isDirty = true): void
     {

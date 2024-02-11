@@ -12,7 +12,7 @@ trait AcceptsCustomDirectives
     /**
      * Sets the custom directive names.
      *
-     * @param  string[]  $directives The directive names.
+     * @param  string[]  $directives  The directive names.
      */
     public function setCustomDirectives(array $directives): void
     {

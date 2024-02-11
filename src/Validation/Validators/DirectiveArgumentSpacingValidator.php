@@ -22,7 +22,7 @@ class DirectiveArgumentSpacingValidator extends AbstractNodeValidator
     /**
      * Sets the number of expected spaces between directives and arguments.
      *
-     * @param  int  $spaces The required spaces.
+     * @param  int  $spaces  The required spaces.
      */
     public function setExpectedSpacing(int $spaces): void
     {

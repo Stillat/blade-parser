@@ -51,7 +51,7 @@ trait ValidatesWorkspaces
     /**
      * Adds a single node validator instance to the internal `BladeValidator` instance.
      *
-     * @param  AbstractNodeValidator  $validator The node validator.
+     * @param  AbstractNodeValidator  $validator  The node validator.
      */
     public function addValidator(AbstractNodeValidator $validator): Workspace
     {
@@ -63,7 +63,7 @@ trait ValidatesWorkspaces
     /**
      * Adds a single document validator instance to the internal `BladeValidator` instance.
      *
-     * @param  AbstractDocumentValidator  $validator The document validator.
+     * @param  AbstractDocumentValidator  $validator  The document validator.
      */
     public function addDocumentValidator(AbstractDocumentValidator $validator): Workspace
     {
@@ -75,7 +75,7 @@ trait ValidatesWorkspaces
     /**
      * Adds a validator instance to the internal `BladeValidator` instance.
      *
-     * @param  AbstractNodeValidator  $validator The validator instance.
+     * @param  AbstractNodeValidator  $validator  The validator instance.
      */
     public function withValidator(AbstractNodeValidator $validator): Workspace
     {
@@ -87,7 +87,7 @@ trait ValidatesWorkspaces
     /**
      * Adds a list of validator instances to the internal `BladeValidator` instance.
      *
-     * @param  AbstractNodeValidator[]  $validators The validator instances.
+     * @param  AbstractNodeValidator[]  $validators  The validator instances.
      */
     public function withValidators(array $validators): Workspace
     {

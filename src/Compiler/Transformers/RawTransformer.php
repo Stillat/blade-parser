@@ -48,7 +48,7 @@ class RawTransformer
     /**
      * Transforms an array of nodes into a string with raw blocks.
      *
-     * @param  array  $nodes The nodes
+     * @param  array  $nodes  The nodes
      */
     public function transform(array $nodes): string
     {
@@ -76,7 +76,7 @@ class RawTransformer
     /**
      * Replaces raw placeholders within a previously transformed string.
      *
-     * @param  string  $document The previously transformed string.
+     * @param  string  $document  The previously transformed string.
      */
     public function reverseTransformation(string $document): string
     {

@@ -28,8 +28,8 @@ class LiteralNode extends AbstractNode
      * the content supplied to this method must include the
      * correct escape sequences in order to function.
      *
-     * @param  string  $content The new content.
-     * @param  bool  $preserveOriginalWhitespace Whether to preserve the original trailing and leading whitespace.
+     * @param  string  $content  The new content.
+     * @param  bool  $preserveOriginalWhitespace  Whether to preserve the original trailing and leading whitespace.
      */
     public function setContent(string $content, bool $preserveOriginalWhitespace = true): void
     {

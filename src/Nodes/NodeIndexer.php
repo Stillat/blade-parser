@@ -7,7 +7,7 @@ class NodeIndexer
     /**
      * Resets the indexes on the provided nodes.
      *
-     * @param  BaseNode[]  $nodes The nodes to index.
+     * @param  BaseNode[]  $nodes  The nodes to index.
      */
     public static function indexNodes(array $nodes): void
     {

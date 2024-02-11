@@ -1048,6 +1048,31 @@ EXP;
         $this->assertSame(StringUtilities::normalizeLineEndings($expected), StringUtilities::normalizeLineEndings($result));
     }
 
+    public function testEchoInsideComponentParameter()
+    {
+        $blade = <<<'EOT'
+<x-input-with-slot>
+    <x-slot:input for="name" value="{{ __('Token Name') }}">Test</x-slot:input>
+</x-input-with-slot>
+EOT;
+
+        $expected = <<<'EXP'
+##BEGIN-COMPONENT-CLASS##@component('Stillat\BladeParser\Tests\Compiler\InputWithSlot', 'input-with-slot', [])
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag && $constructor = (new ReflectionClass(Stillat\BladeParser\Tests\Compiler\InputWithSlot::class))->getConstructor()): ?>
+<?php $attributes = $attributes->except(collect($constructor->getParameters())->map->getName()->all()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
+     @slot('input', null, ['for' => 'name','value' => ''.e(__('Token Name')).'']) Test @endslot
+ @endComponentClass##END-COMPONENT-CLASS##
+EXP;
+
+        $result = $this->compiler([
+            'input-with-slot' => InputWithSlot::class,
+        ])->compile($blade);
+
+        $this->assertSame(StringUtilities::normalizeLineEndings($expected), StringUtilities::normalizeLineEndings($result));
+    }
+
     protected function mockViewFactory($existsSucceeds = true)
     {
         $container = new Container;

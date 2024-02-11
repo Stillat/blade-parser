@@ -12,7 +12,7 @@ trait ManagesComponentParameters
     /**
      * Adds a parameter from text.
      *
-     * @param  string  $parameterContent The parameter content.
+     * @param  string  $parameterContent  The parameter content.
      */
     public function addParameterFromText(string $parameterContent): void
     {
@@ -28,7 +28,7 @@ trait ManagesComponentParameters
     /**
      * Adds a new parameter to the component.
      *
-     * @param  ParameterNode  $parameter The new parameter.
+     * @param  ParameterNode  $parameter  The new parameter.
      *
      * @throws \Stillat\BladeParser\Errors\Exceptions\DuplicateParameterException
      */
@@ -48,7 +48,7 @@ trait ManagesComponentParameters
     /**
      * Removes a parameter instance from the component.
      *
-     * @param  ParameterNode  $parameter The parameter to remove.
+     * @param  ParameterNode  $parameter  The parameter to remove.
      */
     public function removeParameter(ParameterNode $parameter): void
     {
@@ -67,7 +67,7 @@ trait ManagesComponentParameters
     /**
      * Tests if the component contains the provided parameter instance.
      *
-     * @param  ParameterNode  $parameter The parameter.
+     * @param  ParameterNode  $parameter  The parameter.
      */
     public function hasParameterInstance(ParameterNode $parameter): bool
     {
@@ -79,7 +79,7 @@ trait ManagesComponentParameters
     /**
      * Tests if the component contains a parameter with the provided name.
      *
-     * @param  string  $name The parameter name.
+     * @param  string  $name  The parameter name.
      */
     public function hasParameter(string $name): bool
     {
@@ -89,7 +89,7 @@ trait ManagesComponentParameters
     /**
      * Gets the parameter with the provided name.
      *
-     * @param  string  $name The parameter name.
+     * @param  string  $name  The parameter name.
      */
     public function getParameter(string $name): ?ParameterNode
     {

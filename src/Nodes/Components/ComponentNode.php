@@ -52,8 +52,8 @@ class ComponentNode extends AbstractNode
     /**
      * Renames the component node.
      *
-     * @param  string  $name The new name.
-     * @param  bool  $propagateChanges Whether to push changes to any related structures.
+     * @param  string  $name  The new name.
+     * @param  bool  $propagateChanges  Whether to push changes to any related structures.
      */
     public function rename(string $name, bool $propagateChanges = true): void
     {

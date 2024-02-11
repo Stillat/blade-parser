@@ -35,7 +35,7 @@ trait QueriesComponents
     /**
      * Returns the first component tag within the document with the provided name.
      *
-     * @param  string  $tagName The tag name to filter on.
+     * @param  string  $tagName  The tag name to filter on.
      */
     public function findComponentByTagName(string $tagName): ?ComponentNode
     {
@@ -48,7 +48,7 @@ trait QueriesComponents
      * This method will return *all* component tags that match the
      * provided name, including closing tags.
      *
-     * @param  string  $tagName The tag name to filter on.
+     * @param  string  $tagName  The tag name to filter on.
      */
     public function findComponentsByTagName(string $tagName): NodeCollection
     {

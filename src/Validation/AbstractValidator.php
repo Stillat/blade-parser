@@ -34,7 +34,7 @@ abstract class AbstractValidator
      * provide the developer the opportunity to configure
      * their validation systems however they like.
      *
-     * @param  array  $config The configuration.
+     * @param  array  $config  The configuration.
      */
     public function loadConfiguration(array $config): void
     {
@@ -54,7 +54,7 @@ abstract class AbstractValidator
     /**
      * Retrieves a directive's argument contents.
      *
-     * @param  DirectiveNode  $node The directive node.
+     * @param  DirectiveNode  $node  The directive node.
      */
     protected function getDirectiveArgContents(DirectiveNode $node): string
     {
@@ -70,8 +70,8 @@ abstract class AbstractValidator
     /**
      * Helper method to construct a new instance of `ValidationResult` with basic details.
      *
-     * @param  AbstractNode  $subject The node.
-     * @param  string  $message The validation result message.
+     * @param  AbstractNode  $subject  The node.
+     * @param  string  $message  The validation result message.
      */
     protected function makeValidationResult(AbstractNode $subject, string $message = ''): ValidationResult
     {

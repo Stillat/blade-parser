@@ -16,7 +16,7 @@ trait CanIgnoreDirectives
     /**
      * Sets the list of directive names a validator instance should ignore.
      *
-     * @param  string[]  $directives The directive names.
+     * @param  string[]  $directives  The directive names.
      */
     public function setIgnoreDirectives(array $directives): void
     {
@@ -26,7 +26,7 @@ trait CanIgnoreDirectives
     /**
      * Tests if the provided directive should be ignored by the validator.
      *
-     * @param  DirectiveNode  $directive The directive.
+     * @param  DirectiveNode  $directive  The directive.
      */
     protected function shouldIgnore(DirectiveNode $directive): bool
     {

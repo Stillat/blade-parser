@@ -42,7 +42,7 @@ class HtmlFragment extends Fragment
     /**
      * Tests if the fragment contains the provided parameter.
      *
-     * @param  string  $name The parameter name.
+     * @param  string  $name  The parameter name.
      */
     public function hasParameter(string $name): bool
     {
@@ -52,7 +52,7 @@ class HtmlFragment extends Fragment
     /**
      * Retrieves the parameter with the given name, if it exists.
      *
-     * @param  string  $name The parameter name.
+     * @param  string  $name  The parameter name.
      */
     public function getParameter(string $name): ?FragmentParameter
     {

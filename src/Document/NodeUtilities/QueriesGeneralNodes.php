@@ -173,7 +173,7 @@ trait QueriesGeneralNodes
      * Returns the first instance of `DirectiveNode` with the provided name. Returns `null`
      * if no directive was found.
      *
-     * @param  string  $name The directive name.
+     * @param  string  $name  The directive name.
      */
     public function findDirectiveByName(string $name): ?DirectiveNode
     {
@@ -185,7 +185,7 @@ trait QueriesGeneralNodes
     /**
      * Returns all directives with the provided name in the source document.
      *
-     * @param  string  $name The directive name to search
+     * @param  string  $name  The directive name to search
      */
     public function findDirectivesByName(string $name): NodeCollection
     {
@@ -197,7 +197,7 @@ trait QueriesGeneralNodes
     /**
      * Tests if the document contains a directive with the provided name.
      *
-     * @param  string  $name The directive name.
+     * @param  string  $name  The directive name.
      */
     public function hasDirective(string $name): bool
     {

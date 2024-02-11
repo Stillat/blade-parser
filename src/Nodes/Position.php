@@ -49,7 +49,7 @@ class Position
     /**
      * Tests if the position contains the provided offset.
      *
-     * @param  int  $offset The offset to test.
+     * @param  int  $offset  The offset to test.
      */
     public function contains(int $offset): bool
     {

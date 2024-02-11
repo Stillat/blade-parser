@@ -79,7 +79,7 @@ class Document
      * but can be used by other features such as Workspaces
      * or some validators.
      *
-     * @param  string|null  $path The file path.
+     * @param  string|null  $path  The file path.
      */
     public function setFilePath(?string $path): Document
     {
@@ -105,7 +105,7 @@ class Document
      * If you are using the `Blade::fromText($template)` static API,
      * this is managed for you.
      *
-     * @param  array  $directives The directive names.
+     * @param  array  $directives  The directive names.
      * @return $this
      */
     public function setDirectiveNames(array $directives): Document
@@ -150,8 +150,8 @@ class Document
      * as the original document text. The original document text
      * will be used with other features, like text extraction.
      *
-     * @param  AbstractNode[]  $nodes The nodes.
-     * @param  string  $nodeText The original document text.
+     * @param  AbstractNode[]  $nodes  The nodes.
+     * @param  string  $nodeText  The original document text.
      */
     public function setNodes(array $nodes, string $nodeText): Document
     {
@@ -178,7 +178,7 @@ class Document
      * Calling this method will *overwrite* any existing `BladeError`
      * instances on the current instance.
      *
-     * @param  BladeError[]  $errors The errors.
+     * @param  BladeError[]  $errors  The errors.
      */
     public function setErrors(array $errors): Document
     {
@@ -209,7 +209,7 @@ class Document
      * already have a `BladeError` instance, you should call the
      * `addValidationError(BladeError $error)` method instead.
      *
-     * @param  ValidationResult  $result The validation result.
+     * @param  ValidationResult  $result  The validation result.
      * @return $this
      */
     public function addValidationResult(ValidationResult $result): Document
@@ -224,7 +224,7 @@ class Document
      * of validation errors. Validation errors are stored separately
      * from other errors, and can be retrieved independently.
      *
-     * @param  BladeError  $error The Blade error.
+     * @param  BladeError  $error  The Blade error.
      * @return $this
      */
     public function addValidationError(BladeError $error): Document
@@ -291,7 +291,7 @@ class Document
      *
      * @internal
      *
-     * @param  DocumentParser  $parser The parser instance.
+     * @param  DocumentParser  $parser  The parser instance.
      * @return $this
      */
     public function syncFromParser(DocumentParser $parser): Document
@@ -307,16 +307,20 @@ class Document
      * The Document instance returned from this method is created by
      * invoking `DocumentFactory::makeDocument()`.
      *
-     * @param  string  $document The template content.
-     * @param  string|null  $filePath An optional file path.
-     * @param  string[]  $customComponentTags A list of custom component tag names.
-     * @param  DocumentOptions|null  $documentOptions Custom document options, if any.
+     * @param  string  $document  The template content.
+     * @param  string|null  $filePath  An optional file path.
+     * @param  string[]  $customComponentTags  A list of custom component tag names.
+     * @param  DocumentOptions|null  $documentOptions  Custom document options, if any.
      */
-    public static function fromText(string $document, string $filePath = null, array $customComponentTags = [], DocumentOptions $documentOptions = null): Document
+    public static function fromText(string $document, ?string $filePath = null, array $customComponentTags = [], ?DocumentOptions $documentOptions = null): Document
     {
         $parser = DocumentParserFactory::makeDocumentParser();
 
         if ($documentOptions) {
+            if ($documentOptions->ignoreDirectives) {
+                $parser->ignoreDirectives($documentOptions->ignoreDirectives);
+            }
+
             if (! $documentOptions->withCoreDirectives) {
                 $parser->withoutCoreDirectives();
             }
@@ -340,7 +344,7 @@ class Document
      * sequences in the produced text. This behavior can be
      * changed by supplying a "falsey" value for the `$unEscaped` parameter.
      *
-     * @param  bool  $unEscaped Whether to return unescaped text.
+     * @param  bool  $unEscaped  Whether to return unescaped text.
      */
     public function extractText(bool $unEscaped = true): string
     {
@@ -384,11 +388,12 @@ class Document
      * @throws CompilationException
      * @throws UnsupportedNodeException
      */
-    public function compile(DocumentCompilerOptions $options = null): string
+    public function compile(?DocumentCompilerOptions $options = null): string
     {
         $compiler = CompilerFactory::makeCompiler();
 
         if ($options != null) {
+            $compiler->ignoreDirectives($options->ignoreDirectives);
             $compiler->setFailOnParserErrors($options->failOnParserErrors);
             $compiler->setParserErrorsIsStrict($options->failStrictly);
             $compiler->setThrowExceptionOnUnknownComponentClass($options->throwExceptionOnUnknownComponentClass);
@@ -426,7 +431,7 @@ class Document
      * already been performed on the document, calling this
      * method may remove the start or ending node of existing pairs.
      *
-     * @param  AbstractNode  $node The node to remove.
+     * @param  AbstractNode  $node  The node to remove.
      * @return $this
      */
     public function removeNode(AbstractNode $node): Document

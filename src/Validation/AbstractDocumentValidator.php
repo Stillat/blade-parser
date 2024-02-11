@@ -14,7 +14,7 @@ abstract class AbstractDocumentValidator extends AbstractValidator
      * if they wish to report multiple results at once, or may return `null`
      * if there are no results to report for the provided node.
      *
-     * @param  Document  $document The document to analyze.
+     * @param  Document  $document  The document to analyze.
      */
     abstract public function validate(Document $document): ValidationResult|array|null;
 }

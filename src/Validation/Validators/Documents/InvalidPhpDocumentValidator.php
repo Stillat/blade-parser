@@ -12,7 +12,7 @@ class InvalidPhpDocumentValidator extends AbstractDocumentValidator
     /**
      * Attempts to detect any invalid PHP syntax in the provided document.
      *
-     * @param  Document  $document The document instance.
+     * @param  Document  $document  The document instance.
      */
     public function validate(Document $document): ?ValidationResult
     {
