@@ -11,7 +11,7 @@ trait ManagesCustomDirectives
     /**
      * Sets the compiler's custom directives compilers.
      *
-     * @param  array  $directives The directive compilers.
+     * @param  array  $directives  The directive compilers.
      */
     public function setCustomDirectives(array $directives): void
     {
@@ -34,7 +34,7 @@ trait ManagesCustomDirectives
      * *not* need to manually call this method to sync compiler information
      * if you use the default compiler factory methods/service bindings.
      */
-    public function aliasComponent(string $path, string $alias = null): void
+    public function aliasComponent(string $path, ?string $alias = null): void
     {
         $alias = $alias ?: Arr::last(explode('.', $path));
 
@@ -57,7 +57,7 @@ trait ManagesCustomDirectives
      * *not* need to manually call this method to sync compiler information
      * if you use the default compiler factory methods/service bindings.
      */
-    public function include(string $path, string $alias = null): void
+    public function include(string $path, ?string $alias = null): void
     {
         $this->aliasInclude($path, $alias);
     }
@@ -70,7 +70,7 @@ trait ManagesCustomDirectives
      * *not* need to manually call this method to sync compiler information
      * if you use the default compiler factory methods/service bindings.
      */
-    public function aliasInclude(string $path, string $alias = null): void
+    public function aliasInclude(string $path, ?string $alias = null): void
     {
         $alias = $alias ?: Arr::last(explode('.', $path));
 
@@ -89,8 +89,8 @@ trait ManagesCustomDirectives
      * *not* need to manually call this method to sync compiler information
      * if you use the default compiler factory methods/service bindings.
      *
-     * @param  string  $name The directive name.
-     * @param  callable  $handler The handler
+     * @param  string  $name  The directive name.
+     * @param  callable  $handler  The handler
      *
      * @throws InvalidArgumentException
      */

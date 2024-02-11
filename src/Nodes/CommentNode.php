@@ -22,8 +22,8 @@ class CommentNode extends AbstractNode
     /**
      * Updates the comment's inner content.
      *
-     * @param  string  $content The comment's content.
-     * @param  bool  $preserveOriginalWhitespace Whether to preserve the original leading and trailing whitespace.
+     * @param  string  $content  The comment's content.
+     * @param  bool  $preserveOriginalWhitespace  Whether to preserve the original leading and trailing whitespace.
      */
     public function setContent(string $content, bool $preserveOriginalWhitespace = true): void
     {

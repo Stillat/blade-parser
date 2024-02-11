@@ -29,7 +29,7 @@ trait ManagesConditionMetaData
     /**
      * Tests if the provided node is a condition-like node.
      *
-     * @param  DirectiveNode  $node The node.
+     * @param  DirectiveNode  $node  The node.
      */
     public function isConditionalStructure(DirectiveNode $node): bool
     {
@@ -62,7 +62,7 @@ trait ManagesConditionMetaData
     /**
      * Tests if the provided condition-like node requires a closing directive.
      *
-     * @param  DirectiveNode  $node The node.
+     * @param  DirectiveNode  $node  The node.
      */
     public function conditionRequiresClose(DirectiveNode $node): bool
     {

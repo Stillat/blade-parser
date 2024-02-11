@@ -15,6 +15,12 @@ class DocumentOptions
          * @var string[] $customDirectives
          */
         public array $customDirectives = [],
+        /**
+         * A list of directives that should be ignored.
+         *
+         * @var string[] $ignoreDirectives
+         */
+        public array $ignoreDirectives = [],
     ) {
     }
 }

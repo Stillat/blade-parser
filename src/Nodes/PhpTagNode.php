@@ -37,8 +37,8 @@ class PhpTagNode extends AbstractNode
      *
      * This content should not start with a PHP tag, and it should not end with a closing PHP tag.
      *
-     * @param  string  $content The new content.
-     * @param  bool  $preserveOriginalWhitespace Whether to preserve original leading and trailing whitespace.
+     * @param  string  $content  The new content.
+     * @param  bool  $preserveOriginalWhitespace  Whether to preserve original leading and trailing whitespace.
      */
     public function setContent(string $content, bool $preserveOriginalWhitespace = true): void
     {
@@ -56,8 +56,8 @@ class PhpTagNode extends AbstractNode
     /**
      * Updates the tag's type.
      *
-     * @param  PhpTagType  $type The new type.
-     * @param  bool  $preserveOriginalWhitespace Whether to preserve the tag's original leading and trailing whitespace.
+     * @param  PhpTagType  $type  The new type.
+     * @param  bool  $preserveOriginalWhitespace  Whether to preserve the tag's original leading and trailing whitespace.
      */
     public function setType(PhpTagType $type, bool $preserveOriginalWhitespace = true): void
     {

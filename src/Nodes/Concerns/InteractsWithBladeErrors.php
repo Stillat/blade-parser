@@ -57,9 +57,9 @@ trait InteractsWithBladeErrors
     /**
      * Tests if an error matching the provided properties exists on a specific line.
      *
-     * @param  int  $line The line to check.
-     * @param  ErrorType  $type The error type to check for.
-     * @param  ConstructContext  $context The error context.
+     * @param  int  $line  The line to check.
+     * @param  ErrorType  $type  The error type to check for.
+     * @param  ConstructContext  $context  The error context.
      */
     public function hasErrorOnLine(int $line, ErrorType $type, ConstructContext $context): bool
     {

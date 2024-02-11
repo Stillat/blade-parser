@@ -35,7 +35,7 @@ class EchoNode extends AbstractNode
     /**
      * Sets the node's type.
      *
-     * @param  EchoType  $type The type.
+     * @param  EchoType  $type  The type.
      */
     public function setType(EchoType $type): void
     {
@@ -46,7 +46,7 @@ class EchoNode extends AbstractNode
     /**
      * Sets the inner content of the echo node.
      *
-     * @param  string  $innerContent The new content.
+     * @param  string  $innerContent  The new content.
      */
     public function setInnerContent(string $innerContent): void
     {

@@ -10,7 +10,7 @@ class StringUtilities
     /**
      * Lowercases the first character of the input string.
      *
-     * @param  string  $value The value.
+     * @param  string  $value  The value.
      */
     public static function lcfirst(string $value): string
     {
@@ -20,8 +20,8 @@ class StringUtilities
     /**
      * Safely wraps the provided value in the provided quote style, if it is not already.
      *
-     * @param  string  $value The value to wrap.
-     * @param  string  $quoteStyle The quote style. Supply either ' or "
+     * @param  string  $value  The value to wrap.
+     * @param  string  $quoteStyle  The quote style. Supply either ' or "
      */
     public static function wrapInQuotes(string $value, string $quoteStyle): string
     {
@@ -40,7 +40,7 @@ class StringUtilities
     /**
      * Escapes single quotes within the provided string.
      *
-     * @param  string  $value The value to escape.
+     * @param  string  $value  The value to escape.
      */
     public static function escapeSingleQuotes(string $value): string
     {
@@ -50,7 +50,7 @@ class StringUtilities
     /**
      * Normalizes line endings within the provided content.
      *
-     * @param  string  $content The content to normalize.
+     * @param  string  $content  The content to normalize.
      */
     public static function normalizeLineEndings(string $content): string
     {
@@ -60,7 +60,7 @@ class StringUtilities
     /**
      * Wraps the provided value in single quotes if it is not already.
      *
-     * @param  string  $value The string to wrap.
+     * @param  string  $value  The string to wrap.
      */
     public static function wrapInSingleQuotes(string $value): string
     {
@@ -78,7 +78,7 @@ class StringUtilities
     /**
      * Removes balanced parentheses from the provided string.
      *
-     * @param  string  $value The value to unwrap.
+     * @param  string  $value  The value to unwrap.
      */
     public static function unwrapParentheses(string $value): string
     {
@@ -105,7 +105,7 @@ class StringUtilities
     /**
      * Tests if the provided value has leading whitespace.
      *
-     * @param  string  $value The value.
+     * @param  string  $value  The value.
      */
     public static function hasLeadingWhitespace(string $value): bool
     {
@@ -119,7 +119,7 @@ class StringUtilities
     /**
      * Tests if the provided value has trailing whitespace.
      *
-     * @param  string  $value The value.
+     * @param  string  $value  The value.
      */
     public static function hasTrailingWhitespace(string $value): bool
     {
@@ -135,7 +135,7 @@ class StringUtilities
      *
      * A single space will be added to either the start or end.
      *
-     * @param  string  $value The value.
+     * @param  string  $value  The value.
      */
     public static function ensureStringHasWhitespace(string $value): string
     {
@@ -153,7 +153,7 @@ class StringUtilities
     /**
      * Retrieves the leading whitespace from the provided value.
      *
-     * @param  string  $value The value.
+     * @param  string  $value  The value.
      */
     public static function extractLeadingWhitespace(string $value): string
     {
@@ -177,7 +177,7 @@ class StringUtilities
     /**
      * Retrieves the trailing whitespace from the provided value.
      *
-     * @param  string  $value The value.
+     * @param  string  $value  The value.
      */
     public static function extractTrailingWhitespace(string $value): string
     {

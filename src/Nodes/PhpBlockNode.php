@@ -24,8 +24,8 @@ class PhpBlockNode extends AbstractNode
     /**
      * Updates the block's content.
      *
-     * @param  string  $content The new content.
-     * @param  bool  $preserveOriginalWhitespace Whether to preserve the original leading and trailing whitespace.
+     * @param  string  $content  The new content.
+     * @param  bool  $preserveOriginalWhitespace  Whether to preserve the original leading and trailing whitespace.
      */
     public function setContent(string $content, bool $preserveOriginalWhitespace = true): void
     {

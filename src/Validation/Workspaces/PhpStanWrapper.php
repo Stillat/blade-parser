@@ -25,7 +25,7 @@ class PhpStanWrapper
     /**
      * Sets the directory path where blade files will be compiled to.
      *
-     * @param  string  $directory The directory path.
+     * @param  string  $directory  The directory path.
      * @return $this
      */
     public function setDirectory(string $directory): PhpStanWrapper
@@ -55,7 +55,7 @@ class PhpStanWrapper
     /**
      * Runs analysis on the compiled output of all documents within the provided workspace.
      *
-     * @param  Workspace  $workspace The workspace instance.
+     * @param  Workspace  $workspace  The workspace instance.
      *
      * @throws CompilationException
      * @throws UnsupportedNodeException

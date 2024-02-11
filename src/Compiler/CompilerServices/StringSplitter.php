@@ -32,7 +32,7 @@ class StringSplitter extends AbstractParser
     /**
      * Splits a string on whitespace into an array, ignoring line breaks and embedded strings.
      *
-     * @param  string  $input The string to split.
+     * @param  string  $input  The string to split.
      * @return string[]
      */
     public function split(string $input): array

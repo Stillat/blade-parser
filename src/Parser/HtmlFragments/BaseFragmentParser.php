@@ -53,7 +53,7 @@ abstract class BaseFragmentParser
      * Advances the parser over a string, and adds
      * the string's content to the internal buffer.
      *
-     * @param  int  $start The start position.
+     * @param  int  $start  The start position.
      */
     protected function scanToEndOfString(int $start): int
     {

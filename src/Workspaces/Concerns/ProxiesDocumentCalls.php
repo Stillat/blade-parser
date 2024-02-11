@@ -22,7 +22,7 @@ trait ProxiesDocumentCalls
     /**
      * Returns all directives with the provided name in the workspace.
      *
-     * @param  string  $name The directive name to search
+     * @param  string  $name  The directive name to search
      */
     public function findDirectivesByName(string $name): NodeCollection
     {
@@ -167,7 +167,7 @@ trait ProxiesDocumentCalls
      * This method will return *all* component tags that match the
      * provided name, including closing tags.
      *
-     * @param  string  $tagName The tag name to filter on.
+     * @param  string  $tagName  The tag name to filter on.
      */
     public function findComponentsByTagName(string $tagName): NodeCollection
     {
@@ -185,7 +185,7 @@ trait ProxiesDocumentCalls
     /**
      * Tests if the workspace contains a directive with the provided name.
      *
-     * @param  string  $name The directive name.
+     * @param  string  $name  The directive name.
      */
     public function hasDirective(string $name): bool
     {
@@ -195,7 +195,7 @@ trait ProxiesDocumentCalls
     /**
      * Finds all nodes of the provided type.
      *
-     * @param  string  $type The type to search.
+     * @param  string  $type  The type to search.
      */
     public function allOfType(string $type): NodeCollection
     {
@@ -205,7 +205,7 @@ trait ProxiesDocumentCalls
     /**
      * Finds all nodes that are not of the provided type.
      *
-     * @param  string  $type The type to search.
+     * @param  string  $type  The type to search.
      */
     public function allNotOfType(string $type): NodeCollection
     {
@@ -215,7 +215,7 @@ trait ProxiesDocumentCalls
     /**
      * Tests if the workspace contains any node of the provided type.
      *
-     * @param  string  $type The desired type.
+     * @param  string  $type  The desired type.
      */
     public function hasAnyOfType(string $type): bool
     {

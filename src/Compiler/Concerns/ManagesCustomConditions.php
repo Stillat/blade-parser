@@ -12,8 +12,8 @@ trait ManagesCustomConditions
      * *not* need to manually call this method to sync compiler information
      * if you use the default compiler factory methods/service bindings.
      *
-     * @param  string  $name The condition handler name.
-     * @param  callable  $callback The condition handler.
+     * @param  string  $name  The condition handler name.
+     * @param  callable  $callback  The condition handler.
      */
     public function if(string $name, callable $callback): void
     {

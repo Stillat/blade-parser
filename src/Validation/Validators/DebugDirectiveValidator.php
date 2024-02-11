@@ -24,7 +24,7 @@ class DebugDirectiveValidator extends AbstractNodeValidator
     /**
      * Tests if the node is a directive node, and is considered a "debug" directive.
      *
-     * @param  AbstractNode  $node The node to validate.
+     * @param  AbstractNode  $node  The node to validate.
      */
     public function validate(AbstractNode $node): ValidationResult|array|null
     {

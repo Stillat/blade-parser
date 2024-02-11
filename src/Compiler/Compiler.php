@@ -143,6 +143,8 @@ class Compiler
      */
     private bool $failStrictly = false;
 
+    private array $ignoreDirectives = [];
+
     public function __construct(DocumentParser $parser)
     {
         $this->compilationBuffer = new StringBuffer();
@@ -155,14 +157,23 @@ class Compiler
         );
     }
 
+    public function ignoreDirectives(array $directives): Compiler
+    {
+        $this->ignoreDirectives = $directives;
+        $this->componentTagCompiler->ignoreDirectives($directives);
+        $this->parser->ignoreDirectives($directives);
+
+        return $this;
+    }
+
     /**
      * Register a custom component tag compiler.
      *
      * This method will automatically register the provided tag name
      * with the component tag compiler.
      *
-     * @param  string  $tagName The custom component tag prefix.
-     * @param  CustomComponentTagCompiler  $compiler The compiler instance.
+     * @param  string  $tagName  The custom component tag prefix.
+     * @param  CustomComponentTagCompiler  $compiler  The compiler instance.
      * @return $this
      */
     public function registerCustomComponentTagCompiler(string $tagName, CustomComponentTagCompiler $compiler): Compiler
@@ -188,7 +199,7 @@ class Compiler
      * When set to false, the internal component tag compiler will
      * not compile Laravel component tags (<x-, <x:, etc.).
      *
-     * @param  bool  $compileCoreComponents Whether to compile core Laravel component tags.
+     * @param  bool  $compileCoreComponents  Whether to compile core Laravel component tags.
      * @return $this
      */
     public function setCompileCoreComponents(bool $compileCoreComponents): Compiler
@@ -232,7 +243,7 @@ class Compiler
      *
      * Callbacks are invoked in the order they were registered.
      *
-     * @param  callable  $callback The callback.
+     * @param  callable  $callback  The callback.
      * @return $this
      */
     public function onAppend(callable $callback): Compiler
@@ -273,7 +284,7 @@ class Compiler
      * `Stillat\BladeParser\Errors\Exceptions\CompilationException`
      * whenever it encounters a parser error.
      *
-     * @param  bool  $failOnParserErrors Whether to fail on parser errors.
+     * @param  bool  $failOnParserErrors  Whether to fail on parser errors.
      * @return $this
      */
     public function setFailOnParserErrors(bool $failOnParserErrors): Compiler
@@ -297,7 +308,7 @@ class Compiler
      * When set to true, the compiler will fail on any error type. When
      * set to false, it will only fail on fatal errors.
      *
-     * @param  bool  $isParserErrorsStrict Whether to fail on any parser error.
+     * @param  bool  $isParserErrorsStrict  Whether to fail on any parser error.
      * @return $this
      */
     public function setParserErrorsIsStrict(bool $isParserErrorsStrict): Compiler
@@ -324,7 +335,7 @@ class Compiler
      * In default setups, this is set to the return value of
      * `Illuminate\View\Compilers\BladeCompiler::getExtensions()`
      *
-     * @param  array  $extensions The extensions.
+     * @param  array  $extensions  The extensions.
      */
     public function setExtensions(array $extensions): Compiler
     {
@@ -339,7 +350,7 @@ class Compiler
      * In default setups, this is set to the return value of
      * `Illuminate\View\Compilers\BladeCompiler::getAnonymousComponentNamespaces()`
      *
-     * @param  array  $anonymousNamespaces The anonymous namespaces.
+     * @param  array  $anonymousNamespaces  The anonymous namespaces.
      */
     public function setAnonymousComponentNamespaces(array $anonymousNamespaces): Compiler
     {
@@ -355,7 +366,7 @@ class Compiler
      * In default setups, this is set to the return value of
      * `Illuminate\View\Compilers\BladeCompiler::getClassComponentAliases()`
      *
-     * @param  array  $aliases The class component aliases.
+     * @param  array  $aliases  The class component aliases.
      */
     public function setClassComponentAliases(array $aliases): Compiler
     {
@@ -371,7 +382,7 @@ class Compiler
      * In default setups, this is set to the return value of
      * `Illuminate\View\Compilers\BladeCompiler::getClassComponentNamespaces()`
      *
-     * @param  array  $namespaces The class component namespaces.
+     * @param  array  $namespaces  The class component namespaces.
      */
     public function setClassComponentNamespaces(array $namespaces): Compiler
     {
@@ -387,7 +398,7 @@ class Compiler
      * In default setups, this is set to the return value of
      * `Illuminate\View\Compilers\BladeCompiler::getAnonymousComponentPaths()`
      *
-     * @param  array  $paths The anonymous component paths.
+     * @param  array  $paths  The anonymous component paths.
      */
     public function setAnonymousComponentPaths(array $paths): Compiler
     {
@@ -408,7 +419,7 @@ class Compiler
     /**
      * Sets whether the compiler will fail when it encounters unknown component classes.
      *
-     * @param  bool  $doThrow Whether to throw on unknown component classes.
+     * @param  bool  $doThrow  Whether to throw on unknown component classes.
      */
     public function setThrowExceptionOnUnknownComponentClass(bool $doThrow): void
     {
@@ -418,7 +429,7 @@ class Compiler
     /**
      * Sets whether to compile class component tags.
      *
-     * @param  bool  $compilesComponentTags Whether to compile component tags.
+     * @param  bool  $compilesComponentTags  Whether to compile component tags.
      */
     public function setCompilesComponentTags(bool $compilesComponentTags): Compiler
     {
@@ -438,7 +449,7 @@ class Compiler
     /**
      * Sets the internal compilation target.
      *
-     * @param  CompilationTarget  $compilationTarget The compilation target.
+     * @param  CompilationTarget  $compilationTarget  The compilation target.
      */
     public function setCompilationTarget(CompilationTarget $compilationTarget): Compiler
     {
@@ -454,7 +465,7 @@ class Compiler
      * `Illuminate\View\Compilers\BladeCompiler::$conditions`
      * protected property.
      *
-     * @param  array  $conditions The condition handlers.
+     * @param  array  $conditions  The condition handlers.
      */
     public function setConditions(array $conditions): Compiler
     {
@@ -479,7 +490,7 @@ class Compiler
      * *not* need to manually call this method to sync compiler information
      * if you use the default compiler factory methods/service bindings.
      *
-     * @param  callable  $precompiler The precompiler.
+     * @param  callable  $precompiler  The precompiler.
      */
     public function precompiler(callable $precompiler): void
     {
@@ -494,7 +505,7 @@ class Compiler
      * *not* need to manually call this method to sync compiler information
      * if you use the default compiler factory methods/service bindings.
      *
-     * @param  string  $format The format to use.
+     * @param  string  $format  The format to use.
      */
     public function setEchoFormat(string $format): void
     {
@@ -560,7 +571,7 @@ class Compiler
      * `Illuminate\View\Compilers\BladeCompiler::$precompilers`
      * protected property.
      *
-     * @param  array  $precompilers The precompilers.
+     * @param  array  $precompilers  The precompilers.
      */
     public function setPrecompilers(array $precompilers): void
     {
@@ -592,7 +603,7 @@ class Compiler
     /**
      * Compile the given Blade template contents.
      *
-     * @param  string  $template The template.
+     * @param  string  $template  The template.
      *
      * @throws Exception
      * @throws UnsupportedNodeException
@@ -746,6 +757,10 @@ class Compiler
 
         $compiled = (string) $this->compilationBuffer;
 
+        // Normalize first.
+        $compiled = str_replace("\r\n", "\n", $compiled);
+
+        // Then, replace line endings with the desired ending.
         $compiled = str_replace("\n", $lineEnding, $compiled);
 
         if (count($this->footer) > 0) {
@@ -785,7 +800,7 @@ class Compiler
     /**
      * Execute user defined extensions.
      *
-     * @param  string  $value The value to compile.
+     * @param  string  $value  The value to compile.
      */
     protected function compileExtensions(string $value): string
     {
@@ -799,7 +814,7 @@ class Compiler
     /**
      * Add the stored footers to the compiled template.
      *
-     * @param  string  $result The compiled template.
+     * @param  string  $result  The compiled template.
      */
     protected function addFooters(string $result): string
     {

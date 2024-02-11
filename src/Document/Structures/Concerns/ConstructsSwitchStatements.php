@@ -38,8 +38,8 @@ trait ConstructsSwitchStatements
     /**
      * Constructs a case statement from the provided nodes.
      *
-     * @param  NodeCollection  $nodes The case nodes.
-     * @param  SwitchStatement  $switch The parent switch statement.
+     * @param  NodeCollection  $nodes  The case nodes.
+     * @param  SwitchStatement  $switch  The parent switch statement.
      */
     private function createCaseStatement(NodeCollection $nodes, SwitchStatement $switch): CaseStatement
     {

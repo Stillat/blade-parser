@@ -9,7 +9,7 @@ class ParameterFactory
     /**
      * Parses parameters within the provided content.
      *
-     * @param  string  $parameterContent The parameter content.
+     * @param  string  $parameterContent  The parameter content.
      */
     public static function fromText(string $parameterContent): array
     {
@@ -21,7 +21,7 @@ class ParameterFactory
     /**
      * Parses a single parameter from the provided content.
      *
-     * @param  string  $parameterContent The parameter content.
+     * @param  string  $parameterContent  The parameter content.
      */
     public static function parameterFromText(string $parameterContent): ?ParameterNode
     {

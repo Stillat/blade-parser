@@ -27,6 +27,13 @@ class ComponentTagCompiler
         $this->parser = $parser;
     }
 
+    public function ignoreDirectives(array $directives): ComponentTagCompiler
+    {
+        $this->parser->ignoreDirectives($directives);
+
+        return $this;
+    }
+
     public function registerCustomCompiler(string $tagName, CustomComponentTagCompiler $compiler): ComponentTagCompiler
     {
         $this->customCompilers[$tagName] = $compiler;

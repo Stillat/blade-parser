@@ -19,7 +19,7 @@ class ComponentParameterNameSpacingValidator extends AbstractNodeValidator
      * However, the following example would:
      *    `<x-profile message = "The message" />`
      *
-     * @param  AbstractNode  $node The node to test.
+     * @param  AbstractNode  $node  The node to test.
      */
     public function validate(AbstractNode $node): ValidationResult|array|null
     {

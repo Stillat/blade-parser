@@ -17,7 +17,7 @@ class LoopVariablesExtractor
     /**
      * Extracts information about the loop variables in the provided value.
      *
-     * @param  string  $value The content
+     * @param  string  $value  The content
      */
     public function extractDetails(string $value): LoopVariables
     {

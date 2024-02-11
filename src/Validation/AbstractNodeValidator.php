@@ -14,7 +14,7 @@ abstract class AbstractNodeValidator extends AbstractValidator
      * if they wish to report multiple results at once, or may return `null`
      * if there are no results to report for the provided node.
      *
-     * @param  AbstractNode  $node The node to validate.
+     * @param  AbstractNode  $node  The node to validate.
      */
     abstract public function validate(AbstractNode $node): ValidationResult|array|null;
 }

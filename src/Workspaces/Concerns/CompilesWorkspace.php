@@ -63,7 +63,7 @@ trait CompilesWorkspace
      * PathFormatter implementations are used to determine
      * what the final output file paths look like.
      *
-     * @param  PathFormatter  $formatter The path formatter.
+     * @param  PathFormatter  $formatter  The path formatter.
      */
     public function withPathFormatter(PathFormatter $formatter): Workspace
     {
@@ -87,7 +87,7 @@ trait CompilesWorkspace
     /**
      * Sets the workspace compiler options.
      *
-     * @param  DocumentCompilerOptions  $options The compiler options.
+     * @param  DocumentCompilerOptions  $options  The compiler options.
      */
     public function withCompilerOptions(DocumentCompilerOptions $options): Workspace
     {
@@ -120,6 +120,7 @@ trait CompilesWorkspace
 
         $options = new DocumentCompilerOptions();
         $options->throwExceptionOnUnknownComponentClass = false;
+        $options->ignoreDirectives = config('blade.validation.ignore_directives', []);
 
         return $options;
     }
@@ -127,7 +128,7 @@ trait CompilesWorkspace
     /**
      * Compiles all discovered Blade templates within the workspace.
      *
-     * @param  string  $outputDirectory Where to store compiled files.
+     * @param  string  $outputDirectory  Where to store compiled files.
      *
      * @throws CompilationException
      * @throws UnsupportedNodeException
@@ -176,8 +177,8 @@ trait CompilesWorkspace
     /**
      * Retrieves the original Blade template line number for the given compiled PHP line.
      *
-     * @param  string  $docPath The compiled path.
-     * @param  int  $phpLine The target PHP line.
+     * @param  string  $docPath  The compiled path.
+     * @param  int  $phpLine  The target PHP line.
      */
     public function getSourceLine(string $docPath, int $phpLine): ?int
     {
@@ -194,7 +195,7 @@ trait CompilesWorkspace
     /**
      * Retrieves a Document instance using the provided compiled path name.
      *
-     * @param  string  $path The compiled path.
+     * @param  string  $path  The compiled path.
      */
     public function getCompiledDocument(string $path): ?Document
     {

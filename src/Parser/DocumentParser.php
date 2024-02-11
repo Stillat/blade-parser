@@ -80,6 +80,8 @@ class DocumentParser extends AbstractParser
 
     private bool $onlyComponents = false;
 
+    private array $ignoreDirectives = [];
+
     public function __construct()
     {
         $this->componentParser = new ComponentParser();
@@ -89,7 +91,7 @@ class DocumentParser extends AbstractParser
     /**
      * Sets the custom directive names.
      *
-     * @param  array  $names The directive names.
+     * @param  array  $names  The directive names.
      * @return $this
      */
     public function setDirectiveNames(array $names): DocumentParser
@@ -110,7 +112,7 @@ class DocumentParser extends AbstractParser
     /**
      * Registers a single custom component tag name.
      *
-     * @param  string  $tagName The component tag name.
+     * @param  string  $tagName  The component tag name.
      * @return $this
      */
     public function registerCustomComponentTag(string $tagName): DocumentParser
@@ -123,7 +125,7 @@ class DocumentParser extends AbstractParser
     /**
      * Registers multiple custom component tag names.
      *
-     * @param  array  $tagNames The tag names.
+     * @param  array  $tagNames  The tag names.
      * @return $this
      */
     public function registerCustomComponentTags(array $tagNames): DocumentParser
@@ -136,7 +138,7 @@ class DocumentParser extends AbstractParser
     /**
      * Registers a single custom directive name.
      *
-     * @param  string  $name The directive name.
+     * @param  string  $name  The directive name.
      */
     public function registerCustomDirective(string $name): void
     {
@@ -172,15 +174,22 @@ class DocumentParser extends AbstractParser
         return $this;
     }
 
+    public function ignoreDirectives(array $directives): DocumentParser
+    {
+        $this->ignoreDirectives = $directives;
+
+        return $this;
+    }
+
     /**
      * Retrieves a list of directive names supported by the parser instance.
      */
     public function getDirectiveNames(): array
     {
-        return array_merge(
+        return array_diff(array_merge(
             $this->coreDirectives,
             $this->customDirectives
-        );
+        ), $this->ignoreDirectives);
     }
 
     /**
@@ -599,7 +608,7 @@ class DocumentParser extends AbstractParser
     /**
      * Parses the input document and returns an array of nodes.
      *
-     * @param  string  $document The input document.
+     * @param  string  $document  The input document.
      * @return AbstractNode[]
      */
     public function parse(string $document): array

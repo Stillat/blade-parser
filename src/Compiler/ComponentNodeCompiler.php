@@ -148,7 +148,13 @@ class ComponentNodeCompiler
         $compiler = new Compiler(new DocumentParser());
         $compiler->setCompilationTarget(CompilationTarget::ComponentParameter);
 
-        return $compiler->compileString($node->value);
+        $result = $compiler->compileString($node->value);
+
+        if ($node->type == ParameterType::InterpolatedValue && Str::startsWith($node->value, '{{') && Str::endsWith($node->value, '}}')) {
+            $result = "'".$result."'";
+        }
+
+        return $result;
     }
 
     protected function toAttributeArray(ComponentNode $component): array

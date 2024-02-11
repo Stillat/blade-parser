@@ -10,7 +10,7 @@ class DirectiveClosingAnalyzer
     /**
      * Analyzes the provided node to determine if it could be a closing directive.
      *
-     * @param  DirectiveNode  $node The node.
+     * @param  DirectiveNode  $node  The node.
      */
     public static function analyze(DirectiveNode $node): void
     {

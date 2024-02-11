@@ -12,8 +12,8 @@ trait ManagesTextExtraction
     /**
      * Returns the original document text between two character offsets.
      *
-     * @param  int  $startOffset The start offset.
-     * @param  int  $endOffset The end offset.
+     * @param  int  $startOffset  The start offset.
+     * @param  int  $endOffset  The end offset.
      */
     public function getText(int $startOffset, int $endOffset): string
     {
@@ -35,7 +35,7 @@ trait ManagesTextExtraction
     /**
      * Retrieves the inner document text between a node pair.
      *
-     * @param  DirectiveNode|ComponentNode  $node The node.
+     * @param  DirectiveNode|ComponentNode  $node  The node.
      */
     public function getPairedNodeInnerDocumentText(DirectiveNode|ComponentNode $node): string
     {
@@ -49,7 +49,7 @@ trait ManagesTextExtraction
     /**
      * Retrieves the outer document text for a given node pair.
      *
-     * @param  DirectiveNode|ComponentNode  $node The node.
+     * @param  DirectiveNode|ComponentNode  $node  The node.
      */
     public function getPairedNodeOuterDocumentText(DirectiveNode|ComponentNode $node): string
     {
@@ -77,7 +77,7 @@ trait ManagesTextExtraction
     /**
      * Retrieves the line number for the provided character offset.
      *
-     * @param  int  $offset The character offset.
+     * @param  int  $offset  The character offset.
      */
     public function getLineNumberFromOffset(int $offset): int
     {
@@ -87,7 +87,7 @@ trait ManagesTextExtraction
     /**
      * Returns the column number for the provided character offset.
      *
-     * @param  int  $offset The character offset.
+     * @param  int  $offset  The character offset.
      */
     public function getColumnNumberFromOffset(int $offset): int
     {
@@ -117,8 +117,8 @@ trait ManagesTextExtraction
     /**
      * Retrieves a word from the source document at the provided character offset.
      *
-     * @param  int  $offset The character offset.
-     * @param  array  $chars A list of characters that won't break a word.
+     * @param  int  $offset  The character offset.
+     * @param  array  $chars  A list of characters that won't break a word.
      */
     public function getWordAtOffset(int $offset, array $chars = ['-']): ?string
     {
@@ -179,8 +179,8 @@ trait ManagesTextExtraction
     /**
      * Returns the closest word character offset to the left of the provided character offset.
      *
-     * @param  int  $offset The character offset.
-     * @param  array  $chars A list of characters that won't break a word.
+     * @param  int  $offset  The character offset.
+     * @param  array  $chars  A list of characters that won't break a word.
      */
     public function getNextWordPositionLeftAtOffset(int $offset, array $chars = ['-']): ?int
     {
@@ -218,8 +218,8 @@ trait ManagesTextExtraction
     /**
      * Retrieves the nearest word character offset to the right of the provided character offset.
      *
-     * @param  int  $offset The character offset.
-     * @param  array  $chars A list of characters that won't break a word.
+     * @param  int  $offset  The character offset.
+     * @param  array  $chars  A list of characters that won't break a word.
      */
     public function getNextWordPositionRightAtOffset(int $offset, array $chars = ['-']): ?int
     {
@@ -257,8 +257,8 @@ trait ManagesTextExtraction
     /**
      * Retrieves the word to the left of the provided offset, ignoring the word at the provided offset.
      *
-     * @param  int  $offset The character offset.
-     * @param  array  $chars A list of characters that won't break a word.
+     * @param  int  $offset  The character offset.
+     * @param  array  $chars  A list of characters that won't break a word.
      */
     public function getWordLeftAtOffset(int $offset, array $chars = ['-']): ?string
     {
@@ -274,8 +274,8 @@ trait ManagesTextExtraction
     /**
      * Retrieves the word to the right of the provided offset, ignoring the word at the provided offset.
      *
-     * @param  int  $offset The character offset.
-     * @param  array  $chars A list of characters that won't break a word.
+     * @param  int  $offset  The character offset.
+     * @param  array  $chars  A list of characters that won't break a word.
      */
     public function getWordRightAtOffset(int $offset, array $chars = ['-']): ?string
     {
@@ -294,8 +294,8 @@ trait ManagesTextExtraction
      * The keys of the returned array will correspond
      * to the line number the text was extracted from.
      *
-     * @param  int  $lineNumber The target line number.
-     * @param  int  $radius The number of desired lines surrounding the target line number.
+     * @param  int  $lineNumber  The target line number.
+     * @param  int  $radius  The number of desired lines surrounding the target line number.
      * @return string[]
      */
     public function getLineExcerpt(int $lineNumber, int $radius = 2): array
