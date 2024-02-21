@@ -43,7 +43,7 @@ class IncompleteDocumentsTest extends ParserTestCase
         $this->assertSame($template, (string) $doc);
     }
 
-    public function charSplitWithVerbatim()
+    public static function charSplitWithVerbatim()
     {
         $template = <<<'EOT'
 start @verbatim
@@ -64,7 +64,7 @@ EOT;
         return DocumentSplitter::splitDocumentOnChar($template);
     }
 
-    public function splitWithVerbatim()
+    public static function splitWithVerbatim()
     {
         $template = <<<'EOT'
 start @verbatim start
@@ -115,7 +115,7 @@ EOT;
         return DocumentSplitter::splitDocumentOnNewLines($template);
     }
 
-    public function splitWelcomeView()
+    public static function splitWelcomeView()
     {
         $template = <<<'EOT'
 <!DOCTYPE html>

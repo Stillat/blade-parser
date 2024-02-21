@@ -36,7 +36,7 @@ class RequiredArgumentsTest extends ParserTestCase
         $this->assertCount(0, $results);
     }
 
-    public function directiveNames()
+    public static function directiveNames()
     {
         return collect(CoreDirectiveRetriever::instance()->getDirectivesRequiringArguments())->map(fn ($s) => [$s])->values()->all();
     }

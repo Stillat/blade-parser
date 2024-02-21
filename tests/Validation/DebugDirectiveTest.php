@@ -40,14 +40,14 @@ class DebugDirectiveTest extends ParserTestCase
         $this->assertCount(0, $results);
     }
 
-    public function debugDirectives()
+    public static function debugDirectives()
     {
         return collect(CoreDirectiveRetriever::instance()->getDebugDirectiveNames())->map(function ($directive) {
             return [$directive];
         })->values()->all();
     }
 
-    public function nonDebugDirectives()
+    public static function nonDebugDirectives()
     {
         $debug = CoreDirectiveRetriever::instance()->getDebugDirectiveNames();
 

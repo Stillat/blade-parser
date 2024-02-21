@@ -17,7 +17,7 @@ class CoreDirectivesWithoutArgumentsTest extends ParserTestCase
         $this->compiler->compileString($directive);
     }
 
-    public function coreDirectives(): array
+    public static function coreDirectives(): array
     {
         return collect(array_diff(CoreDirectiveRetriever::instance()->getDirectiveNames(), ['foreach', 'forelse', 'endverbatim', 'use']))->map(function ($name) {
             return ['@'.$name];
