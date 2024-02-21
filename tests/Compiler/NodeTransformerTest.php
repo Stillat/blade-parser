@@ -95,7 +95,7 @@ BLADE;
         $this->assertSame($expected, $this->transform($blade, false));
     }
 
-    public function templateProvider(): array
+    public static function templateProvider(): array
     {
         $templates = [
             '@if (true) something @endif',

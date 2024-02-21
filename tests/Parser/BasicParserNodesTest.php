@@ -620,7 +620,7 @@ EOT;
         $this->assertSame($template, (string) $doc);
     }
 
-    public function coreDirectives()
+    public static function coreDirectives()
     {
         return collect(CoreDirectiveRetriever::instance()->getNonStructureDirectiveNames())->map(function ($name) {
             return [$name];

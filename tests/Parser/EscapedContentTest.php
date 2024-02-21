@@ -86,7 +86,7 @@ EOT;
         $this->assertSame($output, $this->compiler->compileString($template));
     }
 
-    public function coreDirectiveEscapedContent()
+    public static function coreDirectiveEscapedContent()
     {
         return collect(CoreDirectiveRetriever::instance()->getDirectiveNames())->map(function ($name) {
             return ['@@'.$name, '@'.$name];

@@ -35,7 +35,7 @@ class NoArgumentsTest extends ParserTestCase
         $this->assertCount(0, $results);
     }
 
-    public function directiveNames()
+    public static function directiveNames()
     {
         return collect(CoreDirectiveRetriever::instance()->getDirectivesThatMustNotHaveArguments())->filter(fn ($s) => $s != 'verbatim' && $s != 'endverbatim')->map(fn ($s) => [$s])->values()->all();
     }

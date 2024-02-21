@@ -46,7 +46,7 @@ class InconsistentDirectiveCasingTest extends ParserTestCase
         $this->assertCount(0, $results);
     }
 
-    public function directiveNames()
+    public static function directiveNames()
     {
         return collect(CoreDirectiveRetriever::instance()->getDirectiveNames())->map(function ($s) {
             return [$s];
