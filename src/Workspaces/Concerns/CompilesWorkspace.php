@@ -23,6 +23,13 @@ trait CompilesWorkspace
     protected array $compiledFiles = [];
 
     /**
+     * A list of all directories created by the workspace compiler.
+     *
+     * @var string[]
+     */
+    protected array $createdDirs = [];
+
+    /**
      * The path to the last temporary directory used.
      *
      * This is set by the `compile(string $outputDirectory)`
@@ -81,6 +88,10 @@ trait CompilesWorkspace
             @unlink($compiledPath);
         }
 
+        foreach ($this->createdDirs as $dir) {
+            @rmdir($dir);
+        }
+
         return $this;
     }
 
@@ -137,7 +148,6 @@ trait CompilesWorkspace
     {
         $outputDirectory = Paths::normalizePathWithTrailingSlash($outputDirectory);
         $this->lastTempDirectory = $outputDirectory;
-        $createdDirs = [];
 
         try {
             /** @var Document $doc */
@@ -153,11 +163,11 @@ trait CompilesWorkspace
                 };
                 $result = $doc->compile($options);
 
-                $dir = Paths::normalizePathWithTrailingSlash(Str::afterLast(Paths::normalizePath($compilePath), '/'));
-                $createdDirs[] = $dir;
+                $dir = Paths::normalizePathWithTrailingSlash(dirname(Paths::normalizePath($compilePath)));
 
                 if (! file_exists($dir)) {
                     @mkdir($dir, 0755, true);
+                    $this->createdDirs[] = $dir;
                 }
 
                 file_put_contents($compilePath, $result);
@@ -165,9 +175,6 @@ trait CompilesWorkspace
                 $this->compiledDocuments[$compilePath] = $doc;
             }
         } catch (Exception $e) {
-            foreach ($createdDirs as $dir) {
-                @rmdir($dir);
-            }
             $this->removeCompiledFiles();
 
             throw $e;
