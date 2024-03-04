@@ -153,7 +153,7 @@ trait CompilesWorkspace
                 };
                 $result = $doc->compile($options);
 
-                $dir = Paths::normalizePathWithTrailingSlash(Str::afterLast(Paths::normalizePath($compilePath), '/'));
+                $dir = Paths::normalizePathWithTrailingSlash(dirname(Paths::normalizePath($compilePath)));
                 $createdDirs[] = $dir;
 
                 if (! file_exists($dir)) {
