@@ -154,10 +154,10 @@ trait CompilesWorkspace
                 $result = $doc->compile($options);
 
                 $dir = Paths::normalizePathWithTrailingSlash(dirname(Paths::normalizePath($compilePath)));
-                $createdDirs[] = $dir;
 
                 if (! file_exists($dir)) {
                     @mkdir($dir, 0755, true);
+                    $createdDirs[] = $dir;
                 }
 
                 file_put_contents($compilePath, $result);
