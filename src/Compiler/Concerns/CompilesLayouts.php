@@ -45,7 +45,7 @@ trait CompilesLayouts
         return "<?php \$__env->startSection{$this->getDirectiveArgs($node)}; ?>";
     }
 
-    #[CompilesDirective(StructureType::Terminator, ArgumentRequirement::Required)]
+    #[CompilesDirective(StructureType::Terminator, ArgumentRequirement::NoArguments)]
     protected function compileParent(): string
     {
         $escapedLastSection = strtr($this->lastSection, ['\\' => '\\\\', "'" => "\\'"]);
