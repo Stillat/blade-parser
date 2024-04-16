@@ -14,6 +14,21 @@ class EchoNode extends AbstractNode
      */
     public EchoType $type = EchoType::Echo;
 
+    public function isRaw(): bool
+    {
+        return $this->type === EchoType::RawEcho;
+    }
+
+    public function isTriple(): bool
+    {
+        return $this->type === EchoType::TripleEcho;
+    }
+
+    public function isRegular(): bool
+    {
+        return $this->type === EchoType::Echo;
+    }
+
     private function getPrefix(): string
     {
         return match ($this->type) {
