@@ -52,7 +52,6 @@ jobs:
           timeout_minutes: 5
           max_attempts: 5
           command: |
-            composer require "illuminate/contracts:${{ matrix.laravel }}" --dev --no-interaction --no-update
             composer update --${{ matrix.stability }} --prefer-dist --no-interaction
 
       - name: List Installed Dependencies
