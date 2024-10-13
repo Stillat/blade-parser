@@ -4,7 +4,7 @@ uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
 use Stillat\BladeParser\Compiler\CompilerServices\LoopVariablesExtractor;
 
 beforeEach(function () {
-    $this->extractor = new LoopVariablesExtractor();
+    $this->extractor = new LoopVariablesExtractor;
 });
 
 test('basic loop variable extraction', function () {

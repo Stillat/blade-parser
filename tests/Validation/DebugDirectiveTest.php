@@ -5,7 +5,6 @@ use Stillat\BladeParser\Compiler\CompilerServices\CoreDirectiveRetriever;
 use Stillat\BladeParser\Document\Document;
 use Stillat\BladeParser\Validation\Validators\DebugDirectiveValidator;
 
-
 test('debug directive validator detects issues', function (string $directive) {
     $template = "Lead @{$directive}(\$arg) Trail";
 

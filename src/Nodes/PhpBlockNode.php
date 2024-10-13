@@ -43,7 +43,7 @@ class PhpBlockNode extends AbstractNode
 
     public function clone(): PhpBlockNode
     {
-        $phpBlock = new PhpBlockNode();
+        $phpBlock = new PhpBlockNode;
         $this->copyBasicDetailsTo($phpBlock);
         $phpBlock->originalTrailingWhitespace = $this->originalTrailingWhitespace;
         $phpBlock->originalLeadingWhitespace = $this->originalLeadingWhitespace;

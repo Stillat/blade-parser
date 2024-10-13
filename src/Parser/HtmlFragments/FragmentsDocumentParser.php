@@ -37,7 +37,7 @@ class FragmentsDocumentParser extends BaseFragmentParser
 
     public function __construct()
     {
-        $this->attributeParser = new FragmentAttributeParser();
+        $this->attributeParser = new FragmentAttributeParser;
     }
 
     /**
@@ -98,7 +98,7 @@ class FragmentsDocumentParser extends BaseFragmentParser
             return;
         }
 
-        $fragment = new HtmlFragment();
+        $fragment = new HtmlFragment;
         $fragment->position = $this->makePosition($index, $this->position);
         $fragment->content = $this->buffer;
         $fragment->isSelfClosing = str($this->buffer)->endsWith('/>');
@@ -139,7 +139,7 @@ class FragmentsDocumentParser extends BaseFragmentParser
 
         // Create a Fragment representing the name.
         if (str($fragment->tagName)->trim()->length > 0) {
-            $fragment->name = new Fragment();
+            $fragment->name = new Fragment;
             $fragment->name->content = $fragment->tagName;
             $fragment->name->position->startOffset = $fragment->position->startOffset + $documentContentStartOffset;
 
@@ -151,7 +151,7 @@ class FragmentsDocumentParser extends BaseFragmentParser
         $innerContentStart = mb_strpos($fragment->documentContent, ' ');
 
         if ($innerContentStart !== false) {
-            $innerContentFragment = new Fragment();
+            $innerContentFragment = new Fragment;
             $innerContentFragment->content = str($fragment->documentContent)->substr($innerContentStart)->trim();
 
             // Calculate the start and end positions of the
@@ -380,7 +380,7 @@ class FragmentsDocumentParser extends BaseFragmentParser
 
     private function makePosition(int $startOffset, int $endOffset): Position
     {
-        $position = new Position();
+        $position = new Position;
         $position->startOffset = $startOffset;
         $position->endOffset = $endOffset;
 

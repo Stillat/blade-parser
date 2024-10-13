@@ -46,7 +46,7 @@ class LiteralNode extends AbstractNode
 
     public function clone(): LiteralNode
     {
-        $literal = new LiteralNode();
+        $literal = new LiteralNode;
         $this->copyBasicDetailsTo($literal);
 
         $literal->originalLeadingWhitespace = $this->originalLeadingWhitespace;

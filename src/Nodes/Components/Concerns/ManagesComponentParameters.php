@@ -19,7 +19,7 @@ trait ManagesComponentParameters
         $param = ParameterFactory::parameterFromText($parameterContent);
 
         if ($param == null) {
-            throw new InvalidParameterException();
+            throw new InvalidParameterException;
         }
 
         $this->addParameter($param);

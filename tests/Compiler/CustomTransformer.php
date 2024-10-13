@@ -7,7 +7,7 @@ use Stillat\BladeParser\Nodes\DirectiveNode;
 
 class CustomTransformer extends NodeTransformer
 {
-    function transformNode($node): ?string
+    public function transformNode($node): ?string
     {
         if (! $node instanceof DirectiveNode || $node->content != 'custom') {
             return null;

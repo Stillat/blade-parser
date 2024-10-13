@@ -4,7 +4,6 @@ uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
 use Stillat\BladeParser\Document\Document;
 use Stillat\BladeParser\Validation\Validators\ComponentParameterNameSpacingValidator;
 
-
 test('parameter spacing is detected', function () {
     $template = <<<'BLADE'
 <x-alert message = "The message" />

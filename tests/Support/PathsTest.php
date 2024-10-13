@@ -2,7 +2,6 @@
 
 use Stillat\BladeParser\Support\Utilities\Paths;
 
-
 test('null paths return null', function () {
     expect(Paths::normalizePath(null))->toBeNull();
     expect(Paths::normalizePathWithTrailingSlash(null))->toBeNull();

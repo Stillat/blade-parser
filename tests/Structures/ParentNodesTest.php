@@ -100,4 +100,3 @@ EOT;
     expect($n1->content)->toBe('if');
     $this->assertStringContainsString('Literal Final', $n2->content);
 });
-

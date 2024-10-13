@@ -4,7 +4,6 @@ uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
 use Stillat\BladeParser\Document\Document;
 use Stillat\BladeParser\Validation\Validators\DirectiveSpacingValidator;
 
-
 test('directive spacing validator detects issues', function () {
     $template = 'class="@if @endif"';
     $results = Document::fromText($template)

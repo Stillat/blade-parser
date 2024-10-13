@@ -147,13 +147,13 @@ class Compiler
 
     public function __construct(DocumentParser $parser)
     {
-        $this->compilationBuffer = new StringBuffer();
-        $this->loopExtractor = new LoopVariablesExtractor();
+        $this->compilationBuffer = new StringBuffer;
+        $this->loopExtractor = new LoopVariablesExtractor;
         $this->parser = $parser;
-        $this->rawTransformer = new RawTransformer();
+        $this->rawTransformer = new RawTransformer;
         $this->componentTagCompiler = new ComponentTagCompiler(
-            new ComponentNodeCompiler(),
-            new DocumentParser()
+            new ComponentNodeCompiler,
+            new DocumentParser
         );
     }
 

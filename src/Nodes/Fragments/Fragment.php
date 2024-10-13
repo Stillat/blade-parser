@@ -11,6 +11,6 @@ class Fragment extends BaseNode
     {
         parent::__construct();
 
-        $this->position = new Position();
+        $this->position = new Position;
     }
 }

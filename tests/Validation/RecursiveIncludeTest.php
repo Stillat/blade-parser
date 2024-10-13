@@ -4,7 +4,6 @@ uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
 use Stillat\BladeParser\Document\Document;
 use Stillat\BladeParser\Validation\Validators\RecursiveIncludeValidator;
 
-
 test('recursive include detects issues', function () {
     $template = <<<'BLADE'
 @include('/tmp/file')

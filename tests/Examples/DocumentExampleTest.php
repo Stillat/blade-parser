@@ -2,16 +2,15 @@
 
 uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
 use Stillat\BladeParser\Document\Document;
-use \Stillat\BladeParser\Validation\AbstractNodeValidator;
 use Stillat\BladeParser\Errors\ConstructContext;
 use Stillat\BladeParser\Errors\ErrorType;
 use Stillat\BladeParser\Nodes\AbstractNode;
 use Stillat\BladeParser\Nodes\DirectiveNode;
 use Stillat\BladeParser\Nodes\EchoNode;
 use Stillat\BladeParser\Nodes\LiteralNode;
+use Stillat\BladeParser\Validation\AbstractNodeValidator;
 use Stillat\BladeParser\Validation\ValidationResult;
 use Stillat\BladeParser\Validation\Validators\InconsistentIndentationLevelValidator;
-
 
 test('remove node', function () {
     $template = <<<'BLADE'
@@ -717,7 +716,7 @@ BLADE;
 test('with validator', function () {
     $validator = (new class extends AbstractNodeValidator
     {
-        function validate(AbstractNode $node): ValidationResult|array|null
+        public function validate(AbstractNode $node): ValidationResult|array|null
         {
             return null;
         }
@@ -747,7 +746,7 @@ test('validate', function () {
 BLADE;
     $doc = Document::fromText($template);
 
-    $doc->withValidator(new InconsistentIndentationLevelValidator());
+    $doc->withValidator(new InconsistentIndentationLevelValidator);
     $doc->validate();
 
     // Returns:

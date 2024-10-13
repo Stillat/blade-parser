@@ -4,7 +4,6 @@ uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
 use Stillat\BladeParser\Document\Document;
 use Stillat\BladeParser\Validation\Validators\InconsistentIndentationLevelValidator;
 
-
 test('inconsistent indentation level detects issues', function () {
     $template = <<<'BLADE'
 @if ($this)

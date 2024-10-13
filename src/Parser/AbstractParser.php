@@ -110,7 +110,7 @@ abstract class AbstractParser
 
     protected function makePosition(int $startOffset, int $endOffset): Position
     {
-        $position = new Position();
+        $position = new Position;
         $position->startOffset = $startOffset;
         $position->endOffset = $endOffset;
 
@@ -223,7 +223,7 @@ abstract class AbstractParser
 
     protected function abandonParse(ErrorType $reason): ScanResult
     {
-        $result = new ScanResult();
+        $result = new ScanResult;
         $result->abandonReason = $reason;
         $result->didAbandon = true;
         $result->abandonedOffset = $this->startLocation + $this->currentIndex;
@@ -432,7 +432,7 @@ abstract class AbstractParser
             if ($this->cur == self::C_ForwardSlash && $this->next == self::C_RightAngleBracket) {
                 $this->advance();
 
-                $scanResult = new ScanResult();
+                $scanResult = new ScanResult;
                 $scanResult->offset = $location;
                 $scanResult->content = implode('', $this->currentContent);
 
@@ -440,7 +440,7 @@ abstract class AbstractParser
             }
 
             if ($this->cur == self::C_RightAngleBracket) {
-                $scanResult = new ScanResult();
+                $scanResult = new ScanResult;
                 $scanResult->offset = $location;
                 $scanResult->content = implode('', $this->currentContent);
 
@@ -467,7 +467,7 @@ abstract class AbstractParser
                 $this->advance();
                 $this->advance();
 
-                $scanResult = new ScanResult();
+                $scanResult = new ScanResult;
                 $scanResult->offset = $location;
                 $scanResult->content = implode('', $this->currentContent);
 
@@ -494,7 +494,7 @@ abstract class AbstractParser
             $this->currentContent[] = $this->cur;
 
             if ($this->cur == self::C_RightAngleBracket && $this->prev == self::C_QuestionMark) {
-                $scanResult = new ScanResult();
+                $scanResult = new ScanResult;
                 $scanResult->offset = $location;
                 $scanResult->content = implode('', $this->currentContent);
 
@@ -525,7 +525,7 @@ abstract class AbstractParser
             $this->currentContent[] = $this->cur;
 
             if ($this->cur == self::C_RightCurlyBracket && $this->prev == self::C_RightCurlyBracket) {
-                $scanResult = new ScanResult();
+                $scanResult = new ScanResult;
                 $scanResult->offset = $location;
                 $scanResult->content = implode('', $this->currentContent);
 
@@ -558,7 +558,7 @@ abstract class AbstractParser
             if ($this->cur == self::C_RightCurlyBracket && $this->prev == self::C_RightCurlyBracket && $this->next == self::C_RightCurlyBracket) {
                 $this->advance();
 
-                $scanResult = new ScanResult();
+                $scanResult = new ScanResult;
                 $scanResult->offset = $location;
                 $scanResult->content = implode('', $this->currentContent);
 
@@ -591,7 +591,7 @@ abstract class AbstractParser
             if ($this->cur == self::C_ExclamationMark && $this->prev == self::C_ExclamationMark && $this->next == self::C_RightCurlyBracket) {
                 $this->advance();
 
-                $scanResult = new ScanResult();
+                $scanResult = new ScanResult;
                 $scanResult->offset = $location;
                 $scanResult->content = implode('', $this->currentContent);
 
@@ -639,7 +639,7 @@ abstract class AbstractParser
                 $currentStack -= 1;
 
                 if ($currentStack <= 0) {
-                    $result = new ScanResult();
+                    $result = new ScanResult;
                     $result->content = implode('', $this->currentContent);
                     $result->offset = $location;
 
@@ -662,7 +662,7 @@ abstract class AbstractParser
                 continue;
             }
 
-            $result = new ScanResult();
+            $result = new ScanResult;
             $result->content = $cur;
             $result->offset = $this->startIndex + $i;
 
@@ -687,7 +687,7 @@ abstract class AbstractParser
                 continue;
             }
 
-            $result = new ScanResult();
+            $result = new ScanResult;
             $result->content = $this->cur;
             $result->offset = $this->startIndex + $this->currentIndex;
 

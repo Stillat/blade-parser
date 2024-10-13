@@ -19,7 +19,5 @@ class DocumentCompilerOptions
         public array $appendCallbacks = [],
         public array $customTagCompilers = [],
         public bool $compileCoreComponentTags = true,
-        public array $ignoreDirectives = [])
-    {
-    }
+        public array $ignoreDirectives = []) {}
 }

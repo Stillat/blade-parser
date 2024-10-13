@@ -102,7 +102,7 @@ class ParameterNode extends AbstractNode
 
     public function clone(): ParameterNode
     {
-        $parameter = new ParameterNode();
+        $parameter = new ParameterNode;
         $this->copyBasicDetailsTo($parameter);
 
         $parameter->nameNode = $this->nameNode?->clone();

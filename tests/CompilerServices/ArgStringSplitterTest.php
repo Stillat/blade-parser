@@ -4,7 +4,7 @@ uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
 use Stillat\BladeParser\Compiler\CompilerServices\ArgStringSplitter;
 
 beforeEach(function () {
-    $this->splitter = new ArgStringSplitter();
+    $this->splitter = new ArgStringSplitter;
 });
 
 test('argument string splitting', function () {

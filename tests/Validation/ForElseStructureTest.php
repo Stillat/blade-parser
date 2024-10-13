@@ -4,7 +4,6 @@ uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
 use Stillat\BladeParser\Document\Document;
 use Stillat\BladeParser\Validation\Validators\ForElseStructureValidator;
 
-
 test('for else validator detects too many empty directives', function () {
     $template = <<<'BLADE'
 @forelse ($users as $user)

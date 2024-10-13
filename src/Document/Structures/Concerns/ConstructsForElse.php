@@ -18,7 +18,7 @@ trait ConstructsForElse
                 continue;
             }
 
-            $forElse = new ForElse();
+            $forElse = new ForElse;
 
             $forElse->constructedFrom = $node;
             $node->isStructure = true;

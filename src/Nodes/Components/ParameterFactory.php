@@ -13,7 +13,7 @@ class ParameterFactory
      */
     public static function fromText(string $parameterContent): array
     {
-        $componentParser = new ComponentParser();
+        $componentParser = new ComponentParser;
 
         return $componentParser->parseOnlyParameters($parameterContent);
     }

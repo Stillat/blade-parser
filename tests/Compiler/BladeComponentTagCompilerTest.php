@@ -3,16 +3,16 @@
 uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
 
 use Illuminate\Container\Container;
-use \Stillat\BladeParser\Tests\Compiler\TestProfileComponent;
-use \Illuminate\View\Component;
-use \Stillat\BladeParser\Tests\Compiler\TestAlertComponent;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
+use Illuminate\View\Component;
 use Illuminate\View\ComponentAttributeBag;
+use Mockery as m;
 use Stillat\BladeParser\Compiler\CompilerServices\StringUtilities;
 use Stillat\BladeParser\Contracts\CustomComponentTagCompiler;
 use Stillat\BladeParser\Nodes\Components\ComponentNode;
-use Mockery as m;
+use Stillat\BladeParser\Tests\Compiler\TestAlertComponent;
+use Stillat\BladeParser\Tests\Compiler\TestProfileComponent;
 
 afterEach(function () {
     m::close();
@@ -797,7 +797,7 @@ test('custom components can be compiled with acustom compiler', function () {
 
     $compiler->registerCustomCompiler('custom', (new class implements CustomComponentTagCompiler
     {
-        function compile(ComponentNode $component): string
+        public function compile(ComponentNode $component): string
         {
             if ($component->isClosingTag && ! $component->isSelfClosing) {
                 return 'Just a closing tag.';
@@ -835,7 +835,7 @@ test('custom components can be compiled and core components ignored', function (
 
     $compiler->registerCustomCompiler('custom', (new class implements CustomComponentTagCompiler
     {
-        function compile(ComponentNode $component): ?string
+        public function compile(ComponentNode $component): ?string
         {
             if ($component->isClosingTag && ! $component->isSelfClosing) {
                 return 'Just a closing tag.';
@@ -869,7 +869,7 @@ test('returning null from a custom compiler results in default compiler behavior
 
     $compiler->registerCustomCompiler('custom', (new class implements CustomComponentTagCompiler
     {
-        function compile(ComponentNode $component): ?string
+        public function compile(ComponentNode $component): ?string
         {
             $useDefault = $component->getParameter('use-default')->value;
 

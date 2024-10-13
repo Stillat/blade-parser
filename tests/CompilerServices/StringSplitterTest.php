@@ -4,7 +4,7 @@ uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
 use Stillat\BladeParser\Compiler\CompilerServices\StringSplitter;
 
 beforeEach(function () {
-    $this->splitter = new StringSplitter();
+    $this->splitter = new StringSplitter;
 });
 
 test('basic string splitting', function () {

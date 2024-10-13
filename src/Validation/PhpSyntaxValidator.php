@@ -28,7 +28,7 @@ class PhpSyntaxValidator
 
     public function __construct()
     {
-        $this->compilerOptions = new DocumentCompilerOptions();
+        $this->compilerOptions = new DocumentCompilerOptions;
         $this->compilerOptions->throwExceptionOnUnknownComponentClass = false;
         $this->compilerOptions->ignoreDirectives = ValidatorServiceProvider::getIgnoreDirectives();
         $this->compilerOptions->appendCallbacks[] = function (AppendState $state) {
@@ -55,7 +55,7 @@ class PhpSyntaxValidator
     public function checkDocument(Document $document, ?int $originalLine = null): PhpSyntaxValidationResult
     {
         $this->resetState();
-        $syntaxResult = new PhpSyntaxValidationResult();
+        $syntaxResult = new PhpSyntaxValidationResult;
 
         try {
             $compiled = $document->compile($this->compilerOptions);

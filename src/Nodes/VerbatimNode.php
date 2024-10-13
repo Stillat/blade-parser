@@ -43,7 +43,7 @@ class VerbatimNode extends AbstractNode
 
     public function clone(): VerbatimNode
     {
-        $verbatim = new VerbatimNode();
+        $verbatim = new VerbatimNode;
         $this->copyBasicDetailsTo($verbatim);
         $verbatim->originalTrailingWhitespace = $this->originalTrailingWhitespace;
         $verbatim->originalLeadingWhitespace = $this->originalLeadingWhitespace;

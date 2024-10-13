@@ -44,7 +44,7 @@ class ValidatorServiceProvider extends ServiceProvider
         foreach ($validators as $validator) {
             $this->app->singleton($validator, function () use ($validator, $availableConfig, $globalIgnoreDirectives, $globalCustomDirectives) {
                 /** @var AbstractNodeValidator $instance */
-                $instance = new $validator();
+                $instance = new $validator;
                 $options = [];
 
                 if (array_key_exists($validator, $availableConfig)) {

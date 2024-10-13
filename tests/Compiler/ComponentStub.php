@@ -6,7 +6,7 @@ use Illuminate\View\Component;
 
 class ComponentStub extends Component
 {
-    function render()
+    public function render()
     {
         return '';
     }

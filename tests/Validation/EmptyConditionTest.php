@@ -4,7 +4,6 @@ uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
 use Stillat\BladeParser\Document\Document;
 use Stillat\BladeParser\Validation\Validators\EmptyConditionValidator;
 
-
 test('empty condition validator detects issues', function () {
     $template = <<<'BLADE'
 @if 

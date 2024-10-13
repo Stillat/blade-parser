@@ -26,7 +26,5 @@ class BaseStructureNode extends BaseNode
         return $this->constructedFrom->getNodes();
     }
 
-    public function resolveStructures(): void
-    {
-    }
+    public function resolveStructures(): void {}
 }

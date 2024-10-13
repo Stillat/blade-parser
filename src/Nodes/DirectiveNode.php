@@ -279,7 +279,7 @@ class DirectiveNode extends AbstractNode
 
     public function clone(): DirectiveNode
     {
-        $directive = new DirectiveNode();
+        $directive = new DirectiveNode;
         $this->copyBasicDetailsTo($directive);
 
         $directive->isClosingDirective = $this->isClosingDirective;

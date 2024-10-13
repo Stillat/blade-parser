@@ -4,7 +4,6 @@ uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
 use Stillat\BladeParser\Document\Document;
 use Stillat\BladeParser\Validation\Validators\SwitchValidator;
 
-
 test('switch validator detects no case statements', function () {
     $template = <<<'BLADE'
 @switch ($var)

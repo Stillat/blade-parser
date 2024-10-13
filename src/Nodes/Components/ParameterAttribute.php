@@ -10,7 +10,7 @@ class ParameterAttribute extends BaseNode
 
     public function clone(): ParameterAttribute
     {
-        $attribute = new ParameterAttribute();
+        $attribute = new ParameterAttribute;
         $this->copyBasicDetailsTo($attribute);
 
         $attribute->content = $this->content;

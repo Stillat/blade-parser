@@ -34,7 +34,7 @@ test('handler logic works correctly', function ($blade) {
     Blade::stringable(Fluent::class, function ($object) {
         throw new Exception('The fluent object has been successfully handled!');
     });
-    $exampleObject = new Fluent();
+    $exampleObject = new Fluent;
 
     eval(Str::of($this->compiler->compileString($blade))->remove(['<?php', '?>']));
 })->with('handlerLogicDataProvider');

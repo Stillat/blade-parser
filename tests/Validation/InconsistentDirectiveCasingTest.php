@@ -1,10 +1,8 @@
 <?php
 
 uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
-use Stillat\BladeParser\Compiler\CompilerServices\CoreDirectiveRetriever;
 use Stillat\BladeParser\Document\Document;
 use Stillat\BladeParser\Validation\Validators\InconsistentDirectiveCasingValidator;
-
 
 test('inconsistent directive casing validator detects issues', function ($directiveName) {
     if ($directiveName == 'endverbatim') {

@@ -1,11 +1,5 @@
 <?php
 
-use Stillat\BladeParser\Document\Document;
-use \Stillat\BladeParser\Compiler\Transformers\NodeTransformer;
-use \Stillat\BladeParser\Tests\Compiler\CustomTransformer;
-use Stillat\BladeParser\Document\DocumentOptions;
-use Stillat\BladeParser\Nodes\DirectiveNode;
-
 test('node transformer can transform simple nodes', function () {
     $blade = <<<'BLADE'
 The beginning.
@@ -146,4 +140,3 @@ empty
 
     return $templatesToTest;
 }
-

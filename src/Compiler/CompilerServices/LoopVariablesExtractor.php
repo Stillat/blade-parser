@@ -11,7 +11,7 @@ class LoopVariablesExtractor
 
     public function __construct()
     {
-        $this->splitter = new StringSplitter();
+        $this->splitter = new StringSplitter;
     }
 
     /**
@@ -21,7 +21,7 @@ class LoopVariablesExtractor
      */
     public function extractDetails(string $value): LoopVariables
     {
-        $result = new LoopVariables();
+        $result = new LoopVariables;
         $result->source = $value;
 
         $value = StringUtilities::unwrapParentheses($value);

@@ -145,7 +145,7 @@ class ComponentNodeCompiler
 
     protected function compileParameterEcho(ParameterNode $node): string
     {
-        $compiler = new Compiler(new DocumentParser());
+        $compiler = new Compiler(new DocumentParser);
         $compiler->setCompilationTarget(CompilationTarget::ComponentParameter);
 
         $result = $compiler->compileString($node->value);

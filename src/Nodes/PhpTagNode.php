@@ -70,7 +70,7 @@ class PhpTagNode extends AbstractNode
 
     public function clone(): PhpTagNode
     {
-        $phpTag = new PhpTagNode();
+        $phpTag = new PhpTagNode;
         $this->copyBasicDetailsTo($phpTag);
         $phpTag->innerContent = $this->innerContent;
         $phpTag->originalLeadingWhitespace = $this->originalLeadingWhitespace;

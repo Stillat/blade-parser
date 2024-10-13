@@ -2,8 +2,6 @@
 
 uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
 use Stillat\BladeParser\Nodes\LiteralNode;
-use Stillat\BladeParser\Workspaces\Workspace;
-
 
 beforeEach(function () {
     $this->workspace = $this->getWorkspace('two');

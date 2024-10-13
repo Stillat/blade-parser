@@ -4,7 +4,6 @@ uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
 use Stillat\BladeParser\Document\Document;
 use Stillat\BladeParser\Validation\Validators\DuplicateConditionExpressionsValidator;
 
-
 test('duplicate condition expression validator detects issues', function () {
     $template = <<<'BLADE'
 @if ($this == 'that')

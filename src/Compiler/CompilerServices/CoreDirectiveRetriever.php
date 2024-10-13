@@ -41,7 +41,7 @@ class CoreDirectiveRetriever
     public static function instance(): CoreDirectiveRetriever
     {
         if (self::$instance == null) {
-            self::$instance = new CoreDirectiveRetriever();
+            self::$instance = new CoreDirectiveRetriever;
         }
 
         return self::$instance;

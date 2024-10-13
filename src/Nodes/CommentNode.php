@@ -52,7 +52,7 @@ class CommentNode extends AbstractNode
 
     public function clone(): CommentNode
     {
-        $commentNode = new CommentNode();
+        $commentNode = new CommentNode;
         $this->copyBasicDetailsTo($commentNode);
 
         $commentNode->innerContent = $this->innerContent;

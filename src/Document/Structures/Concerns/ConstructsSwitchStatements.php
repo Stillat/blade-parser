@@ -20,7 +20,7 @@ trait ConstructsSwitchStatements
                 continue;
             }
 
-            $switchStatement = new SwitchStatement();
+            $switchStatement = new SwitchStatement;
             $switchStatement->constructedFrom = $node;
             $node->isStructure = true;
             $node->structure = $switchStatement;

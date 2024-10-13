@@ -166,7 +166,7 @@ class ComponentNode extends AbstractNode
 
     public function clone(): ComponentNode
     {
-        $component = new ComponentNode();
+        $component = new ComponentNode;
         $this->copyBasicDetailsTo($component);
 
         $component->isSelfClosing = $this->isSelfClosing;

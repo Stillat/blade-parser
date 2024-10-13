@@ -16,7 +16,7 @@ class InvalidPhpDocumentValidator extends AbstractDocumentValidator
      */
     public function validate(Document $document): ?ValidationResult
     {
-        $syntaxValidator = new PhpSyntaxValidator();
+        $syntaxValidator = new PhpSyntaxValidator;
         $result = $syntaxValidator->checkDocument($document);
         if (! $result->detectedErrors) {
             return null;

@@ -4,14 +4,13 @@ uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
 use Stillat\BladeParser\Document\Document;
 use Stillat\BladeParser\Validation\Validators\DirectiveArgumentsSpanningLinesValidator;
 
-
 test('directive argument spanning lines validator detects issues', function () {
     $template = <<<'BLADE'
 @if ($something
     == $this &&
     'this' == 'that')
 BLADE;
-    $spanLinesValidator = new DirectiveArgumentsSpanningLinesValidator();
+    $spanLinesValidator = new DirectiveArgumentsSpanningLinesValidator;
     $spanLinesValidator->setMaxLineSpan(2);
 
     $results = Document::fromText($template)
@@ -28,7 +27,7 @@ test('directive argument spanning lines validator does not detect issues', funct
     == $this &&
     'this' == 'that')
 BLADE;
-    $spanLinesValidator = new DirectiveArgumentsSpanningLinesValidator();
+    $spanLinesValidator = new DirectiveArgumentsSpanningLinesValidator;
     $spanLinesValidator->setMaxLineSpan(3);
 
     $results = Document::fromText($template)
@@ -43,7 +42,7 @@ test('directive argument spanning lines validator does not detect issues when be
 @if ($something
     'this' == 'that')
 BLADE;
-    $spanLinesValidator = new DirectiveArgumentsSpanningLinesValidator();
+    $spanLinesValidator = new DirectiveArgumentsSpanningLinesValidator;
     $spanLinesValidator->setMaxLineSpan(3);
 
     $results = Document::fromText($template)

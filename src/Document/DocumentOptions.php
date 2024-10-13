@@ -21,6 +21,5 @@ class DocumentOptions
          * @var string[] $ignoreDirectives
          */
         public array $ignoreDirectives = [],
-    ) {
-    }
+    ) {}
 }

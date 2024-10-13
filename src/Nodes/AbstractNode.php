@@ -174,9 +174,7 @@ abstract class AbstractNode extends BaseNode
         return $this->getDirectChildren();
     }
 
-    public function resolveStructures(): void
-    {
-    }
+    public function resolveStructures(): void {}
 
     public function getDirectChildren(): NodeCollection
     {

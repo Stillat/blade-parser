@@ -3,7 +3,6 @@
 namespace Stillat\BladeParser\Workspaces\Concerns;
 
 use Exception;
-use Illuminate\Support\Str;
 use Stillat\BladeParser\Compiler\AppendState;
 use Stillat\BladeParser\Contracts\PathFormatter;
 use Stillat\BladeParser\Document\Document;
@@ -129,7 +128,7 @@ trait CompilesWorkspace
             return $this->compilerOptions;
         }
 
-        $options = new DocumentCompilerOptions();
+        $options = new DocumentCompilerOptions;
         $options->throwExceptionOnUnknownComponentClass = false;
         $options->ignoreDirectives = $this->ignoreDirectives;
 

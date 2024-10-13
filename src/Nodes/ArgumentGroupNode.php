@@ -74,7 +74,7 @@ class ArgumentGroupNode extends AbstractNode
             return collect([$this->innerContent]);
         }
 
-        $results = (new StringSplitter())->split($this->innerContent);
+        $results = (new StringSplitter)->split($this->innerContent);
         $lastIndex = count($results) - 1;
 
         return collect($results)->map(function ($value, $i) use ($lastIndex) {
@@ -93,7 +93,7 @@ class ArgumentGroupNode extends AbstractNode
             return collect([$this->innerContent]);
         }
 
-        return collect((new ArgStringSplitter())->split($this->innerContent));
+        return collect((new ArgStringSplitter)->split($this->innerContent));
     }
 
     public function clone(?DirectiveNode $newOwner = null): ArgumentGroupNode

@@ -19,6 +19,6 @@ class DocumentFactory
             return $methodToCall();
         }
 
-        return new Document();
+        return new Document;
     }
 }

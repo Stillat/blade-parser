@@ -24,8 +24,8 @@ class NodeCompilationValidator extends AbstractNodeValidator
             return null;
         }
 
-        $syntaxValidator = new PhpSyntaxValidator();
-        $result = new PhpSyntaxValidationResult();
+        $syntaxValidator = new PhpSyntaxValidator;
+        $result = new PhpSyntaxValidationResult;
 
         if ($node instanceof EchoNode) {
             $result = $syntaxValidator->checkString($node->content, $node->position->startLine);

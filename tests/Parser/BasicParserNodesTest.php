@@ -1,7 +1,6 @@
 <?php
 
 uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
-use Stillat\BladeParser\Compiler\CompilerServices\CoreDirectiveRetriever;
 use Stillat\BladeParser\Nodes\Components\ComponentNode;
 use Stillat\BladeParser\Nodes\DirectiveNode;
 use Stillat\BladeParser\Nodes\EchoNode;

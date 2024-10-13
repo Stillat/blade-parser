@@ -7,7 +7,7 @@ use Stillat\BladeParser\Nodes\Components\ComponentNode;
 
 class CustomCompiler implements CustomComponentTagCompiler
 {
-    function compile(ComponentNode $component): ?string
+    public function compile(ComponentNode $component): ?string
     {
         return 'My custom compilation result!';
     }

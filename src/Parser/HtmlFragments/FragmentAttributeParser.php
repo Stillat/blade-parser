@@ -48,7 +48,7 @@ class FragmentAttributeParser extends BaseFragmentParser
         }
 
         foreach ($tempAttributes as $tempAttribute) {
-            $attribute = new FragmentParameter();
+            $attribute = new FragmentParameter;
 
             $attribute->content = $tempAttribute[0];
 

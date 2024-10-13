@@ -2,17 +2,17 @@
 
 use Illuminate\Container\Container;
 use Illuminate\Contracts\View\Factory;
+use Mockery as m;
 use Stillat\BladeParser\Compiler\CompilerServices\CoreDirectiveRetriever;
 use Stillat\BladeParser\Compiler\ComponentNodeCompiler;
 use Stillat\BladeParser\Compiler\ComponentTagCompiler;
 use Stillat\BladeParser\Document\Document;
 use Stillat\BladeParser\Document\DocumentOptions;
-use Stillat\BladeParser\Nodes\DirectiveNode;
 use Stillat\BladeParser\Nodes\AbstractNode;
 use Stillat\BladeParser\Nodes\Components\ComponentNode;
+use Stillat\BladeParser\Nodes\DirectiveNode;
 use Stillat\BladeParser\Parser\DocumentParser;
 use Stillat\BladeParser\Tests\Compiler\CustomTransformer;
-use Mockery as m;
 
 /*
 |--------------------------------------------------------------------------
@@ -155,14 +155,14 @@ function transformDocument(string $template, bool $withCoreDirectives): string
         customDirectives: ['custom', 'endcustom']
     ))->resolveStructures();
 
-    return (new CustomTransformer())->transformDocument($doc);
+    return (new CustomTransformer)->transformDocument($doc);
 }
 
 function compiler(array $aliases = [], array $namespaces = []): ComponentTagCompiler
 {
     $compiler = new ComponentTagCompiler(
-        new ComponentNodeCompiler(),
-        new DocumentParser()
+        new ComponentNodeCompiler,
+        new DocumentParser
     );
 
     $compiler->setAliases($aliases);

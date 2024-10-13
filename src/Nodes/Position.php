@@ -58,7 +58,7 @@ class Position
 
     public function clone(): Position
     {
-        $position = new Position();
+        $position = new Position;
 
         $position->startOffset = $this->startOffset;
         $position->startLine = $this->startLine;

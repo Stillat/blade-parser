@@ -148,7 +148,7 @@ class StructurePairAnalyzer
         /** @var DirectiveStackItem[] $nodeStack */
         $nodeStack = [];
 
-        $stackItem = new DirectiveStackItem();
+        $stackItem = new DirectiveStackItem;
         $stackItem->documentNodes = $this->document->getNodes()->all();
 
         $nodeStack[] = $stackItem;

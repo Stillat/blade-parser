@@ -84,7 +84,7 @@ class DocumentParser extends AbstractParser
 
     public function __construct()
     {
-        $this->componentParser = new ComponentParser();
+        $this->componentParser = new ComponentParser;
         $this->withCoreDirectives();
     }
 
@@ -363,7 +363,7 @@ class DocumentParser extends AbstractParser
             $matchOffset = $candidate[1];
 
             if ($matchText == self::C_BladeCommentStart) {
-                $commentEntry = new IndexElement();
+                $commentEntry = new IndexElement;
                 $commentEntry->type = IndexElementType::BladeComment;
                 $commentEntry->startOffset = $matchOffset;
                 $commentEntry->content = $matchText;
@@ -390,7 +390,7 @@ class DocumentParser extends AbstractParser
                     continue;
                 }
 
-                $directiveEntry = new IndexElement();
+                $directiveEntry = new IndexElement;
                 $directiveEntry->type = IndexElementType::Directive;
                 $directiveEntry->content = $content;
                 $directiveEntry->startOffset = $matchOffset;
@@ -399,7 +399,7 @@ class DocumentParser extends AbstractParser
 
                 continue;
             } elseif ($matchText == self::C_StartPhp) {
-                $phpEntry = new IndexElement();
+                $phpEntry = new IndexElement;
                 $phpEntry->type = IndexElementType::PhpOpenTag;
                 $phpEntry->content = self::C_StartPhp;
                 $phpEntry->startOffset = $matchOffset;
@@ -408,7 +408,7 @@ class DocumentParser extends AbstractParser
 
                 continue;
             } elseif ($matchText == self::C_StartPhpEcho) {
-                $phpEntry = new IndexElement();
+                $phpEntry = new IndexElement;
                 $phpEntry->type = IndexElementType::PhpOpenTagWithEcho;
                 $phpEntry->content = self::C_StartPhpEcho;
                 $phpEntry->startOffset = $matchOffset;
@@ -420,7 +420,7 @@ class DocumentParser extends AbstractParser
                 // Just ignore these because they will be escaped content.
                 continue;
             } elseif ($matchText == self::C_BladeRawEcho) {
-                $bladeEntry = new IndexElement();
+                $bladeEntry = new IndexElement;
                 $bladeEntry->type = IndexElementType::BladeRawEcho;
                 $bladeEntry->content = self::C_BladeRawEcho;
                 $bladeEntry->startOffset = $matchOffset;
@@ -435,7 +435,7 @@ class DocumentParser extends AbstractParser
 
                 continue;
             } elseif ($matchText == self::C_BladeEchoThree) {
-                $bladeEntry = new IndexElement();
+                $bladeEntry = new IndexElement;
                 $bladeEntry->type = IndexElementType::BladeEchoThree;
                 $bladeEntry->content = self::C_BladeEchoThree;
                 $bladeEntry->startOffset = $matchOffset;
@@ -444,7 +444,7 @@ class DocumentParser extends AbstractParser
 
                 continue;
             } elseif ($matchText == self::C_BladeEcho) {
-                $bladeEntry = new IndexElement();
+                $bladeEntry = new IndexElement;
                 $bladeEntry->type = IndexElementType::BladeEcho;
                 $bladeEntry->content = self::C_BladeEcho;
                 $bladeEntry->startOffset = $matchOffset;
@@ -453,7 +453,7 @@ class DocumentParser extends AbstractParser
 
                 continue;
             } elseif ($matchText == self::C_BladeComponentStart || $matchText == self::C_BladeComponentStartNamespaced) {
-                $componentEntry = new IndexElement();
+                $componentEntry = new IndexElement;
                 $componentEntry->type = IndexElementType::ComponentOpenTag;
                 $componentEntry->content = $matchText;
                 $componentEntry->startOffset = $matchOffset;
@@ -462,7 +462,7 @@ class DocumentParser extends AbstractParser
 
                 continue;
             } elseif ($matchText == self::C_BladeClosingComponentStart || $matchText == self::C_BladeClosingComponentStartNamespaced) {
-                $componentEntry = new IndexElement();
+                $componentEntry = new IndexElement;
                 $componentEntry->type = IndexElementType::ComponentClosingTag;
                 $componentEntry->content = $matchText;
                 $componentEntry->startOffset = $matchOffset;
@@ -471,7 +471,7 @@ class DocumentParser extends AbstractParser
 
                 continue;
             } elseif (Str::startsWith($matchText, '</') && $this->isTagCloseCustomComponent($matchText)) {
-                $customComponentClose = new IndexElement();
+                $customComponentClose = new IndexElement;
                 $customComponentClose->type = IndexElementType::CustomComponentClosingTag;
                 $customComponentClose->content = $matchText;
                 $customComponentClose->startOffset = $matchOffset;
@@ -480,7 +480,7 @@ class DocumentParser extends AbstractParser
 
                 continue;
             } elseif (Str::startsWith($matchText, '<') && $this->isTagStartCustomComponent($matchText)) {
-                $customComponentEntry = new IndexElement();
+                $customComponentEntry = new IndexElement;
                 $customComponentEntry->type = IndexElementType::CustomComponentOpenTag;
                 $customComponentEntry->content = $matchText;
                 $customComponentEntry->startOffset = $matchOffset;
@@ -518,7 +518,7 @@ class DocumentParser extends AbstractParser
         }
         $content = mb_substr($this->content, $start, $end - $start);
 
-        $bladeLiteralNode = new LiteralNode();
+        $bladeLiteralNode = new LiteralNode;
         $bladeLiteralNode->position = $this->makePosition($start, $start + mb_strlen($content) - 1);
         $bladeLiteralNode->content = $content;
         $bladeLiteralNode->originalLeadingWhitespace = StringUtilities::extractLeadingWhitespace($content);
@@ -542,7 +542,7 @@ class DocumentParser extends AbstractParser
         $innerContent = $content;
         $typeLen = mb_strlen($type);
 
-        $componentNode = new ComponentNode();
+        $componentNode = new ComponentNode;
         $componentNode->isCustomComponent = true;
         $componentNode->componentPrefix = $type;
         $componentNode->content = $content;
@@ -574,7 +574,7 @@ class DocumentParser extends AbstractParser
 
     private function makeComponentNode(int $startLocation, string $content): ComponentNode
     {
-        $componentNode = new ComponentNode();
+        $componentNode = new ComponentNode;
         $componentNode->content = $content;
         $componentNode->position = $this->makePosition($startLocation, $startLocation + mb_strlen($content) - 1);
 
@@ -666,7 +666,7 @@ class DocumentParser extends AbstractParser
                     continue;
                 }
 
-                $commentNode = new CommentNode();
+                $commentNode = new CommentNode;
                 $commentNode->position = $this->makePosition($indexEntry->startOffset, $indexEntry->startOffset + mb_strlen($commentContent->content) - 1);
                 $commentNode->content = $commentContent->content;
                 $commentNode->innerContent = mb_substr($commentNode->content, 4, -4);
@@ -739,7 +739,7 @@ class DocumentParser extends AbstractParser
                     }
 
                     if ($endVerbatim != null) {
-                        $verbatimNode = new VerbatimNode();
+                        $verbatimNode = new VerbatimNode;
                         $verbatimNode->position = $this->makePosition($indexEntry->startOffset, $endVerbatim->startOffset + mb_strlen($endVerbatim->content));
                         $verbatimNode->content = mb_substr($this->content, $indexEntry->startOffset, $verbatimNode->position->endOffset - $indexEntry->startOffset + 1);
                         $verbatimNode->innerContent = mb_substr($verbatimNode->content, 9, -12);
@@ -776,7 +776,7 @@ class DocumentParser extends AbstractParser
                     }
 
                     if ($endPhpEntry != null) {
-                        $bladePhpNode = new PhpBlockNode();
+                        $bladePhpNode = new PhpBlockNode;
                         $bladePhpNode->position = $this->makePosition($indexEntry->startOffset, $endPhpEntry->startOffset + mb_strlen($endPhpEntry->content));
                         $bladePhpNode->content = mb_substr($this->content, $indexEntry->startOffset, $bladePhpNode->position->endOffset - $indexEntry->startOffset + 1);
                         $bladePhpNode->innerContent = mb_substr($bladePhpNode->content, 4, -7);
@@ -794,7 +794,7 @@ class DocumentParser extends AbstractParser
                     }
                 }
 
-                $directiveNode = new DirectiveNode();
+                $directiveNode = new DirectiveNode;
 
                 $directiveStart = $indexEntry->startOffset;
                 $directiveNameEnd = $directiveStart + mb_strlen($indexEntry->content);
@@ -827,12 +827,12 @@ class DocumentParser extends AbstractParser
 
                 continue;
             } elseif ($indexEntry->type == IndexElementType::PhpOpenTag || $indexEntry->type == IndexElementType::PhpOpenTagWithEcho) {
-                $phpTagNode = new PhpTagNode();
+                $phpTagNode = new PhpTagNode;
                 $phpContent = $this->scanToEndOfPhp($indexEntry->startOffset);
 
                 // We will just assume that the PHP content continues to the end of the document.
                 if ($phpContent == null) {
-                    $phpContent = new ScanResult();
+                    $phpContent = new ScanResult;
                     $phpContent->offset = $indexEntry->startOffset;
                     $phpContent->content = mb_substr($this->content, $indexEntry->startOffset);
 
@@ -886,7 +886,7 @@ class DocumentParser extends AbstractParser
                     continue;
                 }
 
-                $echoNode = new EchoNode();
+                $echoNode = new EchoNode;
                 $echoNode->type = EchoType::RawEcho;
                 $echoNode->position = $this->makePosition($indexEntry->startOffset, $echoContent->offset + mb_strlen($echoContent->content) - 1);
                 $echoNode->content = $echoContent->content;
@@ -909,7 +909,7 @@ class DocumentParser extends AbstractParser
                     continue;
                 }
 
-                $echoNode = new EchoNode();
+                $echoNode = new EchoNode;
                 $echoNode->type = EchoType::TripleEcho;
                 $echoNode->position = $this->makePosition($indexEntry->startOffset, $echoContent->offset + mb_strlen($echoContent->content) - 1);
                 $echoNode->content = $echoContent->content;
@@ -932,7 +932,7 @@ class DocumentParser extends AbstractParser
                     continue;
                 }
 
-                $echoNode = new EchoNode();
+                $echoNode = new EchoNode;
                 $echoNode->type = EchoType::Echo;
                 $echoNode->position = $this->makePosition($indexEntry->startOffset, $echoContent->offset + mb_strlen($echoContent->content) - 1);
                 $echoNode->content = $echoContent->content;

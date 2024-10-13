@@ -21,7 +21,7 @@ trait ConstructsConditions
             $chainedDirectives = $node->getChainedClosingDirectives();
             $chainedDirectives->pop(); // Removes the closing directive.
 
-            $condition = new Condition();
+            $condition = new Condition;
             $condition->constructedFrom = $node;
 
             $node->isStructure = true;

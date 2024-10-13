@@ -90,7 +90,7 @@ class ComponentParser extends AbstractParser
     private function parseParameter($content, $containsValue, $startIndex): ParameterNode
     {
         $relativeStart = $this->parameterContentStartOffset + $startIndex;
-        $parameter = new ParameterNode();
+        $parameter = new ParameterNode;
         $parameter->content = $content;
         $parameter->position = $this->makePosition($relativeStart, mb_strlen($content) + $relativeStart - 1);
 
@@ -99,7 +99,7 @@ class ComponentParser extends AbstractParser
             $name = trim(mb_substr($content, 0, $breakOn));
 
             $parameter->name = $name;
-            $parameter->nameNode = new ParameterAttribute();
+            $parameter->nameNode = new ParameterAttribute;
             $parameter->nameNode->content = $name;
             $parameter->nameNode->position = $this->makePosition($relativeStart, $relativeStart + mb_strlen($name) - 1);
 
@@ -111,14 +111,14 @@ class ComponentParser extends AbstractParser
             $valueStart = $relativeStart + $breakOn + $diff;
             $valueEnd = $valueStart + $valueContentLength - 1;
 
-            $parameter->valueNode = new ParameterAttribute();
+            $parameter->valueNode = new ParameterAttribute;
             $parameter->valueNode->content = $valueContent;
             $parameter->valueNode->position = $this->makePosition($valueStart + 1, $valueEnd + 1);
 
             $parameter->value = mb_substr($valueContent, 1, -1);
         } else {
             $parameter->name = $content;
-            $parameter->nameNode = new ParameterAttribute();
+            $parameter->nameNode = new ParameterAttribute;
             $parameter->nameNode->content = $content;
             $parameter->nameNode->position = $this->makePosition($relativeStart, $relativeStart + mb_strlen($content) - 1);
             $parameter->type = ParameterType::Attribute;
@@ -169,7 +169,7 @@ class ComponentParser extends AbstractParser
             }
         }
 
-        $echoParameter = new ParameterNode();
+        $echoParameter = new ParameterNode;
         $echoParameter->content = $content;
         // TODO: Add test for this position.
         $echoParameter->position = $this->makePosition($this->parameterContentStartOffset + $startIndex, $this->parameterContentStartOffset + $this->currentIndex + mb_strlen($content));
@@ -291,7 +291,7 @@ class ComponentParser extends AbstractParser
             $this->currentContent[] = $this->cur;
 
             if ($this->next == null || ctype_space($this->next)) {
-                $scanResult = new ScanResult();
+                $scanResult = new ScanResult;
                 $scanResult->content = implode('', $this->currentContent);
                 $scanResult->offset = 0;
 

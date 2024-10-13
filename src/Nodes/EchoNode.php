@@ -73,7 +73,7 @@ class EchoNode extends AbstractNode
 
     public function clone(): EchoNode
     {
-        $echo = new EchoNode();
+        $echo = new EchoNode;
         $this->copyBasicDetailsTo($echo);
 
         $echo->innerContent = $this->innerContent;

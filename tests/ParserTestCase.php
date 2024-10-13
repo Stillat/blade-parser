@@ -42,7 +42,7 @@ class ParserTestCase extends TestCase
     protected function setUp(): void
     {
         $this->compiler = new Compiler(
-            new DocumentParser()
+            new DocumentParser
         );
 
         $this->compiler->resetState();
@@ -71,7 +71,7 @@ class ParserTestCase extends TestCase
 
     protected function parser(): DocumentParser
     {
-        $parser = new DocumentParser();
+        $parser = new DocumentParser;
 
         $parser->setDirectiveNames(array_keys(Blade::getCustomDirectives()));
 
@@ -80,7 +80,7 @@ class ParserTestCase extends TestCase
 
     protected function parseNodes($template): array
     {
-        $parser = new DocumentParser();
+        $parser = new DocumentParser;
 
         $parser->setDirectiveNames(array_keys(Blade::getCustomDirectives()));
 
@@ -89,7 +89,7 @@ class ParserTestCase extends TestCase
 
     protected function getDocument($template, array $customComponentTags = []): Document
     {
-        $parser = new DocumentParser();
+        $parser = new DocumentParser;
         $parser->registerCustomComponentTags($customComponentTags);
         $parser->setDirectiveNames(array_keys(Blade::getCustomDirectives()))->parse($template);
 
@@ -242,7 +242,7 @@ class ParserTestCase extends TestCase
 
     protected function getWorkspace(string $workspaceName): Workspace
     {
-        $workspace = new Workspace();
+        $workspace = new Workspace;
         $workspace->addDirectory($this->getWorkspaceDirectory($workspaceName));
 
         return $workspace;

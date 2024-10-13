@@ -1,8 +1,8 @@
 <?php
 
 uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
+use Illuminate\View\Component;
 use Illuminate\View\ComponentAttributeBag;
-use \Illuminate\View\Component;
 use Mockery as m;
 
 test('components are compiled', function () {
@@ -64,4 +64,3 @@ test('props are extracted from parent attributes correctly for class components'
     eval(" ?> $template <?php endif; ");
     ob_get_clean();
 });
-

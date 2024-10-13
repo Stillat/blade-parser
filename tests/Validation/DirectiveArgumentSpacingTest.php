@@ -4,14 +4,13 @@ uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
 use Stillat\BladeParser\Document\Document;
 use Stillat\BladeParser\Validation\Validators\DirectiveArgumentSpacingValidator;
 
-
 test('directive argument spacing validator detects issues', function () {
     $template = <<<'BLADE'
 @if  ($something)
 
 @endif
 BLADE;
-    $spacingValidator = new DirectiveArgumentSpacingValidator();
+    $spacingValidator = new DirectiveArgumentSpacingValidator;
     $spacingValidator->setExpectedSpacing(3);
 
     $results = Document::fromText($template)
@@ -28,7 +27,7 @@ test('directive argument spacing validator does not detect issues', function () 
 
 @endif
 BLADE;
-    $spacingValidator = new DirectiveArgumentSpacingValidator();
+    $spacingValidator = new DirectiveArgumentSpacingValidator;
     $spacingValidator->setExpectedSpacing(3);
 
     $results = Document::fromText($template)

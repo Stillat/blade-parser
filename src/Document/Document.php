@@ -468,12 +468,12 @@ class Document
             return collect($this->fragments);
         }
 
-        $fragmentsParser = new FragmentsDocumentParser();
+        $fragmentsParser = new FragmentsDocumentParser;
         $fragmentsParser->setIgnoreRanges($this->toSkipIndex());
 
         $this->fragments = $fragmentsParser->parse($this->toString());
 
-        $fragmentPositions = new FragmentPositionsAnalyzer();
+        $fragmentPositions = new FragmentPositionsAnalyzer;
         $fragmentPositions->setFragments($this->fragments);
 
         foreach ($this->nodes as $node) {
