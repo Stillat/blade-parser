@@ -13,13 +13,10 @@ jobs:
 
     strategy:
       matrix:
-        php: [8.1, 8.2]
+        php: [8.2, 8.3]
         laravel: [9.*, 10.*, 11.*]
         stability: [prefer-lowest, prefer-stable]
         os: [ubuntu-latest]
-        exclude:
-          - laravel: 11.*
-            php: 8.1
 
     name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - ${{ matrix.os }}
 
@@ -62,4 +59,4 @@ jobs:
         run: composer show -D
 
       - name: Execute tests
-        run: cp phpunit.dist.xml phpunit.xml && vendor/bin/paratest --verbose
+        run: ./vendor/bin/pest --ci
