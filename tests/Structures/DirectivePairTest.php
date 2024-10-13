@@ -48,6 +48,16 @@ EOT;
     assertManyDirectivesArePaired($document->getDirectives()->all());
 });
 
+test('condition stress test', function () {
+    $template = str_repeat(" @if ('directive_params')\n", 25);
+    $template .= str_repeat(" @endIf\n", 25);
+
+    $doc = $this->getDocument($template);
+    $doc->resolveStructures();
+
+    assertManyDirectivesArePaired($doc->getDirectives()->values()->all());
+});
+
 test('core directive pairing', function (string $open, string $close) {
     // Build up a dynamic nested template.
     $template = str_repeat(" @{$open} ('directive_params')\n", 50);
