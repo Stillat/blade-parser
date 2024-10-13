@@ -7,6 +7,42 @@ use Stillat\BladeParser\Parser\AbstractParser;
 
 class StringUtilities
 {
+    private static array $wsChars = ["\r\n", "\t", "\n", "\r", ' '];
+
+    public static function firstWhitespacePos(string $value): ?int
+    {
+        $currentPos = false;
+
+        foreach (static::$wsChars as $wsChar) {
+            $pos = mb_strpos($value, $wsChar);
+
+            if ($pos === false) {
+                continue;
+            }
+
+            if ($currentPos === false || $pos < $currentPos) {
+                $currentPos = $pos;
+            }
+        }
+
+        if ($currentPos === false) {
+            return null;
+        }
+
+        return $currentPos;
+    }
+
+    public static function beforeFirstWhitespace(string $value): string
+    {
+        $firstWs = self::firstWhitespacePos($value);
+
+        if ($firstWs === null) {
+            return $value;
+        }
+
+        return mb_substr($value, 0, $firstWs);
+    }
+
     /**
      * Lowercases the first character of the input string.
      *

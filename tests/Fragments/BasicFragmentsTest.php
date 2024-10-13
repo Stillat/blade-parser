@@ -118,6 +118,37 @@ EOT;
     expect($p2->type)->toBe(FragmentParameterType::Attribute);
 });
 
+test('fragment parameters if tag name ends with newline', function () {
+    $template = <<<'EOT'
+<input
+type="text" required />
+EOT;
+
+    /** @var HtmlFragment[] $fragments */
+    $fragments = Document::fromText($template)->getFragments();
+
+    expect($fragments)->toHaveCount(1);
+
+    $f1 = $fragments[0];
+
+    expect($f1->parameters)->toHaveCount(2);
+
+    $p1 = $f1->parameters[0];
+    expect($p1->content)->toBe('type="text"');
+    expect($p1->name)->toBe('type');
+    expect($p1->value)->toBe('"text"');
+    expect($p1->getValue())->toBe('text');
+    expect($f1->getParameter('type')->getValue())->toBe('text');
+    expect($p1->type)->toBe(FragmentParameterType::Parameter);
+
+    $p2 = $f1->parameters[1];
+    expect($p2->content)->toBe('required');
+    expect($p2->name)->toBe('required');
+    expect($p2->value)->toBe('');
+    expect($f1->getParameter('required')->getValue())->toBe('');
+    expect($p2->type)->toBe(FragmentParameterType::Attribute);
+});
+
 test('node fragment positions', function () {
     $template = <<<'EOT'
 <span class=" @if ($something) mb-10 @endif "> {{ $var }} </span>

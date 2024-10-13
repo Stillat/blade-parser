@@ -121,9 +121,8 @@ class FragmentsDocumentParser extends BaseFragmentParser
                 $documentContentEndOffset
             );
 
-        // Retrieve all content before the first space.
-        $tagName = str($fragment->documentContent)->before(' ');
-        $fragment->tagName = (string) $tagName->trim();
+        // Retrieve all content before the first whitespace character.
+        $fragment->tagName = trim(StringUtilities::beforeFirstWhitespace($fragment->documentContent));
 
         // Check if the tag name was an ignored region.
         // If so, we can grab that content substring.
@@ -148,7 +147,7 @@ class FragmentsDocumentParser extends BaseFragmentParser
 
         // Calculate the start of the inner content.
         // This will be the first space after the tag name.
-        $innerContentStart = mb_strpos($fragment->documentContent, ' ');
+        $innerContentStart = StringUtilities::firstWhitespacePos($fragment->documentContent) ?? false;
 
         if ($innerContentStart !== false) {
             $innerContentFragment = new Fragment;
