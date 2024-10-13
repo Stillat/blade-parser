@@ -1,80 +1,75 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Mutations;
-
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
 use Stillat\BladeParser\Nodes\EchoNode;
 use Stillat\BladeParser\Nodes\EchoType;
-use Stillat\BladeParser\Tests\ParserTestCase;
 
-class EchoNodeMutationsTest extends ParserTestCase
-{
-    public function testBasicEchoNodeMutations()
-    {
-        $doc = $this->getDocument('A{{ $echo }}B{{ $echoTwo }}C');
-        /** @var EchoNode $echo */
-        $echo = $doc->firstOfType(EchoNode::class);
+test('basic echo node mutations', function () {
+    $doc = $this->getDocument('A{{ $echo }}B{{ $echoTwo }}C');
 
-        $echo->setInnerContent('$newVariable');
-        $this->assertTrue($echo->isDirty());
-        $this->assertSame('{{ $newVariable }}', (string) $echo);
+    /** @var EchoNode $echo */
+    $echo = $doc->firstOfType(EchoNode::class);
 
-        $expected = <<<'EOT'
+    $echo->setInnerContent('$newVariable');
+    expect($echo->isDirty())->toBeTrue();
+    expect((string) $echo)->toBe('{{ $newVariable }}');
+
+    $expected = <<<'EOT'
 A{{ $newVariable }}B{{ $echoTwo }}C
 EOT;
 
-        $this->assertSame($expected, (string) $doc);
-    }
+    expect((string) $doc)->toBe($expected);
+});
 
-    public function testChangingEchoTypeMutations()
-    {
-        $doc = $this->getDocument('A{{ $echo }}B{{ $echoTwo }}C');
-        /** @var EchoNode $echo */
-        $echo = $doc->firstOfType(EchoNode::class);
+test('changing echo type mutations', function () {
+    $doc = $this->getDocument('A{{ $echo }}B{{ $echoTwo }}C');
 
-        $echo->setInnerContent('$newVariable');
-        $echo->setType(EchoType::RawEcho);
-        $this->assertTrue($echo->isDirty());
-        $this->assertSame(EchoType::RawEcho, $echo->type);
-        $this->assertSame('{!! $newVariable !!}', (string) $echo);
+    /** @var EchoNode $echo */
+    $echo = $doc->firstOfType(EchoNode::class);
 
-        $expected = <<<'EOT'
+    $echo->setInnerContent('$newVariable');
+    $echo->setType(EchoType::RawEcho);
+    expect($echo->isDirty())->toBeTrue();
+    expect($echo->type)->toBe(EchoType::RawEcho);
+    expect((string) $echo)->toBe('{!! $newVariable !!}');
+
+    $expected = <<<'EOT'
 A{!! $newVariable !!}B{{ $echoTwo }}C
 EOT;
 
-        $this->assertSame($expected, (string) $doc);
-    }
+    expect((string) $doc)->toBe($expected);
+});
 
-    public function testBasicTripleEchoNodeMutations()
-    {
-        $doc = $this->getDocument('A{{{ $echo }}}B{{{ $echoTwo }}}C');
-        /** @var EchoNode $echo */
-        $echo = $doc->firstOfType(EchoNode::class);
+test('basic triple echo node mutations', function () {
+    $doc = $this->getDocument('A{{{ $echo }}}B{{{ $echoTwo }}}C');
 
-        $echo->setInnerContent('$newVariable');
-        $this->assertTrue($echo->isDirty());
-        $this->assertSame('{{{ $newVariable }}}', (string) $echo);
+    /** @var EchoNode $echo */
+    $echo = $doc->firstOfType(EchoNode::class);
 
-        $expected = <<<'EOT'
+    $echo->setInnerContent('$newVariable');
+    expect($echo->isDirty())->toBeTrue();
+    expect((string) $echo)->toBe('{{{ $newVariable }}}');
+
+    $expected = <<<'EOT'
 A{{{ $newVariable }}}B{{{ $echoTwo }}}C
 EOT;
 
-        $this->assertSame($expected, (string) $doc);
-    }
+    expect((string) $doc)->toBe($expected);
+});
 
-    public function testBasicRawEchoNodeMutations()
-    {
-        $doc = $this->getDocument('A{!! $echo !!}B{!! $echoTwo !!}C');
-        /** @var EchoNode $echo */
-        $echo = $doc->firstOfType(EchoNode::class);
+test('basic raw echo node mutations', function () {
+    $doc = $this->getDocument('A{!! $echo !!}B{!! $echoTwo !!}C');
 
-        $echo->setInnerContent('$newVariable');
-        $this->assertTrue($echo->isDirty());
-        $this->assertSame('{!! $newVariable !!}', (string) $echo);
+    /** @var EchoNode $echo */
+    $echo = $doc->firstOfType(EchoNode::class);
 
-        $expected = <<<'EOT'
+    $echo->setInnerContent('$newVariable');
+    expect($echo->isDirty())->toBeTrue();
+    expect((string) $echo)->toBe('{!! $newVariable !!}');
+
+    $expected = <<<'EOT'
 A{!! $newVariable !!}B{!! $echoTwo !!}C
 EOT;
 
-        $this->assertSame($expected, (string) $doc);
-    }
-}
+    expect((string) $doc)->toBe($expected);
+});

@@ -1,13 +1,6 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Compiler;
-
-use Stillat\BladeParser\Tests\ParserTestCase;
-
-class BladeShowTest extends ParserTestCase
-{
-    public function testShowsAreCompiled()
-    {
-        $this->assertSame('<?php echo $__env->yieldSection(); ?>', $this->compiler->compileString('@show'));
-    }
-}
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
+test('shows are compiled', function () {
+    expect($this->compiler->compileString('@show'))->toBe('<?php echo $__env->yieldSection(); ?>');
+});

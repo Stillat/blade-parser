@@ -1,10 +1,5 @@
 <?php
 
-namespace Stillat\BladeParser\Tests;
-
-class ScratchTest extends ParserTestCase
-{
-    public function testStuff()
-    {
-    }
-}
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
+test('stuff', function () {
+});

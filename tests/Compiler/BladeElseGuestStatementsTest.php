@@ -1,23 +1,16 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Compiler;
-
-use Stillat\BladeParser\Tests\ParserTestCase;
-
-class BladeElseGuestStatementsTest extends ParserTestCase
-{
-    public function testIfStatementsAreCompiled()
-    {
-        $string = '@guest("api")
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
+test('if statements are compiled', function () {
+    $string = '@guest("api")
 breeze
 @elseguest("standard")
 wheeze
 @endguest';
-        $expected = '<?php if(auth()->guard("api")->guest()): ?>
+    $expected = '<?php if(auth()->guard("api")->guest()): ?>
 breeze
 <?php elseif(auth()->guard("standard")->guest()): ?>
 wheeze
 <?php endif; ?>';
-        $this->assertEquals($expected, $this->compiler->compileString($string));
-    }
-}
+    expect($this->compiler->compileString($string))->toEqual($expected);
+});

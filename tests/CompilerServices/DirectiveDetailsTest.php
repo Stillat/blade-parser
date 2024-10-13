@@ -1,27 +1,21 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\CompilerServices;
-
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
 use Stillat\BladeParser\Compiler\CompilerServices\CoreDirectiveRetriever;
-use Stillat\BladeParser\Tests\ParserTestCase;
 
-class DirectiveDetailsTest extends ParserTestCase
-{
-    public function testDirectiveDetailsRetrievesInformationWithoutExceptions()
-    {
-        $instance = CoreDirectiveRetriever::instance();
-        $this->assertNotNull($instance);
-        $this->assertInstanceOf(CoreDirectiveRetriever::class, $instance);
-        $this->assertEquals($instance, CoreDirectiveRetriever::instance());
+test('directive details retrieves information without exceptions', function () {
+    $instance = CoreDirectiveRetriever::instance();
+    expect($instance)->not->toBeNull();
+    expect($instance)->toBeInstanceOf(CoreDirectiveRetriever::class);
+    expect(CoreDirectiveRetriever::instance())->toEqual($instance);
 
-        $this->assertNotEmpty($instance->getIncludeDirectiveNames());
-        $this->assertNotEmpty($instance->getDebugDirectiveNames());
-        $this->assertNotEmpty($instance->getDirectivesRequiringOpen());
-        $this->assertNotEmpty($instance->getDirectiveNames());
-        $this->assertNotEmpty($instance->getNonStructureDirectiveNames());
-        $this->assertNotSame($instance->getNonStructureDirectiveNames(), $instance->getDirectiveNames());
-        $this->assertNotEmpty($instance->getDirectivesRequiringArguments());
-        $this->assertNotEmpty($instance->getDirectivesThatMustNotHaveArguments());
-        $this->assertNotEmpty($instance->getDirectivesWithOptionalArguments());
-    }
-}
+    expect($instance->getIncludeDirectiveNames())->not->toBeEmpty();
+    expect($instance->getDebugDirectiveNames())->not->toBeEmpty();
+    expect($instance->getDirectivesRequiringOpen())->not->toBeEmpty();
+    expect($instance->getDirectiveNames())->not->toBeEmpty();
+    expect($instance->getNonStructureDirectiveNames())->not->toBeEmpty();
+    $this->assertNotSame($instance->getNonStructureDirectiveNames(), $instance->getDirectiveNames());
+    expect($instance->getDirectivesRequiringArguments())->not->toBeEmpty();
+    expect($instance->getDirectivesThatMustNotHaveArguments())->not->toBeEmpty();
+    expect($instance->getDirectivesWithOptionalArguments())->not->toBeEmpty();
+});

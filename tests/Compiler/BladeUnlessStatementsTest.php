@@ -1,19 +1,12 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Compiler;
-
-use Stillat\BladeParser\Tests\ParserTestCase;
-
-class BladeUnlessStatementsTest extends ParserTestCase
-{
-    public function testUnlessStatementsAreCompiled()
-    {
-        $string = '@unless (name(foo(bar)))
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
+test('unless statements are compiled', function () {
+    $string = '@unless (name(foo(bar)))
 breeze
 @endunless';
-        $expected = '<?php if (! (name(foo(bar)))): ?>
+    $expected = '<?php if (! (name(foo(bar)))): ?>
 breeze
 <?php endif; ?>';
-        $this->assertEquals($expected, $this->compiler->compileString($string));
-    }
-}
+    expect($this->compiler->compileString($string))->toEqual($expected);
+});

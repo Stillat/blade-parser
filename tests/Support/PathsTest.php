@@ -1,30 +1,21 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Support;
-
-use PHPUnit\Framework\TestCase;
 use Stillat\BladeParser\Support\Utilities\Paths;
 
-class PathsTest extends TestCase
-{
-    public function testNullPathsReturnNull()
-    {
-        $this->assertNull(Paths::normalizePath(null));
-        $this->assertNull(Paths::normalizePathWithTrailingSlash(null));
-    }
 
-    public function testTrailingSlashIsNotDuplicated()
-    {
-        $this->assertSame('/path/', Paths::normalizePathWithTrailingSlash('/path/'));
-    }
+test('null paths return null', function () {
+    expect(Paths::normalizePath(null))->toBeNull();
+    expect(Paths::normalizePathWithTrailingSlash(null))->toBeNull();
+});
 
-    public function testTrailingSlashIsAdded()
-    {
-        $this->assertSame('/path/', Paths::normalizePathWithTrailingSlash('/path'));
-    }
+test('trailing slash is not duplicated', function () {
+    expect(Paths::normalizePathWithTrailingSlash('/path/'))->toBe('/path/');
+});
 
-    public function testBackslashesAreConverted()
-    {
-        $this->assertSame('/mnt/c/wsl/', Paths::normalizePathWithTrailingSlash('\\mnt\\c\\wsl'));
-    }
-}
+test('trailing slash is added', function () {
+    expect(Paths::normalizePathWithTrailingSlash('/path'))->toBe('/path/');
+});
+
+test('backslashes are converted', function () {
+    expect(Paths::normalizePathWithTrailingSlash('\\mnt\\c\\wsl'))->toBe('/mnt/c/wsl/');
+});

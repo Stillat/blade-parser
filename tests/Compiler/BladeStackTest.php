@@ -1,15 +1,8 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Compiler;
-
-use Stillat\BladeParser\Tests\ParserTestCase;
-
-class BladeStackTest extends ParserTestCase
-{
-    public function testStackIsCompiled()
-    {
-        $string = '@stack(\'foo\')';
-        $expected = '<?php echo $__env->yieldPushContent(\'foo\'); ?>';
-        $this->assertEquals($expected, $this->compiler->compileString($string));
-    }
-}
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
+test('stack is compiled', function () {
+    $string = '@stack(\'foo\')';
+    $expected = '<?php echo $__env->yieldPushContent(\'foo\'); ?>';
+    expect($this->compiler->compileString($string))->toEqual($expected);
+});

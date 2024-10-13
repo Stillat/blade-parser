@@ -1,21 +1,14 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Compiler;
-
-use Stillat\BladeParser\Tests\ParserTestCase;
-
-class BladeEscapedTest extends ParserTestCase
-{
-    public function testEscapedWithAtDirectivesAreCompiled()
-    {
-        $this->assertSame('@foreach', $this->compiler->compileString('@@foreach'));
-        $this->assertSame('@verbatim @continue @endverbatim', $this->compiler->compileString('@@verbatim @@continue @@endverbatim'));
-        $this->assertSame('@foreach($i as $x)', $this->compiler->compileString('@@foreach($i as $x)'));
-        $this->assertSame('@continue @break', $this->compiler->compileString('@@continue @@break'));
-        $this->assertSame('@foreach(
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
+test('escaped with at directives are compiled', function () {
+    expect($this->compiler->compileString('@@foreach'))->toBe('@foreach');
+    expect($this->compiler->compileString('@@verbatim @@continue @@endverbatim'))->toBe('@verbatim @continue @endverbatim');
+    expect($this->compiler->compileString('@@foreach($i as $x)'))->toBe('@foreach($i as $x)');
+    expect($this->compiler->compileString('@@continue @@break'))->toBe('@continue @break');
+    expect($this->compiler->compileString('@@foreach(
             $i as $x
-        )', $this->compiler->compileString('@@foreach(
+        )'))->toBe('@foreach(
             $i as $x
-        )'));
-    }
-}
+        )');
+});

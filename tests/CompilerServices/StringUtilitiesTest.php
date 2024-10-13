@@ -1,40 +1,30 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\CompilerServices;
-
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
 use Stillat\BladeParser\Compiler\CompilerServices\StringUtilities;
-use Stillat\BladeParser\Tests\ParserTestCase;
 
-class StringUtilitiesTest extends ParserTestCase
-{
-    public function testWrappingDoesNotWrapDollarVariables()
-    {
-        $this->assertSame('$test', StringUtilities::wrapInSingleQuotes('$test'));
-    }
+test('wrapping does not wrap dollar variables', function () {
+    expect(StringUtilities::wrapInSingleQuotes('$test'))->toBe('$test');
+});
 
-    public function testWrappingSingleQuoteStringsDoesNotDoubleUpQuotes()
-    {
-        $input = "'test'";
-        $this->assertSame($input, StringUtilities::wrapInSingleQuotes($input));
-    }
+test('wrapping single quote strings does not double up quotes', function () {
+    $input = "'test'";
+    expect(StringUtilities::wrapInSingleQuotes($input))->toBe($input);
+});
 
-    public function testHasTrailingWhitespaceEmptyStrings()
-    {
-        $this->assertFalse(StringUtilities::hasTrailingWhitespace(''));
-    }
+test('has trailing whitespace empty strings', function () {
+    expect(StringUtilities::hasTrailingWhitespace(''))->toBeFalse();
+});
 
-    public function testHasLeadingWhitespaceEmptyStrings()
-    {
-        $this->assertFalse(StringUtilities::hasLeadingWhitespace(''));
-    }
+test('has leading whitespace empty strings', function () {
+    expect(StringUtilities::hasLeadingWhitespace(''))->toBeFalse();
+});
 
-    public function testBreakByNewLine()
-    {
-        $input = <<<'EOT'
+test('break by new line', function () {
+    $input = <<<'EOT'
 One
 Two\nThree
 Four
 EOT;
-        $this->assertCount(3, StringUtilities::breakByNewLine($input));
-    }
-}
+    expect(StringUtilities::breakByNewLine($input))->toHaveCount(3);
+});

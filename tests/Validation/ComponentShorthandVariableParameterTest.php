@@ -1,39 +1,33 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Validation;
-
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
 use Stillat\BladeParser\Document\Document;
-use Stillat\BladeParser\Tests\ParserTestCase;
 use Stillat\BladeParser\Validation\Validators\ComponentShorthandVariableParameterValidator;
 
-class ComponentShorthandVariableParameterTest extends ParserTestCase
-{
-    public function testComponentShorthandValidatorDetectsIssues()
-    {
-        $template = <<<'BLADE'
+
+test('component shorthand validator detects issues', function () {
+    $template = <<<'BLADE'
 <x-profile $:message /> <x-profile :$message="message" />
 BLADE;
 
-        $results = Document::fromText($template)
-            ->addValidator(new ComponentShorthandVariableParameterValidator)
-            ->validate()->getValidationErrors();
+    $results = Document::fromText($template)
+        ->addValidator(new ComponentShorthandVariableParameterValidator)
+        ->validate()->getValidationErrors();
 
-        $this->assertCount(2, $results);
+    expect($results)->toHaveCount(2);
 
-        $this->assertSame('Potential typo in shorthand parameter variable [$:message]; did you mean [:$message]', $results[0]->message);
-        $this->assertSame('Unexpected value for shorthand parameter variable near [="message"]', $results[1]->message);
-    }
+    expect($results[0]->message)->toBe('Potential typo in shorthand parameter variable [$:message]; did you mean [:$message]');
+    expect($results[1]->message)->toBe('Unexpected value for shorthand parameter variable near [="message"]');
+});
 
-    public function testComponentShorthandValidatorDoesNotDetectIssues()
-    {
-        $template = <<<'BLADE'
+test('component shorthand validator does not detect issues', function () {
+    $template = <<<'BLADE'
 <x-profile :$message /> <x-profile :$message />
 BLADE;
 
-        $results = Document::fromText($template)
-            ->addValidator(new ComponentShorthandVariableParameterValidator)
-            ->validate()->getValidationErrors();
+    $results = Document::fromText($template)
+        ->addValidator(new ComponentShorthandVariableParameterValidator)
+        ->validate()->getValidationErrors();
 
-        $this->assertCount(0, $results);
-    }
-}
+    expect($results)->toHaveCount(0);
+});

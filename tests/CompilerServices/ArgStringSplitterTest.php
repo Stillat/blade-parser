@@ -1,91 +1,80 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\CompilerServices;
-
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
 use Stillat\BladeParser\Compiler\CompilerServices\ArgStringSplitter;
-use Stillat\BladeParser\Tests\ParserTestCase;
 
-class ArgStringSplitterTest extends ParserTestCase
-{
-    protected ArgStringSplitter $splitter;
+beforeEach(function () {
+    $this->splitter = new ArgStringSplitter();
+});
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->splitter = new ArgStringSplitter();
-    }
-
-    public function testArgumentStringSplitting()
-    {
-        $input = <<<'EOT'
+test('argument string splitting', function () {
+    $input = <<<'EOT'
 ["one, two", $var1, $var2], $hello, 12345.23, bar, baz, (1,2,3,4,), "foo, bar, baz"
 EOT;
 
-        $this->assertSame([
-            '["one, two", $var1, $var2]',
-            '$hello',
-            '12345.23',
-            'bar',
-            'baz',
-            '(1,2,3,4,)',
-            '"foo, bar, baz"',
-        ], $this->splitter->split($input));
+    expect($this->splitter->split($input))->toBe([
+        '["one, two", $var1, $var2]',
+        '$hello',
+        '12345.23',
+        'bar',
+        'baz',
+        '(1,2,3,4,)',
+        '"foo, bar, baz"',
+    ]);
 
-        $input = <<<'EOT'
+    $input = <<<'EOT'
 [["one, two", $var1, $var2], $hello, 12345.23, bar, baz, (1,2,3,4,), "foo, bar, baz"]
 EOT;
 
-        $this->assertSame([
-            $input,
-        ], $this->splitter->split($input));
+    expect($this->splitter->split($input))->toBe([
+        $input,
+    ]);
 
-        $input = <<<'EOT'
+    $input = <<<'EOT'
 (["one, two", $var1, $var2], $hello, 12345.23, bar, baz, (1,2,3,4,), "foo, bar, baz")
 EOT;
 
-        $this->assertSame([
-            $input,
-        ], $this->splitter->split($input));
+    expect($this->splitter->split($input))->toBe([
+        $input,
+    ]);
 
-        $input = <<<'EOT'
+    $input = <<<'EOT'
 [["one, two", $var1, $var2], $hello, 12345.23], bar, baz, (1,2,3,4,), "foo, bar, baz"
 EOT;
 
-        $this->assertSame([
-            '[["one, two", $var1, $var2], $hello, 12345.23]',
-            'bar',
-            'baz',
-            '(1,2,3,4,)',
-            '"foo, bar, baz"',
-        ], $this->splitter->split($input));
+    expect($this->splitter->split($input))->toBe([
+        '[["one, two", $var1, $var2], $hello, 12345.23]',
+        'bar',
+        'baz',
+        '(1,2,3,4,)',
+        '"foo, bar, baz"',
+    ]);
 
-        $input = <<<'EOT'
+    $input = <<<'EOT'
 [["one, two", $var1, $var2], $hello, 12345.23], [bar, baz, (1,2,3,4,), "foo, bar, baz"]
 EOT;
 
-        $this->assertSame([
-            '[["one, two", $var1, $var2], $hello, 12345.23]',
-            '[bar, baz, (1,2,3,4,), "foo, bar, baz"]',
-        ], $this->splitter->split($input));
+    expect($this->splitter->split($input))->toBe([
+        '[["one, two", $var1, $var2], $hello, 12345.23]',
+        '[bar, baz, (1,2,3,4,), "foo, bar, baz"]',
+    ]);
 
-        $input = <<<'EOT'
+    $input = <<<'EOT'
 [[[[[["one, two", $var1, $var2], $hello, 12345.23]]]]], [bar, baz, (1,2,3,4,), "foo, bar, baz"]
 EOT;
 
-        $this->assertSame([
-            '[[[[[["one, two", $var1, $var2], $hello, 12345.23]]]]]',
-            '[bar, baz, (1,2,3,4,), "foo, bar, baz"]',
-        ], $this->splitter->split($input));
+    expect($this->splitter->split($input))->toBe([
+        '[[[[[["one, two", $var1, $var2], $hello, 12345.23]]]]]',
+        '[bar, baz, (1,2,3,4,), "foo, bar, baz"]',
+    ]);
 
-        $input = <<<'EOT'
+    $input = <<<'EOT'
 [[[[[["one, two", $var1, $var2], $hello, 12345.23]]]]], [bar, baz, (1,2,3,4,), "foo, bar, baz"], (true == false) ? $this : $that
 EOT;
 
-        $this->assertSame([
-            '[[[[[["one, two", $var1, $var2], $hello, 12345.23]]]]]',
-            '[bar, baz, (1,2,3,4,), "foo, bar, baz"]',
-            '(true == false) ? $this : $that',
-        ], $this->splitter->split($input));
-    }
-}
+    expect($this->splitter->split($input))->toBe([
+        '[[[[[["one, two", $var1, $var2], $hello, 12345.23]]]]]',
+        '[bar, baz, (1,2,3,4,), "foo, bar, baz"]',
+        '(true == false) ? $this : $that',
+    ]);
+});

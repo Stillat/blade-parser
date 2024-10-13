@@ -1,19 +1,12 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Compiler;
-
-use Stillat\BladeParser\Tests\ParserTestCase;
-
-class BladeIfEmptyStatementsTest extends ParserTestCase
-{
-    public function testIfStatementsAreCompiled()
-    {
-        $string = '@empty ($test)
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
+test('if statements are compiled', function () {
+    $string = '@empty ($test)
 breeze
 @endempty';
-        $expected = '<?php if(empty($test)): ?>
+    $expected = '<?php if(empty($test)): ?>
 breeze
 <?php endif; ?>';
-        $this->assertEquals($expected, $this->compiler->compileString($string));
-    }
-}
+    expect($this->compiler->compileString($string))->toEqual($expected);
+});

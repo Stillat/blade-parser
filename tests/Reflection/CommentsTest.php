@@ -1,21 +1,14 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Reflection;
-
-use Stillat\BladeParser\Tests\ParserTestCase;
-
-class CommentsTest extends ParserTestCase
-{
-    public function testBasicCommentDetails()
-    {
-        $template = <<<'EOT'
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
+test('basic comment details', function () {
+    $template = <<<'EOT'
 {{-- One --}}
 
         {{-- Two --}}
 EOT;
-        $doc = $this->getDocument($template);
-        $comments = $doc->getComments();
-        $this->assertCount(2, $comments);
-        $this->assertTrue($doc->hasAnyComments());
-    }
-}
+    $doc = $this->getDocument($template);
+    $comments = $doc->getComments();
+    expect($comments)->toHaveCount(2);
+    expect($doc->hasAnyComments())->toBeTrue();
+});

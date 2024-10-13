@@ -1,47 +1,41 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Validation;
-
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
 use Stillat\BladeParser\Document\Document;
-use Stillat\BladeParser\Tests\ParserTestCase;
 use Stillat\BladeParser\Validation\Validators\SwitchValidator;
 
-class SwitchTest extends ParserTestCase
-{
-    public function testSwitchValidatorDetectsNoCaseStatements()
-    {
-        $template = <<<'BLADE'
+
+test('switch validator detects no case statements', function () {
+    $template = <<<'BLADE'
 @switch ($var)
 
 @endswitch
 BLADE;
-        $results = Document::fromText($template)
-            ->addValidator(new SwitchValidator)
-            ->validate()->getValidationErrors();
+    $results = Document::fromText($template)
+        ->addValidator(new SwitchValidator)
+        ->validate()->getValidationErrors();
 
-        $this->assertCount(1, $results);
-        $this->assertSame('No case statements found in [@switch]', $results[0]->message);
-    }
+    expect($results)->toHaveCount(1);
+    expect($results[0]->message)->toBe('No case statements found in [@switch]');
+});
 
-    public function testSwitchValidatorDetectsMissingBreakStatements()
-    {
-        $template = <<<'BLADE'
+test('switch validator detects missing break statements', function () {
+    $template = <<<'BLADE'
 @switch ($var)
     @case (1)
         Something
 @endswitch
 BLADE;
-        $results = Document::fromText($template)
-            ->addValidator(new SwitchValidator)
-            ->validate()->getValidationErrors();
+    $results = Document::fromText($template)
+        ->addValidator(new SwitchValidator)
+        ->validate()->getValidationErrors();
 
-        $this->assertCount(1, $results);
-        $this->assertSame('Missing [@break] statement inside [@case]', $results[0]->message);
-    }
+    expect($results)->toHaveCount(1);
+    expect($results[0]->message)->toBe('Missing [@break] statement inside [@case]');
+});
 
-    public function testSwitchValidatorDetectsTooManyBreakStatements()
-    {
-        $template = <<<'BLADE'
+test('switch validator detects too many break statements', function () {
+    $template = <<<'BLADE'
 @switch ($var)
     @case (1)
         Something
@@ -49,17 +43,16 @@ BLADE;
         @break
 @endswitch
 BLADE;
-        $results = Document::fromText($template)
-            ->addValidator(new SwitchValidator)
-            ->validate()->getValidationErrors();
+    $results = Document::fromText($template)
+        ->addValidator(new SwitchValidator)
+        ->validate()->getValidationErrors();
 
-        $this->assertCount(1, $results);
-        $this->assertSame('Too many [@break] statements inside [@case]', $results[0]->message);
-    }
+    expect($results)->toHaveCount(1);
+    expect($results[0]->message)->toBe('Too many [@break] statements inside [@case]');
+});
 
-    public function testSwitchValidatorDetectsTooManyDefaultCases()
-    {
-        $template = <<<'BLADE'
+test('switch validator detects too many default cases', function () {
+    $template = <<<'BLADE'
 @switch ($var)
     @case (1)
         Something
@@ -72,17 +65,16 @@ BLADE;
         @break
 @endswitch
 BLADE;
-        $results = Document::fromText($template)
-            ->addValidator(new SwitchValidator)
-            ->validate()->getValidationErrors();
+    $results = Document::fromText($template)
+        ->addValidator(new SwitchValidator)
+        ->validate()->getValidationErrors();
 
-        $this->assertCount(1, $results);
-        $this->assertSame('Too many [@default] cases in [@switch]', $results[0]->message);
-    }
+    expect($results)->toHaveCount(1);
+    expect($results[0]->message)->toBe('Too many [@default] cases in [@switch]');
+});
 
-    public function testSwitchValidatorDoesNotDetectIssues()
-    {
-        $template = <<<'BLADE'
+test('switch validator does not detect issues', function () {
+    $template = <<<'BLADE'
 @switch ($var)
     @case (1)
         Something
@@ -92,10 +84,9 @@ BLADE;
         @break
 @endswitch
 BLADE;
-        $results = Document::fromText($template)
-            ->addValidator(new SwitchValidator)
-            ->validate()->getValidationErrors();
+    $results = Document::fromText($template)
+        ->addValidator(new SwitchValidator)
+        ->validate()->getValidationErrors();
 
-        $this->assertCount(0, $results);
-    }
-}
+    expect($results)->toHaveCount(0);
+});

@@ -1,88 +1,79 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Reflection;
-
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
 use Stillat\BladeParser\Nodes\DirectiveNode;
 use Stillat\BladeParser\Nodes\EchoNode;
 use Stillat\BladeParser\Nodes\LiteralNode;
-use Stillat\BladeParser\Tests\ParserTestCase;
 
-class StructureReflectionTest extends ParserTestCase
-{
-    public function testBasicFalseStructureTests()
-    {
-        $doc = $this->getDocument('@lang("something")');
-        $directive = $doc->findDirectiveByName('lang');
+test('basic false structure tests', function () {
+    $doc = $this->getDocument('@lang("something")');
+    $directive = $doc->findDirectiveByName('lang');
 
-        foreach ([
-            EchoNode::class,
-            LiteralNode::class,
-            DirectiveNode::class,
-        ] as $type) {
-            $this->assertFalse($directive->hasParentOfType($type));
-        }
-
-        $this->assertCount(0, $directive->getAllParentNodes());
-        $this->assertFalse($directive->hasConditionParent());
-        $this->assertFalse($directive->hasForElseParent());
-        $this->assertFalse($directive->hasSwitchParent());
-        $this->assertFalse($directive->hasParent());
-        $this->assertFalse($directive->hasStructure());
+    foreach ([
+        EchoNode::class,
+        LiteralNode::class,
+        DirectiveNode::class,
+    ] as $type) {
+        expect($directive->hasParentOfType($type))->toBeFalse();
     }
 
-    public function testBasicForElseStructureTests()
-    {
-        $template = <<<'EOT'
+    expect($directive->getAllParentNodes())->toHaveCount(0);
+    expect($directive->hasConditionParent())->toBeFalse();
+    expect($directive->hasForElseParent())->toBeFalse();
+    expect($directive->hasSwitchParent())->toBeFalse();
+    expect($directive->hasParent())->toBeFalse();
+    expect($directive->hasStructure())->toBeFalse();
+});
+
+test('basic for else structure tests', function () {
+    $template = <<<'EOT'
 @forelse ($users as $user)
     @lang("something")
 @empty
     Nothing to see here.
 @endforelse 
 EOT;
-        $doc = $this->getDocument($template)->resolveStructures();
-        $directive = $doc->findDirectiveByName('lang');
+    $doc = $this->getDocument($template)->resolveStructures();
+    $directive = $doc->findDirectiveByName('lang');
 
-        $this->assertTrue($directive->hasParentOfType(DirectiveNode::class));
-        $this->assertTrue($directive->hasParent());
-        $this->assertTrue($directive->hasForElseParent());
-        $this->assertTrue($directive->getParent()->isStructure);
-        $this->assertNotNull($directive->getParent()->asDirective()->getForElse());
-    }
+    expect($directive->hasParentOfType(DirectiveNode::class))->toBeTrue();
+    expect($directive->hasParent())->toBeTrue();
+    expect($directive->hasForElseParent())->toBeTrue();
+    expect($directive->getParent()->isStructure)->toBeTrue();
+    expect($directive->getParent()->asDirective()->getForElse())->not->toBeNull();
+});
 
-    public function testBasicConditionStructureTests()
-    {
-        $template = <<<'EOT'
+test('basic condition structure tests', function () {
+    $template = <<<'EOT'
 @if ($something)
     @lang("something")
 @endif
 EOT;
-        $doc = $this->getDocument($template)->resolveStructures();
-        $directive = $doc->findDirectiveByName('lang');
+    $doc = $this->getDocument($template)->resolveStructures();
+    $directive = $doc->findDirectiveByName('lang');
 
-        $this->assertTrue($directive->hasParentOfType(DirectiveNode::class));
-        $this->assertTrue($directive->hasParent());
-        $this->assertTrue($directive->hasConditionParent());
-        $this->assertTrue($directive->getParent()->isStructure);
-        $this->assertNotNull($directive->getParent()->asDirective()->getCondition());
-    }
+    expect($directive->hasParentOfType(DirectiveNode::class))->toBeTrue();
+    expect($directive->hasParent())->toBeTrue();
+    expect($directive->hasConditionParent())->toBeTrue();
+    expect($directive->getParent()->isStructure)->toBeTrue();
+    expect($directive->getParent()->asDirective()->getCondition())->not->toBeNull();
+});
 
-    public function testBasicSwitchStructureTests()
-    {
-        $template = <<<'EOT'
+test('basic switch structure tests', function () {
+    $template = <<<'EOT'
 @switch($something)
     @case(1)
         @lang("something")
        @break;
 @endswitch
 EOT;
-        $doc = $this->getDocument($template)->resolveStructures();
-        $directive = $doc->findDirectiveByName('lang');
+    $doc = $this->getDocument($template)->resolveStructures();
+    $directive = $doc->findDirectiveByName('lang');
 
-        $this->assertTrue($directive->hasParentOfType(DirectiveNode::class));
-        $this->assertTrue($directive->hasParent());
-        $this->assertTrue($directive->hasSwitchParent());
-        $this->assertTrue($directive->getParent()->isStructure);
-        $this->assertNotNull($directive->getParent()->asDirective()->getCaseStatement());
-        $this->assertNotNull($directive->getParent()->asDirective()->getCaseStatement()->getParent()->asDirective()->getSwitchStatement());
-    }
-}
+    expect($directive->hasParentOfType(DirectiveNode::class))->toBeTrue();
+    expect($directive->hasParent())->toBeTrue();
+    expect($directive->hasSwitchParent())->toBeTrue();
+    expect($directive->getParent()->isStructure)->toBeTrue();
+    expect($directive->getParent()->asDirective()->getCaseStatement())->not->toBeNull();
+    expect($directive->getParent()->asDirective()->getCaseStatement()->getParent()->asDirective()->getSwitchStatement())->not->toBeNull();
+});

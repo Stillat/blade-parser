@@ -1,16 +1,12 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Validation;
-
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
 use Stillat\BladeParser\Document\Document;
-use Stillat\BladeParser\Tests\ParserTestCase;
 use Stillat\BladeParser\Validation\Validators\DuplicateConditionExpressionsValidator;
 
-class DuplicateConditionExpressionsTest extends ParserTestCase
-{
-    public function testDuplicateConditionExpressionValidatorDetectsIssues()
-    {
-        $template = <<<'BLADE'
+
+test('duplicate condition expression validator detects issues', function () {
+    $template = <<<'BLADE'
 @if ($this == 'that')
 
 @elseif ($this == 'that')
@@ -19,17 +15,16 @@ class DuplicateConditionExpressionsTest extends ParserTestCase
 
 @endif
 BLADE;
-        $results = Document::fromText($template)
-            ->addValidator(new DuplicateConditionExpressionsValidator)
-            ->validate()->getValidationErrors();
+    $results = Document::fromText($template)
+        ->addValidator(new DuplicateConditionExpressionsValidator)
+        ->validate()->getValidationErrors();
 
-        $this->assertCount(1, $results);
-        $this->assertSame("Duplicate expression [\$this == 'that'] in [@elseif]", $results[0]->message);
-    }
+    expect($results)->toHaveCount(1);
+    expect($results[0]->message)->toBe("Duplicate expression [\$this == 'that'] in [@elseif]");
+});
 
-    public function testDuplicateConditionExpressionValidatorDoesNotDetectIssues()
-    {
-        $template = <<<'BLADE'
+test('duplicate condition expression validator does not detect issues', function () {
+    $template = <<<'BLADE'
 @if ($this == 'that')
 
 @elseif ($this == 'something-else')
@@ -38,10 +33,9 @@ BLADE;
 
 @endif
 BLADE;
-        $results = Document::fromText($template)
-            ->addValidator(new DuplicateConditionExpressionsValidator)
-            ->validate()->getValidationErrors();
+    $results = Document::fromText($template)
+        ->addValidator(new DuplicateConditionExpressionsValidator)
+        ->validate()->getValidationErrors();
 
-        $this->assertCount(0, $results);
-    }
-}
+    expect($results)->toHaveCount(0);
+});

@@ -1,54 +1,47 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Validation;
-
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
 use Stillat\BladeParser\Document\Document;
-use Stillat\BladeParser\Tests\ParserTestCase;
 use Stillat\BladeParser\Validation\Validators\NodeCompilationValidator;
 
-class NodeCompilationTest extends ParserTestCase
-{
-    public function testNodeCompilationValidatorDetectsIssues()
-    {
-        $template = <<<'BLADE'
+
+test('node compilation validator detects issues', function () {
+    $template = <<<'BLADE'
     {{ $hello++++ }}
     
     
             {{ $world+++ }}
 BLADE;
-        $results = Document::fromText($template)
-            ->addValidator(new NodeCompilationValidator)
-            ->validate()->getValidationErrors();
+    $results = Document::fromText($template)
+        ->addValidator(new NodeCompilationValidator)
+        ->validate()->getValidationErrors();
 
-        $this->assertCount(2, $results);
-        $this->assertSame('Anticipated PHP compilation error: [syntax error, unexpected token "++", expecting ")"] near [{{ $hello++++ }}]', $results[0]->message);
-        $this->assertSame('Anticipated PHP compilation error: [syntax error, unexpected token ")"] near [{{ $world+++ }}]', $results[1]->message);
-    }
+    expect($results)->toHaveCount(2);
+    expect($results[0]->message)->toBe('Anticipated PHP compilation error: [syntax error, unexpected token "++", expecting ")"] near [{{ $hello++++ }}]');
+    expect($results[1]->message)->toBe('Anticipated PHP compilation error: [syntax error, unexpected token ")"] near [{{ $world+++ }}]');
+});
 
-    public function testNodeCompilationWithPhpBlocks()
-    {
-        $template = <<<'BLADE'
+test('node compilation with php blocks', function () {
+    $template = <<<'BLADE'
 @php $count = 1 @endphp
 BLADE;
-        $results = Document::fromText($template)
-            ->addValidator(new NodeCompilationValidator)
-            ->validate()->getValidationErrors();
+    $results = Document::fromText($template)
+        ->addValidator(new NodeCompilationValidator)
+        ->validate()->getValidationErrors();
 
-        $this->assertCount(0, $results);
-    }
+    expect($results)->toHaveCount(0);
+});
 
-    public function testNodeCompilationValidatorDoesNotDetectIssues()
-    {
-        $template = <<<'BLADE'
+test('node compilation validator does not detect issues', function () {
+    $template = <<<'BLADE'
     {{ $hello }}
     
     
             {{ $world }}
 BLADE;
-        $results = Document::fromText($template)
-            ->addValidator(new NodeCompilationValidator)
-            ->validate()->getValidationErrors();
+    $results = Document::fromText($template)
+        ->addValidator(new NodeCompilationValidator)
+        ->validate()->getValidationErrors();
 
-        $this->assertCount(0, $results);
-    }
-}
+    expect($results)->toHaveCount(0);
+});

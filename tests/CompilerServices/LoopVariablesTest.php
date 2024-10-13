@@ -1,58 +1,41 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\CompilerServices;
-
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
 use Stillat\BladeParser\Compiler\CompilerServices\LoopVariablesExtractor;
-use Stillat\BladeParser\Tests\ParserTestCase;
 
-class LoopVariablesTest extends ParserTestCase
-{
-    private LoopVariablesExtractor $extractor;
+beforeEach(function () {
+    $this->extractor = new LoopVariablesExtractor();
+});
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+test('basic loop variable extraction', function () {
+    $input = '($users as $user)';
+    $result = $this->extractor->extractDetails($input);
 
-        $this->extractor = new LoopVariablesExtractor();
-    }
+    expect($result)->not->toBeNull();
+    expect($result->source)->toBe('($users as $user)');
+    expect($result->variable)->toBe('$users');
+    expect($result->alias)->toBe('$user');
+    expect($result->isValid)->toBe(true);
+});
 
-    public function testBasicLoopVariableExtraction()
-    {
-        $input = '($users as $user)';
-        $result = $this->extractor->extractDetails($input);
+test('nested strings and keywords dont confuse things', function () {
+    $input = 'explode(", ", "as,as,as,as") as $as';
+    $result = $this->extractor->extractDetails($input);
 
-        $this->assertNotNull($result);
-        $this->assertSame('($users as $user)', $result->source);
-        $this->assertSame('$users', $result->variable);
-        $this->assertSame('$user', $result->alias);
-        $this->assertSame(true, $result->isValid);
-    }
+    expect($result->variable)->toBe('explode(", ", "as,as,as,as")');
+    expect($result->alias)->toBe('$as');
+    expect($result->isValid)->toBeTrue();
+});
 
-    public function testNestedStringsAndKeywordsDontConfuseThings()
-    {
-        $input = 'explode(", ", "as,as,as,as") as $as';
-        $result = $this->extractor->extractDetails($input);
+test('invalid loop variables', function ($input) {
+    $result = $this->extractor->extractDetails($input);
+    expect($result->isValid)->toBeFalse();
+})->with('invalidLoopVariableSources');
 
-        $this->assertSame('explode(", ", "as,as,as,as")', $result->variable);
-        $this->assertSame('$as', $result->alias);
-        $this->assertTrue($result->isValid);
-    }
-
-    /**
-     * @dataProvider invalidLoopVariableSources
-     */
-    public function testInvalidLoopVariables($input)
-    {
-        $result = $this->extractor->extractDetails($input);
-        $this->assertFalse($result->isValid);
-    }
-
-    public static function invalidLoopVariableSources()
-    {
-        return [
-            ['as'],
-            ['as $user'],
-            ['$users as   '],
-        ];
-    }
-}
+dataset('invalidLoopVariableSources', function () {
+    return [
+        ['as'],
+        ['as $user'],
+        ['$users as   '],
+    ];
+});

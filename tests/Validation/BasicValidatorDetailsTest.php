@@ -1,51 +1,42 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Validation;
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
+test('has validator class', function () {
+    $validator = $this->getValidator()->withCoreValidators();
 
-use Stillat\BladeParser\Tests\ParserTestCase;
+    foreach (config('blade.validation.core_validators') as $className) {
+        expect($validator->hasValidatorClass($className))->toBeTrue();
+    }
+});
 
-class BasicValidatorDetailsTest extends ParserTestCase
-{
-    public function testHasValidatorClass()
-    {
-        $validator = $this->getValidator()->withCoreValidators();
+test('has validator instances', function () {
+    $validator = $this->getValidator()->withCoreValidators();
 
-        foreach (config('blade.validation.core_validators') as $className) {
-            $this->assertTrue($validator->hasValidatorClass($className));
-        }
+    foreach ($validator->getNodeValidators() as $nodeValidator) {
+        expect($validator->hasValidatorInstance($nodeValidator))->toBeTrue();
     }
 
-    public function testHasValidatorInstances()
-    {
-        $validator = $this->getValidator()->withCoreValidators();
+    foreach ($validator->getDocumentValidators() as $documentValidator) {
+        expect($validator->hasDocumentValidatorInstance($documentValidator))->toBeTrue();
+    }
+});
 
-        foreach ($validator->getNodeValidators() as $nodeValidator) {
-            $this->assertTrue($validator->hasValidatorInstance($nodeValidator));
-        }
+test('remove validators', function () {
+    $validator = $this->getValidator()->withCoreValidators();
 
-        foreach ($validator->getDocumentValidators() as $documentValidator) {
-            $this->assertTrue($validator->hasDocumentValidatorInstance($documentValidator));
-        }
+    expect($validator->getValidators())->toHaveCount(19);
+
+    foreach ($validator->getValidators() as $validatorInstance) {
+        $validator->removeValidator(get_class($validatorInstance));
     }
 
-    public function testRemoveValidators()
-    {
-        $validator = $this->getValidator()->withCoreValidators();
+    expect($validator->getValidators())->toHaveCount(0);
 
-        $this->assertCount(19, $validator->getValidators());
-
-        foreach ($validator->getValidators() as $validatorInstance) {
-            $validator->removeValidator(get_class($validatorInstance));
-        }
-
-        $this->assertCount(0, $validator->getValidators());
-
-        foreach (config('blade.validation.core_validators') as $className) {
-            $this->assertFalse($validator->hasValidatorClass($className));
-        }
-
-        // Test we can add them back.
-        $validator->withCoreValidators();
-        $this->assertCount(19, $validator->getValidators());
+    foreach (config('blade.validation.core_validators') as $className) {
+        expect($validator->hasValidatorClass($className))->toBeFalse();
     }
-}
+
+    // Test we can add them back.
+    $validator->withCoreValidators();
+    expect($validator->getValidators())->toHaveCount(19);
+});

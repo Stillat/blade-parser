@@ -1,36 +1,26 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Compiler;
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
+test('dependencies injected as strings are compiled', function () {
+    $string = "Foo @inject('baz', 'SomeNamespace\SomeClass') bar";
+    $expected = "Foo <?php \$baz = app('SomeNamespace\SomeClass'); ?> bar";
+    expect($this->compiler->compileString($string))->toEqual($expected);
+});
 
-use Stillat\BladeParser\Tests\ParserTestCase;
+test('dependencies injected as strings are compiled when injected with double quotes', function () {
+    $string = 'Foo @inject("baz", "SomeNamespace\SomeClass") bar';
+    $expected = 'Foo <?php $baz = app("SomeNamespace\SomeClass"); ?> bar';
+    expect($this->compiler->compileString($string))->toEqual($expected);
+});
 
-class BladeInjectTest extends ParserTestCase
-{
-    public function testDependenciesInjectedAsStringsAreCompiled()
-    {
-        $string = "Foo @inject('baz', 'SomeNamespace\SomeClass') bar";
-        $expected = "Foo <?php \$baz = app('SomeNamespace\SomeClass'); ?> bar";
-        $this->assertEquals($expected, $this->compiler->compileString($string));
-    }
+test('dependencies are compiled', function () {
+    $string = "Foo @inject('baz', SomeNamespace\SomeClass::class) bar";
+    $expected = "Foo <?php \$baz = app(SomeNamespace\SomeClass::class); ?> bar";
+    expect($this->compiler->compileString($string))->toEqual($expected);
+});
 
-    public function testDependenciesInjectedAsStringsAreCompiledWhenInjectedWithDoubleQuotes()
-    {
-        $string = 'Foo @inject("baz", "SomeNamespace\SomeClass") bar';
-        $expected = 'Foo <?php $baz = app("SomeNamespace\SomeClass"); ?> bar';
-        $this->assertEquals($expected, $this->compiler->compileString($string));
-    }
-
-    public function testDependenciesAreCompiled()
-    {
-        $string = "Foo @inject('baz', SomeNamespace\SomeClass::class) bar";
-        $expected = "Foo <?php \$baz = app(SomeNamespace\SomeClass::class); ?> bar";
-        $this->assertEquals($expected, $this->compiler->compileString($string));
-    }
-
-    public function testDependenciesAreCompiledWithDoubleQuotes()
-    {
-        $string = 'Foo @inject("baz", SomeNamespace\SomeClass::class) bar';
-        $expected = "Foo <?php \$baz = app(SomeNamespace\SomeClass::class); ?> bar";
-        $this->assertEquals($expected, $this->compiler->compileString($string));
-    }
-}
+test('dependencies are compiled with double quotes', function () {
+    $string = 'Foo @inject("baz", SomeNamespace\SomeClass::class) bar';
+    $expected = "Foo <?php \$baz = app(SomeNamespace\SomeClass::class); ?> bar";
+    expect($this->compiler->compileString($string))->toEqual($expected);
+});

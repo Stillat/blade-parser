@@ -1,14 +1,8 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Mutations;
-
-use Stillat\BladeParser\Tests\ParserTestCase;
-
-class PhpBlockMutationsTest extends ParserTestCase
-{
-    public function testPhpBlockContentCanBeChanged()
-    {
-        $template = <<<'EOT'
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
+test('php block content can be changed', function () {
+    $template = <<<'EOT'
 One
     @php
     if ('this' == 'that') {
@@ -19,11 +13,11 @@ One
     @endphp
 Two
 EOT;
-        $doc = $this->getDocument($template);
-        $phpBlock = $doc->getPhpBlocks()->first();
-        $phpBlock->setContent('if (false != true) { exit; }');
+    $doc = $this->getDocument($template);
+    $phpBlock = $doc->getPhpBlocks()->first();
+    $phpBlock->setContent('if (false != true) { exit; }');
 
-        $expected = <<<'EXPECTED'
+    $expected = <<<'EXPECTED'
 One
     @php 
     if (false != true) { exit; }
@@ -31,12 +25,11 @@ One
 Two
 EXPECTED;
 
-        $this->assertSame($expected, (string) $doc);
-    }
+    expect((string) $doc)->toBe($expected);
+});
 
-    public function testOriginalWhitespaceCanBeIgnored()
-    {
-        $template = <<<'EOT'
+test('original whitespace can be ignored', function () {
+    $template = <<<'EOT'
 One
     @php
     
@@ -45,15 +38,14 @@ One
     @endphp
 Two
 EOT;
-        $doc = $this->getDocument($template);
-        $doc->getPhpBlocks()->first()->setContent('$cleanedWhitespace = true;', false);
+    $doc = $this->getDocument($template);
+    $doc->getPhpBlocks()->first()->setContent('$cleanedWhitespace = true;', false);
 
-        $expected = <<<'EXPECTED'
+    $expected = <<<'EXPECTED'
 One
     @php $cleanedWhitespace = true; @endphp
 Two
 EXPECTED;
 
-        $this->assertSame($expected, (string) $doc);
-    }
-}
+    expect((string) $doc)->toBe($expected);
+});

@@ -1,26 +1,21 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Mutations;
-
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
 use Stillat\BladeParser\Nodes\PhpTagNode;
 use Stillat\BladeParser\Nodes\PhpTagType;
-use Stillat\BladeParser\Tests\ParserTestCase;
 
-class PhpTagMutationsTest extends ParserTestCase
-{
-    public function testPhpTagContentCanBeChanged()
-    {
-        $template = <<<'EOT'
+test('php tag content can be changed', function () {
+    $template = <<<'EOT'
 One
     <?php
             $embeddedPhp = true;
                 ?>
 Two
 EOT;
-        $doc = $this->getDocument($template);
-        $doc->getPhpTags()->first()->setContent('$hello = "world";');
+    $doc = $this->getDocument($template);
+    $doc->getPhpTags()->first()->setContent('$hello = "world";');
 
-        $expected = <<<'EXPECTED'
+    $expected = <<<'EXPECTED'
 One
     <?php 
             $hello = "world";
@@ -28,22 +23,21 @@ One
 Two
 EXPECTED;
 
-        $this->assertSame($expected, (string) $doc);
-    }
+    expect((string) $doc)->toBe($expected);
+});
 
-    public function testPhpTagTypesCanBeChanged()
-    {
-        $template = <<<'EOT'
+test('php tag types can be changed', function () {
+    $template = <<<'EOT'
 One
     <?php
             $embeddedPhp;
                 ?>
 Two
 EOT;
-        $doc = $this->getDocument($template);
-        $doc->getPhpTags()->first()->setType(PhpTagType::PhpOpenTagWithEcho);
+    $doc = $this->getDocument($template);
+    $doc->getPhpTags()->first()->setType(PhpTagType::PhpOpenTagWithEcho);
 
-        $expected = <<<'EXPECTED'
+    $expected = <<<'EXPECTED'
 One
     <?= 
             $embeddedPhp;
@@ -51,44 +45,42 @@ One
 Two
 EXPECTED;
 
-        $this->assertSame($expected, (string) $doc);
-    }
+    expect((string) $doc)->toBe($expected);
+});
 
-    public function testOriginalWhitespaceCanBeOverridden()
-    {
-        $template = <<<'EOT'
+test('original whitespace can be overridden', function () {
+    $template = <<<'EOT'
 One
     <?php
             $embeddedPhp = true;
                 ?>
 Two
 EOT;
-        $doc = $this->getDocument($template);
-        $doc->getPhpTags()->first()->setContent('$hello = "world";', false);
+    $doc = $this->getDocument($template);
+    $doc->getPhpTags()->first()->setContent('$hello = "world";', false);
 
-        $expected = <<<'EXPECTED'
+    $expected = <<<'EXPECTED'
 One
     <?php $hello = "world"; ?>
 Two
 EXPECTED;
 
-        $this->assertSame($expected, (string) $doc);
-    }
+    expect((string) $doc)->toBe($expected);
+});
 
-    public function testSettingSameTypeDoesNotMarkAsDirty()
-    {
-        $template = <<<'EOT'
+test('setting same type does not mark as dirty', function () {
+    $template = <<<'EOT'
 One
     <?php
             $embeddedPhp = true;
                 ?>
 Two
 EOT;
-        $doc = $this->getDocument($template);
-        /** @var PhpTagNode $phpTag */
-        $phpTag = $doc->getPhpTags()->first();
+    $doc = $this->getDocument($template);
 
-        $phpTag->setType($phpTag->type);
-        $this->assertFalse($phpTag->isDirty());
-    }
-}
+    /** @var PhpTagNode $phpTag */
+    $phpTag = $doc->getPhpTags()->first();
+
+    $phpTag->setType($phpTag->type);
+    expect($phpTag->isDirty())->toBeFalse();
+});

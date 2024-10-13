@@ -1,39 +1,29 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Workspaces;
-
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
 use Stillat\BladeParser\Nodes\DirectiveNode;
-use Stillat\BladeParser\Tests\ParserTestCase;
 use Stillat\BladeParser\Workspaces\Workspace;
 
-class BasicWorkspaceDetailsTest extends ParserTestCase
-{
-    protected ?Workspace $workspace = null;
 
-    protected function setUp(): void
-    {
-        $this->workspace = $this->getWorkspace('one');
-    }
+beforeEach(function () {
+    $this->workspace = $this->getWorkspace('one');
+});
 
-    protected function tearDown(): void
-    {
-        $this->workspace->cleanUp();
-    }
+afterEach(function () {
+    $this->workspace->cleanUp();
+});
 
-    public function testWorkspaceDocumentCount()
-    {
-        $this->assertSame(2, $this->workspace->getDocumentCount());
-        $this->assertCount(2, $this->workspace->getDocuments());
-        $this->assertSame(2, $this->workspace->getFileCount());
-    }
+test('workspace document count', function () {
+    expect($this->workspace->getDocumentCount())->toBe(2);
+    expect($this->workspace->getDocuments())->toHaveCount(2);
+    expect($this->workspace->getFileCount())->toBe(2);
+});
 
-    public function testWorkspaceFindDirectivesByName()
-    {
-        /** @var DirectiveNode[] $directives */
-        $directives = $this->workspace->findDirectivesByName('include');
-        $this->assertCount(2, $directives);
-        $this->assertDirectiveContent($directives[0], 'include', "('something')");
-        $this->assertDirectiveContent($directives[1], 'include', "('something-else')");
-        $this->assertNotSame($directives[0]->getDocument(), $directives[1]->getDocument());
-    }
-}
+test('workspace find directives by name', function () {
+    /** @var DirectiveNode[] $directives */
+    $directives = $this->workspace->findDirectivesByName('include');
+    expect($directives)->toHaveCount(2);
+    $this->assertDirectiveContent($directives[0], 'include', "('something')");
+    $this->assertDirectiveContent($directives[1], 'include', "('something-else')");
+    $this->assertNotSame($directives[0]->getDocument(), $directives[1]->getDocument());
+});

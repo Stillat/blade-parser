@@ -1,55 +1,36 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Validation;
-
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
 use Stillat\BladeParser\Compiler\CompilerServices\CoreDirectiveRetriever;
 use Stillat\BladeParser\Document\Document;
-use Stillat\BladeParser\Tests\ParserTestCase;
 use Stillat\BladeParser\Validation\Validators\InconsistentDirectiveCasingValidator;
 
-class InconsistentDirectiveCasingTest extends ParserTestCase
-{
-    /**
-     * @dataProvider directiveNames
-     */
-    public function testInconsistentDirectiveCasingValidatorDetectsIssues($directiveName)
-    {
-        if ($directiveName == 'endverbatim') {
-            $directiveName = 'endVerbatim';
-        }
 
-        $inconsistent = mb_strtoupper($directiveName);
-
-        $message = "Inconsistent casing for [@{$inconsistent}]; expecting [@{$directiveName}]";
-
-        $results = Document::fromText("@{$inconsistent}")
-            ->addValidator(new InconsistentDirectiveCasingValidator)
-            ->validate()->getValidationErrors();
-
-        $this->assertCount(1, $results);
-        $this->assertSame($message, $results[0]->message);
+test('inconsistent directive casing validator detects issues', function ($directiveName) {
+    if ($directiveName == 'endverbatim') {
+        $directiveName = 'endVerbatim';
     }
 
-    /**
-     * @dataProvider directiveNames
-     */
-    public function testInconsistentDirectiveCasingValidatorDoesNotDetectIssues($directiveName)
-    {
-        if ($directiveName == 'endverbatim') {
-            $directiveName = 'endVerbatim';
-        }
+    $inconsistent = mb_strtoupper($directiveName);
 
-        $results = Document::fromText("@{$directiveName}")
-            ->addValidator(new InconsistentDirectiveCasingValidator)
-            ->validate()->getValidationErrors();
+    $message = "Inconsistent casing for [@{$inconsistent}]; expecting [@{$directiveName}]";
 
-        $this->assertCount(0, $results);
+    $results = Document::fromText("@{$inconsistent}")
+        ->addValidator(new InconsistentDirectiveCasingValidator)
+        ->validate()->getValidationErrors();
+
+    expect($results)->toHaveCount(1);
+    expect($results[0]->message)->toBe($message);
+})->with(directiveNames());
+
+test('inconsistent directive casing validator does not detect issues', function ($directiveName) {
+    if ($directiveName == 'endverbatim') {
+        $directiveName = 'endVerbatim';
     }
 
-    public static function directiveNames()
-    {
-        return collect(CoreDirectiveRetriever::instance()->getDirectiveNames())->map(function ($s) {
-            return [$s];
-        })->values()->all();
-    }
-}
+    $results = Document::fromText("@{$directiveName}")
+        ->addValidator(new InconsistentDirectiveCasingValidator)
+        ->validate()->getValidationErrors();
+
+    expect($results)->toHaveCount(0);
+})->with(directiveNames());

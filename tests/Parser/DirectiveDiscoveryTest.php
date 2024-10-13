@@ -1,21 +1,14 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Parser;
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
+test('unregistered directives are not parsed', function () {
+    $template = '@_not_a_directive';
+    $nodes = $this->parseNodes($template);
+    expect($nodes)->toHaveCount(1);
+    $this->assertLiteralContent($nodes[0], $template);
 
-use Stillat\BladeParser\Tests\ParserTestCase;
-
-class DirectiveDiscoveryTest extends ParserTestCase
-{
-    public function testUnregisteredDirectivesAreNotParsed()
-    {
-        $template = '@_not_a_directive';
-        $nodes = $this->parseNodes($template);
-        $this->assertCount(1, $nodes);
-        $this->assertLiteralContent($nodes[0], $template);
-
-        $this->registerDirective('_not_a_directive');
-        $nodes = $this->parseNodes($template);
-        $this->assertCount(1, $nodes);
-        $this->assertDirectiveName($nodes[0], '_not_a_directive');
-    }
-}
+    $this->registerDirective('_not_a_directive');
+    $nodes = $this->parseNodes($template);
+    expect($nodes)->toHaveCount(1);
+    $this->assertDirectiveName($nodes[0], '_not_a_directive');
+});

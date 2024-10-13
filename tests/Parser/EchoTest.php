@@ -1,57 +1,50 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Parser;
-
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
 use Stillat\BladeParser\Nodes\EchoNode;
-use Stillat\BladeParser\Tests\ParserTestCase;
 
-class EchoTest extends ParserTestCase
-{
-    public function testEchoContainingStrings()
-    {
-        $echo = $this->getDocument('{{ "hello world" }}')->firstOfType(EchoNode::class)->asEcho();
-        $this->assertSame(' "hello world" ', $echo->innerContent);
+test('echo containing strings', function () {
+    $echo = $this->getDocument('{{ "hello world" }}')->firstOfType(EchoNode::class)->asEcho();
+    expect($echo->innerContent)->toBe(' "hello world" ');
 
-        $echo = $this->getDocument('{{{ "hello world" }}}')->firstOfType(EchoNode::class)->asEcho();
-        $this->assertSame(' "hello world" ', $echo->innerContent);
+    $echo = $this->getDocument('{{{ "hello world" }}}')->firstOfType(EchoNode::class)->asEcho();
+    expect($echo->innerContent)->toBe(' "hello world" ');
 
-        $echo = $this->getDocument('{!! "hello world" !!}')->firstOfType(EchoNode::class)->asEcho();
-        $this->assertSame(' "hello world" ', $echo->innerContent);
+    $echo = $this->getDocument('{!! "hello world" !!}')->firstOfType(EchoNode::class)->asEcho();
+    expect($echo->innerContent)->toBe(' "hello world" ');
 
-        $echo = $this->getDocument("{{ 'hello world' }}")->firstOfType(EchoNode::class)->asEcho();
-        $this->assertSame(" 'hello world' ", $echo->innerContent);
+    $echo = $this->getDocument("{{ 'hello world' }}")->firstOfType(EchoNode::class)->asEcho();
+    expect($echo->innerContent)->toBe(" 'hello world' ");
 
-        $echo = $this->getDocument("{{ 'hello world' }}")->firstOfType(EchoNode::class)->asEcho();
-        $this->assertSame(" 'hello world' ", $echo->innerContent);
+    $echo = $this->getDocument("{{ 'hello world' }}")->firstOfType(EchoNode::class)->asEcho();
+    expect($echo->innerContent)->toBe(" 'hello world' ");
 
-        $echo = $this->getDocument("{{{ 'hello world' }}}")->firstOfType(EchoNode::class)->asEcho();
-        $this->assertSame(" 'hello world' ", $echo->innerContent);
+    $echo = $this->getDocument("{{{ 'hello world' }}}")->firstOfType(EchoNode::class)->asEcho();
+    expect($echo->innerContent)->toBe(" 'hello world' ");
 
-        $echo = $this->getDocument("{!! 'hello world' !!}")->firstOfType(EchoNode::class)->asEcho();
-        $this->assertSame(" 'hello world' ", $echo->innerContent);
-    }
+    $echo = $this->getDocument("{!! 'hello world' !!}")->firstOfType(EchoNode::class)->asEcho();
+    expect($echo->innerContent)->toBe(" 'hello world' ");
+});
 
-    public function testEchoContainingStringsContainingStrings()
-    {
-        $echo = $this->getDocument('{{ "hello \"hello\" world" }}')->firstOfType(EchoNode::class)->asEcho();
-        $this->assertSame(' "hello \"hello\" world" ', $echo->innerContent);
+test('echo containing strings containing strings', function () {
+    $echo = $this->getDocument('{{ "hello \"hello\" world" }}')->firstOfType(EchoNode::class)->asEcho();
+    expect($echo->innerContent)->toBe(' "hello \"hello\" world" ');
 
-        $echo = $this->getDocument('{{{ "hello \"hello\" world" }}}')->firstOfType(EchoNode::class)->asEcho();
-        $this->assertSame(' "hello \"hello\" world" ', $echo->innerContent);
+    $echo = $this->getDocument('{{{ "hello \"hello\" world" }}}')->firstOfType(EchoNode::class)->asEcho();
+    expect($echo->innerContent)->toBe(' "hello \"hello\" world" ');
 
-        $echo = $this->getDocument('{!! "hello \"hello\" world" !!}')->firstOfType(EchoNode::class)->asEcho();
-        $this->assertSame(' "hello \"hello\" world" ', $echo->innerContent);
+    $echo = $this->getDocument('{!! "hello \"hello\" world" !!}')->firstOfType(EchoNode::class)->asEcho();
+    expect($echo->innerContent)->toBe(' "hello \"hello\" world" ');
 
-        $echo = $this->getDocument("{{ 'hello \'hello\' world' }}")->firstOfType(EchoNode::class)->asEcho();
-        $this->assertSame(" 'hello \'hello\' world' ", $echo->innerContent);
+    $echo = $this->getDocument("{{ 'hello \'hello\' world' }}")->firstOfType(EchoNode::class)->asEcho();
+    expect($echo->innerContent)->toBe(" 'hello \'hello\' world' ");
 
-        $echo = $this->getDocument("{{ 'hello \'hello\' world' }}")->firstOfType(EchoNode::class)->asEcho();
-        $this->assertSame(" 'hello \'hello\' world' ", $echo->innerContent);
+    $echo = $this->getDocument("{{ 'hello \'hello\' world' }}")->firstOfType(EchoNode::class)->asEcho();
+    expect($echo->innerContent)->toBe(" 'hello \'hello\' world' ");
 
-        $echo = $this->getDocument("{{{ 'hello \'hello\' world' }}}")->firstOfType(EchoNode::class)->asEcho();
-        $this->assertSame(" 'hello \'hello\' world' ", $echo->innerContent);
+    $echo = $this->getDocument("{{{ 'hello \'hello\' world' }}}")->firstOfType(EchoNode::class)->asEcho();
+    expect($echo->innerContent)->toBe(" 'hello \'hello\' world' ");
 
-        $echo = $this->getDocument("{!! 'hello \'hello\' world' !!}")->firstOfType(EchoNode::class)->asEcho();
-        $this->assertSame(" 'hello \'hello\' world' ", $echo->innerContent);
-    }
-}
+    $echo = $this->getDocument("{!! 'hello \'hello\' world' !!}")->firstOfType(EchoNode::class)->asEcho();
+    expect($echo->innerContent)->toBe(" 'hello \'hello\' world' ");
+});

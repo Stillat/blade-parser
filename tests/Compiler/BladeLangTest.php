@@ -1,35 +1,25 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Compiler;
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
+test('statement that contains non consecutive parenthesis are compiled', function () {
+    $string = "Foo @lang(function_call('foo(blah)')) bar";
+    $expected = "Foo <?php echo app('translator')->get(function_call('foo(blah)')); ?> bar";
+    expect($this->compiler->compileString($string))->toEqual($expected);
+});
 
-use Stillat\BladeParser\Tests\ParserTestCase;
+test('language and choices are compiled', function () {
+    expect($this->compiler->compileString("@lang('foo')"))->toBe('<?php echo app(\'translator\')->get(\'foo\'); ?>');
+    expect($this->compiler->compileString("@choice('foo', 1)"))->toBe('<?php echo app(\'translator\')->choice(\'foo\', 1); ?>');
+});
 
-class BladeLangTest extends ParserTestCase
-{
-    public function testStatementThatContainsNonConsecutiveParenthesisAreCompiled()
-    {
-        $string = "Foo @lang(function_call('foo(blah)')) bar";
-        $expected = "Foo <?php echo app('translator')->get(function_call('foo(blah)')); ?> bar";
-        $this->assertEquals($expected, $this->compiler->compileString($string));
-    }
+test('language no parameters are compiled', function () {
+    expect($this->compiler->compileString('@lang'))->toBe('<?php $__env->startTranslation(); ?>');
+});
 
-    public function testLanguageAndChoicesAreCompiled()
-    {
-        $this->assertSame('<?php echo app(\'translator\')->get(\'foo\'); ?>', $this->compiler->compileString("@lang('foo')"));
-        $this->assertSame('<?php echo app(\'translator\')->choice(\'foo\', 1); ?>', $this->compiler->compileString("@choice('foo', 1)"));
-    }
-
-    public function testLanguageNoParametersAreCompiled()
-    {
-        $this->assertSame('<?php $__env->startTranslation(); ?>', $this->compiler->compileString('@lang'));
-    }
-
-    public function testLangStartTranslationsAreCompiled()
-    {
-        $expected = <<<'EXPECTED'
+test('lang start translations are compiled', function () {
+    $expected = <<<'EXPECTED'
 <?php $__env->startTranslation(["thing"]); ?>
 EXPECTED;
 
-        $this->assertSame($expected, $this->compiler->compileString('@lang (["thing"])'));
-    }
-}
+    expect($this->compiler->compileString('@lang (["thing"])'))->toBe($expected);
+});

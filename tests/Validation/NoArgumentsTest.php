@@ -1,42 +1,24 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Validation;
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
 
-use Stillat\BladeParser\Compiler\CompilerServices\CoreDirectiveRetriever;
 use Stillat\BladeParser\Document\Document;
-use Stillat\BladeParser\Tests\ParserTestCase;
 use Stillat\BladeParser\Validation\Validators\NoArgumentsValidator;
 
-class NoArgumentsTest extends ParserTestCase
-{
-    /**
-     * @dataProvider directiveNames
-     */
-    public function testNoArgumentsValidatorDetectsIssues($directiveName)
-    {
-        $message = "[@{$directiveName}] should not have any arguments";
-        $results = Document::fromText("@{$directiveName}(\$some, \$args)")
-            ->addValidator(new NoArgumentsValidator)
-            ->validate()->getValidationErrors();
+test('no arguments validator detects issues', function ($directiveName) {
+    $message = "[@{$directiveName}] should not have any arguments";
+    $results = Document::fromText("@{$directiveName}(\$some, \$args)")
+        ->addValidator(new NoArgumentsValidator)
+        ->validate()->getValidationErrors();
 
-        $this->assertCount(1, $results);
-        $this->assertSame($message, $results[0]->message);
-    }
+    expect($results)->toHaveCount(1);
+    expect($results[0]->message)->toBe($message);
+})->with(directiveNamesWithoutArguments());
 
-    /**
-     * @dataProvider directiveNames
-     */
-    public function testNoArgumentsValidatorDoesNotDetectIssues($directiveName)
-    {
-        $results = Document::fromText("@{$directiveName}")
-            ->addValidator(new NoArgumentsValidator)
-            ->validate()->getValidationErrors();
+test('no arguments validator does not detect issues', function ($directiveName) {
+    $results = Document::fromText("@{$directiveName}")
+        ->addValidator(new NoArgumentsValidator)
+        ->validate()->getValidationErrors();
 
-        $this->assertCount(0, $results);
-    }
-
-    public static function directiveNames()
-    {
-        return collect(CoreDirectiveRetriever::instance()->getDirectivesThatMustNotHaveArguments())->filter(fn ($s) => $s != 'verbatim' && $s != 'endverbatim')->map(fn ($s) => [$s])->values()->all();
-    }
-}
+    expect($results)->toHaveCount(0);
+})->with(directiveNamesWithoutArguments());

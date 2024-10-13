@@ -1,26 +1,8 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Compiler;
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
 
-use Stillat\BladeParser\Compiler\CompilerServices\CoreDirectiveRetriever;
-use Stillat\BladeParser\Parser\CoreDirectives;
-use Stillat\BladeParser\Tests\ParserTestCase;
-
-class CoreDirectivesWithoutArgumentsTest extends ParserTestCase
-{
-    /**
-     * @dataProvider coreDirectives
-     */
-    public function testCoreDirectivesCanBeCompiledWithoutArgumentsAndNotThrowNullReferenceErrors($directive)
-    {
-        $this->expectNotToPerformAssertions();
-        $this->compiler->compileString($directive);
-    }
-
-    public static function coreDirectives(): array
-    {
-        return collect(array_diff(CoreDirectiveRetriever::instance()->getDirectiveNames(), ['foreach', 'forelse', 'endverbatim', 'use']))->map(function ($name) {
-            return ['@'.$name];
-        })->all();
-    }
-}
+test('core directives can be compiled without arguments and not throw null reference errors', function ($directive) {
+    $this->expectNotToPerformAssertions();
+    $this->compiler->compileString($directive);
+})->with(\coreDirectives());

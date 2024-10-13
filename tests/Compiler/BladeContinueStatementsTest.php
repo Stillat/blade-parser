@@ -1,73 +1,62 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Compiler;
-
-use Stillat\BladeParser\Tests\ParserTestCase;
-
-class BladeContinueStatementsTest extends ParserTestCase
-{
-    public function testContinueStatementsAreCompiled()
-    {
-        $string = '@for ($i = 0; $i < 10; $i++)
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
+test('continue statements are compiled', function () {
+    $string = '@for ($i = 0; $i < 10; $i++)
 test
 @continue
 @endfor';
-        $expected = '<?php for($i = 0; $i < 10; $i++): ?>
+    $expected = '<?php for($i = 0; $i < 10; $i++): ?>
 test
 <?php continue; ?>
 <?php endfor; ?>';
-        $this->assertEquals($expected, $this->compiler->compileString($string));
-    }
+    expect($this->compiler->compileString($string))->toEqual($expected);
+});
 
-    public function testContinueStatementsWithExpressionAreCompiled()
-    {
-        $string = '@for ($i = 0; $i < 10; $i++)
+test('continue statements with expression are compiled', function () {
+    $string = '@for ($i = 0; $i < 10; $i++)
 test
 @continue(TRUE)
 @endfor';
-        $expected = '<?php for($i = 0; $i < 10; $i++): ?>
+    $expected = '<?php for($i = 0; $i < 10; $i++): ?>
 test
 <?php if(TRUE) continue; ?>
 <?php endfor; ?>';
-        $this->assertEquals($expected, $this->compiler->compileString($string));
-    }
+    expect($this->compiler->compileString($string))->toEqual($expected);
+});
 
-    public function testContinueStatementsWithArgumentAreCompiled()
-    {
-        $string = '@for ($i = 0; $i < 10; $i++)
+test('continue statements with argument are compiled', function () {
+    $string = '@for ($i = 0; $i < 10; $i++)
 test
 @continue(2)
 @endfor';
-        $expected = '<?php for($i = 0; $i < 10; $i++): ?>
+    $expected = '<?php for($i = 0; $i < 10; $i++): ?>
 test
 <?php continue 2; ?>
 <?php endfor; ?>';
-        $this->assertEquals($expected, $this->compiler->compileString($string));
-    }
+    expect($this->compiler->compileString($string))->toEqual($expected);
+});
 
-    public function testContinueStatementsWithSpacedArgumentAreCompiled()
-    {
-        $string = '@for ($i = 0; $i < 10; $i++)
+test('continue statements with spaced argument are compiled', function () {
+    $string = '@for ($i = 0; $i < 10; $i++)
 test
 @continue( 2 )
 @endfor';
-        $expected = '<?php for($i = 0; $i < 10; $i++): ?>
+    $expected = '<?php for($i = 0; $i < 10; $i++): ?>
 test
 <?php continue 2; ?>
 <?php endfor; ?>';
-        $this->assertEquals($expected, $this->compiler->compileString($string));
-    }
+    expect($this->compiler->compileString($string))->toEqual($expected);
+});
 
-    public function testContinueStatementsWithFaultyArgumentAreCompiled()
-    {
-        $string = '@for ($i = 0; $i < 10; $i++)
+test('continue statements with faulty argument are compiled', function () {
+    $string = '@for ($i = 0; $i < 10; $i++)
 test
 @continue(-2)
 @endfor';
-        $expected = '<?php for($i = 0; $i < 10; $i++): ?>
+    $expected = '<?php for($i = 0; $i < 10; $i++): ?>
 test
 <?php continue 1; ?>
 <?php endfor; ?>';
-        $this->assertEquals($expected, $this->compiler->compileString($string));
-    }
-}
+    expect($this->compiler->compileString($string))->toEqual($expected);
+});

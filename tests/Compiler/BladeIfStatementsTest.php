@@ -1,25 +1,18 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Compiler;
-
-use Stillat\BladeParser\Tests\ParserTestCase;
-
-class BladeIfStatementsTest extends ParserTestCase
-{
-    public function testIfStatementsAreCompiled()
-    {
-        $string = '@if (name(foo(bar)))
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
+test('if statements are compiled', function () {
+    $string = '@if (name(foo(bar)))
 breeze
 @endif';
-        $expected = '<?php if(name(foo(bar))): ?>
+    $expected = '<?php if(name(foo(bar))): ?>
 breeze
 <?php endif; ?>';
-        $this->assertEquals($expected, $this->compiler->compileString($string));
-    }
+    expect($this->compiler->compileString($string))->toEqual($expected);
+});
 
-    public function testSwitchstatementsAreCompiled()
-    {
-        $string = '@switch(true)
+test('switchstatements are compiled', function () {
+    $string = '@switch(true)
 @case(1)
 foo
 
@@ -36,7 +29,7 @@ foo
 @case(2)
 bar
 @endswitch';
-        $expected = '<?php switch(true):
+    $expected = '<?php switch(true):
 case (1): ?>
 foo
 
@@ -53,6 +46,5 @@ foo
 <?php case (2): ?>
 bar
 <?php endswitch; ?>';
-        $this->assertEquals($expected, $this->compiler->compileString($string));
-    }
-}
+    expect($this->compiler->compileString($string))->toEqual($expected);
+});

@@ -1,16 +1,12 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Validation;
-
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
 use Stillat\BladeParser\Document\Document;
-use Stillat\BladeParser\Tests\ParserTestCase;
 use Stillat\BladeParser\Validation\Validators\ForElseStructureValidator;
 
-class ForElseStructureTest extends ParserTestCase
-{
-    public function testForElseValidatorDetectsTooManyEmptyDirectives()
-    {
-        $template = <<<'BLADE'
+
+test('for else validator detects too many empty directives', function () {
+    $template = <<<'BLADE'
 @forelse ($users as $user)
 
 @empty
@@ -18,42 +14,39 @@ class ForElseStructureTest extends ParserTestCase
 
 @endforelse
 BLADE;
-        $results = Document::fromText($template)
-            ->addValidator(new ForElseStructureValidator)
-            ->validate()->getValidationErrors();
+    $results = Document::fromText($template)
+        ->addValidator(new ForElseStructureValidator)
+        ->validate()->getValidationErrors();
 
-        $this->assertCount(1, $results);
-        $this->assertSame('Too many [@empty] directives inside [@forelse]', $results[0]->message);
-    }
+    expect($results)->toHaveCount(1);
+    expect($results[0]->message)->toBe('Too many [@empty] directives inside [@forelse]');
+});
 
-    public function testForElseValidatorDetectsMissingEmptyDirectives()
-    {
-        $template = <<<'BLADE'
+test('for else validator detects missing empty directives', function () {
+    $template = <<<'BLADE'
 @forelse ($users as $user)
 
 @endforelse
 BLADE;
-        $results = Document::fromText($template)
-            ->addValidator(new ForElseStructureValidator)
-            ->validate()->getValidationErrors();
+    $results = Document::fromText($template)
+        ->addValidator(new ForElseStructureValidator)
+        ->validate()->getValidationErrors();
 
-        $this->assertCount(1, $results);
-        $this->assertSame('Missing [@empty] directive inside [@forelse]', $results[0]->message);
-    }
+    expect($results)->toHaveCount(1);
+    expect($results[0]->message)->toBe('Missing [@empty] directive inside [@forelse]');
+});
 
-    public function testForElseValidatorDoesNotDetectIssues()
-    {
-        $template = <<<'BLADE'
+test('for else validator does not detect issues', function () {
+    $template = <<<'BLADE'
 @forelse ($users as $user)
 
 @empty
 
 @endforelse
 BLADE;
-        $results = Document::fromText($template)
-            ->addValidator(new ForElseStructureValidator)
-            ->validate()->getValidationErrors();
+    $results = Document::fromText($template)
+        ->addValidator(new ForElseStructureValidator)
+        ->validate()->getValidationErrors();
 
-        $this->assertCount(0, $results);
-    }
-}
+    expect($results)->toHaveCount(0);
+});

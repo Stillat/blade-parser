@@ -1,226 +1,210 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Documents;
-
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
 use Stillat\BladeParser\Document\Document;
 use Stillat\BladeParser\Nodes\AbstractNode;
-use Stillat\BladeParser\Tests\ParserTestCase;
 
-class GeneralDocumentDetailsTest extends ParserTestCase
-{
-    public function testFilePathCanBeSet()
-    {
-        $document = Document::fromText('Simple template', 'resources/views/layout.validation.php');
-        $this->assertSame('resources/views/layout.validation.php', $document->getFilePath());
-    }
+test('file path can be set', function () {
+    $document = Document::fromText('Simple template', 'resources/views/layout.validation.php');
+    expect($document->getFilePath())->toBe('resources/views/layout.validation.php');
+});
 
-    public function testDocumentToDocumentDoesNotReturnSameInstance()
-    {
-        $input = <<<'EOT'
+test('document to document does not return same instance', function () {
+    $input = <<<'EOT'
 @if ($this)
     @else ($that)
         @endif
 EOT;
-        $doc = $this->getDocument($input);
-        $doc2 = $doc->toDocument();
-        $this->assertNotNull($doc2);
-        $this->assertNotSame($doc, $doc2);
+    $doc = $this->getDocument($input);
+    $doc2 = $doc->toDocument();
+    expect($doc2)->not->toBeNull();
+    $this->assertNotSame($doc, $doc2);
 
-        $this->assertSame($input, (string) $doc);
-        $this->assertSame((string) $doc, (string) $doc2);
-    }
+    expect((string) $doc)->toBe($input);
+    expect((string) $doc2)->toBe((string) $doc);
+});
 
-    public function testDocumentTextExtraction()
-    {
-        $input = <<<'EOT'
+test('document text extraction', function () {
+    $input = <<<'EOT'
 A@@include ('one')B
     C@include ('two')D
         E@@include ('three')F
 EOT;
-        $doc = $this->getDocument($input);
+    $doc = $this->getDocument($input);
 
-        $expected = <<<'EXPECTED'
+    $expected = <<<'EXPECTED'
 A@include ('one')B
     CD
         E@include ('three')F
 EXPECTED;
-        $this->assertSame($expected, $doc->extractText());
+    expect($doc->extractText())->toBe($expected);
 
-        $expected = <<<'EXPECTED'
+    $expected = <<<'EXPECTED'
 A@@include ('one')B
     CD
         E@@include ('three')F
 EXPECTED;
-        $this->assertSame($expected, $doc->extractText(false));
-    }
+    expect($doc->extractText(false))->toBe($expected);
+});
 
-    public function testDocumentsReleaseNodes()
-    {
-        $input = <<<'EOT'
+test('documents release nodes', function () {
+    $input = <<<'EOT'
 @if ($this)
     @else ($that)
         @endif
 EOT;
-        $doc = $this->getDocument($input);
-        $nodes = $doc->getNodes();
+    $doc = $this->getDocument($input);
+    $nodes = $doc->getNodes();
 
-        /** @var AbstractNode $node */
-        foreach ($nodes as $node) {
-            $this->assertTrue($node->hasDocument());
-            $this->assertSame($doc, $node->getDocument());
-        }
-
-        $doc->releaseNodesFromDocument();
-
-        /** @var AbstractNode $node */
-        foreach ($nodes as $node) {
-            $this->assertFalse($node->hasDocument());
-            $this->assertNull($node->getDocument());
-        }
+    /** @var AbstractNode $node */
+    foreach ($nodes as $node) {
+        expect($node->hasDocument())->toBeTrue();
+        expect($node->getDocument())->toBe($doc);
     }
 
-    public function testDocumentLineCount()
-    {
-        $this->assertSame(1, $this->getDocument('')->getLineCount());
-        $this->assertSame(3, $this->getDocument(str_repeat("\n", 3))->getLineCount());
-    }
+    $doc->releaseNodesFromDocument();
 
-    public function testLineNumberFromOffset()
-    {
-        $input = <<<'EOT'
+    /** @var AbstractNode $node */
+    foreach ($nodes as $node) {
+        expect($node->hasDocument())->toBeFalse();
+        expect($node->getDocument())->toBeNull();
+    }
+});
+
+test('document line count', function () {
+    expect($this->getDocument('')->getLineCount())->toBe(1);
+    expect($this->getDocument(str_repeat("\n", 3))->getLineCount())->toBe(3);
+});
+
+test('line number from offset', function () {
+    $input = <<<'EOT'
 @if ('this')
     then
 @endif
 EOT;
-        $doc = $this->getDocument($input);
+    $doc = $this->getDocument($input);
 
-        $line = 1;
-        for ($i = 0; $i < strlen($input); $i++) {
-            $this->assertSame($line, $doc->getLineNumberFromOffset($i));
-            if ($input[$i] == "\n") {
-                $line += 1;
-            }
+    $line = 1;
+    for ($i = 0; $i < strlen($input); $i++) {
+        expect($doc->getLineNumberFromOffset($i))->toBe($line);
+        if ($input[$i] == "\n") {
+            $line += 1;
         }
     }
+});
 
-    public function testColumnNumberFromOffset()
-    {
-        $input = <<<'EOT'
+test('column number from offset', function () {
+    $input = <<<'EOT'
 @if ('this')
     then
 @endif
 EOT;
-        $doc = $this->getDocument($input);
+    $doc = $this->getDocument($input);
 
-        $column = 1;
-        for ($i = 0; $i < strlen($input); $i++) {
-            $this->assertSame($column, $doc->getColumnNumberFromOffset($i));
-            if ($input[$i] == "\n") {
-                $column = 1;
-            } else {
-                $column += 1;
-            }
+    $column = 1;
+    for ($i = 0; $i < strlen($input); $i++) {
+        expect($doc->getColumnNumberFromOffset($i))->toBe($column);
+        if ($input[$i] == "\n") {
+            $column = 1;
+        } else {
+            $column += 1;
         }
     }
+});
 
-    public function testWordAtOffset()
-    {
-        $input = <<<'EOT'
+test('word at offset', function () {
+    $input = <<<'EOT'
 @if ('this')
     then
 @endif
 EOT;
-        $doc = $this->getDocument($input);
+    $doc = $this->getDocument($input);
 
-        $this->assertSame('this', $doc->getWordAtOffset(6));
-        $this->assertSame('this', $doc->getWordAtOffset(7));
-        $this->assertSame('this', $doc->getWordAtOffset(8));
-        $this->assertSame('this', $doc->getWordAtOffset(9));
+    expect($doc->getWordAtOffset(6))->toBe('this');
+    expect($doc->getWordAtOffset(7))->toBe('this');
+    expect($doc->getWordAtOffset(8))->toBe('this');
+    expect($doc->getWordAtOffset(9))->toBe('this');
 
-        $this->assertSame('if', $doc->getWordAtOffset(1));
-        $this->assertSame('if', $doc->getWordAtOffset(2));
-        $this->assertSame('@if', $doc->getWordAtOffset(1, ['@']));
-        $this->assertSame('@if', $doc->getWordAtOffset(2, ['@']));
-        $this->assertSame('@if', $doc->getWordAtOffset(0, ['@']));
+    expect($doc->getWordAtOffset(1))->toBe('if');
+    expect($doc->getWordAtOffset(2))->toBe('if');
+    expect($doc->getWordAtOffset(1, ['@']))->toBe('@if');
+    expect($doc->getWordAtOffset(2, ['@']))->toBe('@if');
+    expect($doc->getWordAtOffset(0, ['@']))->toBe('@if');
 
-        $this->assertSame('endif', $doc->getWordAtOffset(23));
-        $this->assertSame('endif', $doc->getWordAtOffset(24));
-        $this->assertSame('endif', $doc->getWordAtOffset(25));
-        $this->assertSame('endif', $doc->getWordAtOffset(26));
-        $this->assertSame('endif', $doc->getWordAtOffset(27));
-    }
+    expect($doc->getWordAtOffset(23))->toBe('endif');
+    expect($doc->getWordAtOffset(24))->toBe('endif');
+    expect($doc->getWordAtOffset(25))->toBe('endif');
+    expect($doc->getWordAtOffset(26))->toBe('endif');
+    expect($doc->getWordAtOffset(27))->toBe('endif');
+});
 
-    public function testDocumentGetLines()
-    {
-        $input = <<<'EOT'
+test('document get lines', function () {
+    $input = <<<'EOT'
 @if ('this')
     then
 @endif
 EOT;
-        $doc = $this->getDocument($input);
-        $lines = [
-            "@if ('this')",
-            '    then',
-            '@endif',
-        ];
+    $doc = $this->getDocument($input);
+    $lines = [
+        "@if ('this')",
+        '    then',
+        '@endif',
+    ];
 
-        $this->assertSame($lines, $doc->getLines());
-    }
+    expect($doc->getLines())->toBe($lines);
+});
 
-    public function testGetWordLeftAtOffset()
-    {
-        $input = <<<'EOT'
+test('get word left at offset', function () {
+    $input = <<<'EOT'
 One Two-Three
 EOT;
-        $doc = $this->getDocument($input);
+    $doc = $this->getDocument($input);
 
-        $this->assertNull($doc->getWordLeftAtOffset(0));
-        $this->assertNull($doc->getWordLeftAtOffset(1));
-        $this->assertNull($doc->getWordLeftAtOffset(2));
+    expect($doc->getWordLeftAtOffset(0))->toBeNull();
+    expect($doc->getWordLeftAtOffset(1))->toBeNull();
+    expect($doc->getWordLeftAtOffset(2))->toBeNull();
 
-        $this->assertSame('One', $doc->getWordLeftAtOffset(4));
-        $this->assertSame('One', $doc->getWordLeftAtOffset(5));
-        $this->assertSame('One', $doc->getWordLeftAtOffset(6));
-        $this->assertSame('One', $doc->getWordLeftAtOffset(7));
+    expect($doc->getWordLeftAtOffset(4))->toBe('One');
+    expect($doc->getWordLeftAtOffset(5))->toBe('One');
+    expect($doc->getWordLeftAtOffset(6))->toBe('One');
+    expect($doc->getWordLeftAtOffset(7))->toBe('One');
 
-        $this->assertSame('Two', $doc->getWordLeftAtOffset(8, []));
-        $this->assertSame('Two', $doc->getWordLeftAtOffset(9, []));
-        $this->assertSame('Two', $doc->getWordLeftAtOffset(10, []));
-        $this->assertSame('Two', $doc->getWordLeftAtOffset(11, []));
-        $this->assertSame('Two', $doc->getWordLeftAtOffset(12, []));
+    expect($doc->getWordLeftAtOffset(8, []))->toBe('Two');
+    expect($doc->getWordLeftAtOffset(9, []))->toBe('Two');
+    expect($doc->getWordLeftAtOffset(10, []))->toBe('Two');
+    expect($doc->getWordLeftAtOffset(11, []))->toBe('Two');
+    expect($doc->getWordLeftAtOffset(12, []))->toBe('Two');
 
-        $this->assertSame('One', $doc->getWordLeftAtOffset(8));
-        $this->assertSame('One', $doc->getWordLeftAtOffset(9));
-        $this->assertSame('One', $doc->getWordLeftAtOffset(10));
-        $this->assertSame('One', $doc->getWordLeftAtOffset(11));
-        $this->assertSame('One', $doc->getWordLeftAtOffset(12));
-    }
+    expect($doc->getWordLeftAtOffset(8))->toBe('One');
+    expect($doc->getWordLeftAtOffset(9))->toBe('One');
+    expect($doc->getWordLeftAtOffset(10))->toBe('One');
+    expect($doc->getWordLeftAtOffset(11))->toBe('One');
+    expect($doc->getWordLeftAtOffset(12))->toBe('One');
+});
 
-    public function testGetWordRightAtOffset()
-    {
-        $input = <<<'EOT'
+test('get word right at offset', function () {
+    $input = <<<'EOT'
 One Two-Three
 EOT;
-        $doc = $this->getDocument($input);
+    $doc = $this->getDocument($input);
 
-        $this->assertSame('Two-Three', $doc->getWordRightAtOffset(0));
-        $this->assertSame('Two-Three', $doc->getWordRightAtOffset(1));
-        $this->assertSame('Two-Three', $doc->getWordRightAtOffset(2));
-        $this->assertSame('Two-Three', $doc->getWordRightAtOffset(3));
+    expect($doc->getWordRightAtOffset(0))->toBe('Two-Three');
+    expect($doc->getWordRightAtOffset(1))->toBe('Two-Three');
+    expect($doc->getWordRightAtOffset(2))->toBe('Two-Three');
+    expect($doc->getWordRightAtOffset(3))->toBe('Two-Three');
 
-        for ($i = 4; $i <= 12; $i++) {
-            $this->assertNull($doc->getWordRightAtOffset($i));
-        }
-
-        $this->assertSame('Three', $doc->getWordRightAtOffset(4, []));
-        $this->assertSame('Three', $doc->getWordRightAtOffset(5, []));
-        $this->assertSame('Three', $doc->getWordRightAtOffset(6, []));
-        $this->assertSame('Three', $doc->getWordRightAtOffset(7, []));
+    for ($i = 4; $i <= 12; $i++) {
+        expect($doc->getWordRightAtOffset($i))->toBeNull();
     }
 
-    public function testGetLineExcerpt()
-    {
-        $input = <<<'EOT'
+    expect($doc->getWordRightAtOffset(4, []))->toBe('Three');
+    expect($doc->getWordRightAtOffset(5, []))->toBe('Three');
+    expect($doc->getWordRightAtOffset(6, []))->toBe('Three');
+    expect($doc->getWordRightAtOffset(7, []))->toBe('Three');
+});
+
+test('get line excerpt', function () {
+    $input = <<<'EOT'
 One
 Two
 Three
@@ -230,28 +214,27 @@ Six
 Seven
 Eight
 EOT;
-        $doc = $this->getDocument($input);
+    $doc = $this->getDocument($input);
 
-        $this->assertSame([
-            3 => 'Three',
-            4 => 'Four',
-            5 => 'Five',
-            6 => 'Six',
-            7 => 'Seven',
-        ], $doc->getLineExcerpt(5));
+    expect($doc->getLineExcerpt(5))->toBe([
+        3 => 'Three',
+        4 => 'Four',
+        5 => 'Five',
+        6 => 'Six',
+        7 => 'Seven',
+    ]);
 
-        $this->assertSame([
-            1 => 'One',
-            2 => 'Two',
-            3 => 'Three',
-        ], $doc->getLineExcerpt(1));
+    expect($doc->getLineExcerpt(1))->toBe([
+        1 => 'One',
+        2 => 'Two',
+        3 => 'Three',
+    ]);
 
-        $this->assertSame([
-            4 => 'Four',
-            5 => 'Five',
-            6 => 'Six',
-            7 => 'Seven',
-            8 => 'Eight',
-        ], $doc->getLineExcerpt(8, 4));
-    }
-}
+    expect($doc->getLineExcerpt(8, 4))->toBe([
+        4 => 'Four',
+        5 => 'Five',
+        6 => 'Six',
+        7 => 'Seven',
+        8 => 'Eight',
+    ]);
+});

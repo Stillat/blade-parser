@@ -1,7 +1,6 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Reflection;
-
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
 use Stillat\BladeParser\Nodes\CommentNode;
 use Stillat\BladeParser\Nodes\Components\ComponentNode;
 use Stillat\BladeParser\Nodes\Components\ParameterAttribute;
@@ -12,243 +11,229 @@ use Stillat\BladeParser\Nodes\LiteralNode;
 use Stillat\BladeParser\Nodes\PhpBlockNode;
 use Stillat\BladeParser\Nodes\PhpTagNode;
 use Stillat\BladeParser\Nodes\VerbatimNode;
-use Stillat\BladeParser\Tests\ParserTestCase;
 
-class NodeCloningTest extends ParserTestCase
-{
-    public function testLiteralCloning()
-    {
-        $template = <<<'EOT'
+test('literal cloning', function () {
+    $template = <<<'EOT'
 Just a literal
 EOT;
-        $document = $this->getDocument($template);
+    $document = $this->getDocument($template);
 
-        /** @var LiteralNode $literal */
-        $literal = $document->firstOfType(LiteralNode::class);
-        $copy = $literal->clone();
+    /** @var LiteralNode $literal */
+    $literal = $document->firstOfType(LiteralNode::class);
+    $copy = $literal->clone();
 
-        $this->assertInstanceOf(LiteralNode::class, $literal);
-        $this->assertInstanceOf(LiteralNode::class, $copy);
+    expect($literal)->toBeInstanceOf(LiteralNode::class);
+    expect($copy)->toBeInstanceOf(LiteralNode::class);
 
-        $this->assertClonedBasicDetailsMatch($copy, $literal);
-        $this->assertSame($copy->unescapedContent, $literal->unescapedContent);
-    }
+    $this->assertClonedBasicDetailsMatch($copy, $literal);
+    expect($literal->unescapedContent)->toBe($copy->unescapedContent);
+});
 
-    public function testCommentNodeCloning()
-    {
-        $template = <<<'EOT'
+test('comment node cloning', function () {
+    $template = <<<'EOT'
 {{-- Comment --}}
 EOT;
-        $document = $this->getDocument($template);
+    $document = $this->getDocument($template);
 
-        /** @var CommentNode $comment */
-        $comment = $document->firstOfType(CommentNode::class);
-        $copy = $comment->clone();
+    /** @var CommentNode $comment */
+    $comment = $document->firstOfType(CommentNode::class);
+    $copy = $comment->clone();
 
-        $this->assertInstanceOf(CommentNode::class, $comment);
-        $this->assertInstanceOf(CommentNode::class, $copy);
+    expect($comment)->toBeInstanceOf(CommentNode::class);
+    expect($copy)->toBeInstanceOf(CommentNode::class);
 
-        $this->assertClonedBasicDetailsMatch($copy, $comment);
-        $this->assertSame($copy->innerContent, $comment->innerContent);
-    }
+    $this->assertClonedBasicDetailsMatch($copy, $comment);
+    expect($comment->innerContent)->toBe($copy->innerContent);
+});
 
-    public function testDirectiveNodeCloning()
-    {
-        $template = <<<'EOT'
+test('directive node cloning', function () {
+    $template = <<<'EOT'
 @if ($something == $somethingElse)
 EOT;
-        $document = $this->getDocument($template);
+    $document = $this->getDocument($template);
 
-        /** @var DirectiveNode $directive */
-        $directive = $document->firstOfType(DirectiveNode::class);
-        $copy = $directive->clone();
+    /** @var DirectiveNode $directive */
+    $directive = $document->firstOfType(DirectiveNode::class);
+    $copy = $directive->clone();
 
-        $this->assertInstanceOf(DirectiveNode::class, $directive);
-        $this->assertInstanceOf(DirectiveNode::class, $copy);
+    expect($directive)->toBeInstanceOf(DirectiveNode::class);
+    expect($copy)->toBeInstanceOf(DirectiveNode::class);
 
-        $this->assertClonedBasicDetailsMatch($directive, $copy);
-        $this->assertSame($copy->sourceContent, $directive->sourceContent);
+    $this->assertClonedBasicDetailsMatch($directive, $copy);
+    expect($directive->sourceContent)->toBe($copy->sourceContent);
 
-        $args = $directive->arguments;
-        $argsCopy = $args->clone();
+    $args = $directive->arguments;
+    $argsCopy = $args->clone();
 
-        $this->assertClonedBasicDetailsMatch($args, $argsCopy);
-        $this->assertSame($args->innerContent, $argsCopy->innerContent);
-        $this->assertSame($args->contentType, $argsCopy->contentType);
-    }
+    $this->assertClonedBasicDetailsMatch($args, $argsCopy);
+    expect($argsCopy->innerContent)->toBe($args->innerContent);
+    expect($argsCopy->contentType)->toBe($args->contentType);
+});
 
-    public function testEchoNodeCloning()
-    {
-        $template = <<<'EOT'
+test('echo node cloning', function () {
+    $template = <<<'EOT'
 {{ $variable }}
 EOT;
-        $document = $this->getDocument($template);
+    $document = $this->getDocument($template);
 
-        /** @var EchoNode $echo */
-        $echo = $document->firstOfType(EchoNode::class);
-        $copy = $echo->clone();
+    /** @var EchoNode $echo */
+    $echo = $document->firstOfType(EchoNode::class);
+    $copy = $echo->clone();
 
-        $this->assertInstanceOf(EchoNode::class, $echo);
-        $this->assertInstanceOf(EchoNode::class, $copy);
+    expect($echo)->toBeInstanceOf(EchoNode::class);
+    expect($copy)->toBeInstanceOf(EchoNode::class);
 
-        $this->assertClonedBasicDetailsMatch($echo, $copy);
-        $this->assertSame($copy->innerContent, $echo->innerContent);
-        $this->assertSame($copy->type, $echo->type);
-    }
+    $this->assertClonedBasicDetailsMatch($echo, $copy);
+    expect($echo->innerContent)->toBe($copy->innerContent);
+    expect($echo->type)->toBe($copy->type);
+});
 
-    public function testPhpBlockNodeCloning()
-    {
-        $template = <<<'EOT'
+test('php block node cloning', function () {
+    $template = <<<'EOT'
 @php
     $justSomeContent = 'hello, world';
 @endphp
 EOT;
-        $document = $this->getDocument($template);
+    $document = $this->getDocument($template);
 
-        /** @var PhpBlockNode $phpBlock */
-        $phpBlock = $document->firstOfType(PhpBlockNode::class);
-        $copy = $phpBlock->clone();
+    /** @var PhpBlockNode $phpBlock */
+    $phpBlock = $document->firstOfType(PhpBlockNode::class);
+    $copy = $phpBlock->clone();
 
-        $this->assertInstanceOf(PhpBlockNode::class, $phpBlock);
-        $this->assertInstanceOf(PhpBlockNode::class, $copy);
+    expect($phpBlock)->toBeInstanceOf(PhpBlockNode::class);
+    expect($copy)->toBeInstanceOf(PhpBlockNode::class);
 
-        $this->assertClonedBasicDetailsMatch($phpBlock, $copy);
-        $this->assertSame($phpBlock->innerContent, $copy->innerContent);
-    }
+    $this->assertClonedBasicDetailsMatch($phpBlock, $copy);
+    expect($copy->innerContent)->toBe($phpBlock->innerContent);
+});
 
-    public function testPhpTagNodeCloning()
-    {
-        $template = <<<'EOT'
+test('php tag node cloning', function () {
+    $template = <<<'EOT'
 <?php $justSomeContent = 'hello, world'; ?>
 EOT;
-        $document = $this->getDocument($template);
+    $document = $this->getDocument($template);
 
-        /** @var PhpTagNode $phpTag */
-        $phpTag = $document->firstOfType(PhpTagNode::class);
-        $copy = $phpTag->clone();
+    /** @var PhpTagNode $phpTag */
+    $phpTag = $document->firstOfType(PhpTagNode::class);
+    $copy = $phpTag->clone();
 
-        $this->assertInstanceOf(PhpTagNode::class, $phpTag);
-        $this->assertInstanceOf(PhpTagNode::class, $copy);
+    expect($phpTag)->toBeInstanceOf(PhpTagNode::class);
+    expect($copy)->toBeInstanceOf(PhpTagNode::class);
 
-        $this->assertClonedBasicDetailsMatch($phpTag, $copy);
-        $this->assertSame($phpTag->type, $copy->type);
-    }
+    $this->assertClonedBasicDetailsMatch($phpTag, $copy);
+    expect($copy->type)->toBe($phpTag->type);
+});
 
-    public function testRawEchoNodeCloning()
-    {
-        $template = <<<'EOT'
+test('raw echo node cloning', function () {
+    $template = <<<'EOT'
 {!! $variable !!}
 EOT;
-        $document = $this->getDocument($template);
+    $document = $this->getDocument($template);
 
-        /** @var EchoNode $echo */
-        $echo = $document->firstOfType(EchoNode::class);
-        $copy = $echo->clone();
+    /** @var EchoNode $echo */
+    $echo = $document->firstOfType(EchoNode::class);
+    $copy = $echo->clone();
 
-        $this->assertInstanceOf(EchoNode::class, $echo);
-        $this->assertInstanceOf(EchoNode::class, $copy);
+    expect($echo)->toBeInstanceOf(EchoNode::class);
+    expect($copy)->toBeInstanceOf(EchoNode::class);
 
-        $this->assertClonedBasicDetailsMatch($echo, $copy);
-        $this->assertSame($copy->innerContent, $echo->innerContent);
-    }
+    $this->assertClonedBasicDetailsMatch($echo, $copy);
+    expect($echo->innerContent)->toBe($copy->innerContent);
+});
 
-    public function testTripleEchoNodeCloning()
-    {
-        $template = <<<'EOT'
+test('triple echo node cloning', function () {
+    $template = <<<'EOT'
 {{{ $variable }}}
 EOT;
-        $document = $this->getDocument($template);
+    $document = $this->getDocument($template);
 
-        /** @var EchoNode $echo */
-        $echo = $document->firstOfType(EchoNode::class);
-        $copy = $echo->clone();
+    /** @var EchoNode $echo */
+    $echo = $document->firstOfType(EchoNode::class);
+    $copy = $echo->clone();
 
-        $this->assertInstanceOf(EchoNode::class, $echo);
-        $this->assertInstanceOf(EchoNode::class, $copy);
+    expect($echo)->toBeInstanceOf(EchoNode::class);
+    expect($copy)->toBeInstanceOf(EchoNode::class);
 
-        $this->assertClonedBasicDetailsMatch($echo, $copy);
-        $this->assertSame($copy->innerContent, $echo->innerContent);
-    }
+    $this->assertClonedBasicDetailsMatch($echo, $copy);
+    expect($echo->innerContent)->toBe($copy->innerContent);
+});
 
-    public function testVerbatimNodeCloning()
-    {
-        $template = <<<'EOT'
+test('verbatim node cloning', function () {
+    $template = <<<'EOT'
 @verbatim
     @if @endif <?php ?>
     
     {{ echo }}
 @endverbatim
 EOT;
-        $document = $this->getDocument($template);
+    $document = $this->getDocument($template);
 
-        /** @var VerbatimNode $verbatim */
-        $verbatim = $document->firstOfType(VerbatimNode::class);
-        $copy = $verbatim->clone();
+    /** @var VerbatimNode $verbatim */
+    $verbatim = $document->firstOfType(VerbatimNode::class);
+    $copy = $verbatim->clone();
 
-        $this->assertInstanceOf(VerbatimNode::class, $verbatim);
-        $this->assertInstanceOf(VerbatimNode::class, $copy);
+    expect($verbatim)->toBeInstanceOf(VerbatimNode::class);
+    expect($copy)->toBeInstanceOf(VerbatimNode::class);
 
-        $this->assertClonedBasicDetailsMatch($verbatim, $copy);
-        $this->assertSame($verbatim->innerContent, $copy->innerContent);
+    $this->assertClonedBasicDetailsMatch($verbatim, $copy);
+    expect($copy->innerContent)->toBe($verbatim->innerContent);
+});
+
+test('component node cloning', function () {
+    $template = 'a<x-slot name="foo" />c';
+    $document = $this->getDocument($template);
+
+    /** @var ComponentNode $component */
+    $component = $document->firstOfType(ComponentNode::class);
+    $copy = $component->clone();
+
+    expect($component)->toBeInstanceOf(ComponentNode::class);
+    expect($copy)->toBeInstanceOf(ComponentNode::class);
+
+    $this->assertClonedBasicDetailsMatch($component, $copy);
+    expect($copy->isSelfClosing)->toBe($component->isSelfClosing);
+    expect($copy->isClosingTag)->toBe($component->isClosingTag);
+    expect($copy->innerContent)->toBe($component->innerContent);
+    expect($copy->parameterContent)->toBe($component->parameterContent);
+    expect($copy->name)->toBe($component->name);
+    expect($copy->tagName)->toBe($component->tagName);
+
+    $this->assertClonedPositionsMatch($component->namePosition, $copy->namePosition);
+    $this->assertClonedPositionsMatch($component->parameterContentPosition, $copy->parameterContentPosition);
+
+    expect($copy->parameterCount)->toBe($component->parameterCount);
+
+    for ($i = 0; $i < count($component->parameters); $i++) {
+        /** @var ParameterNode $parameter */
+        $parameter = $component->parameters[$i];
+        $paramClone = $parameter->clone();
+
+        expect($parameter)->toBeInstanceOf(ParameterNode::class);
+        expect($paramClone)->toBeInstanceOf(ParameterNode::class);
+
+        $this->assertClonedBasicDetailsMatch($parameter, $paramClone);
+        expect($paramClone->name)->toBe($parameter->name);
+        expect($paramClone->materializedName)->toBe($parameter->materializedName);
+        expect($paramClone->value)->toBe($parameter->value);
+
+        /** @var ParameterAttribute $name */
+        $name = $parameter->nameNode;
+        $nameCopy = $name->clone();
+
+        expect($name)->toBeInstanceOf(ParameterAttribute::class);
+        expect($nameCopy)->toBeInstanceOf(ParameterAttribute::class);
+
+        $this->assertClonedBasicDetailsMatch($name, $nameCopy);
+        expect($nameCopy->content)->toBe($name->content);
+
+        /** @var ParameterAttribute $value */
+        $value = $parameter->valueNode;
+        $valueCopy = $value->clone();
+
+        expect($value)->toBeInstanceOf(ParameterAttribute::class);
+        expect($valueCopy)->toBeInstanceOf(ParameterAttribute::class);
+
+        $this->assertClonedBasicDetailsMatch($value, $valueCopy);
+        expect($valueCopy->content)->toBe($value->content);
     }
-
-    public function testComponentNodeCloning()
-    {
-        $template = 'a<x-slot name="foo" />c';
-        $document = $this->getDocument($template);
-
-        /** @var ComponentNode $component */
-        $component = $document->firstOfType(ComponentNode::class);
-        $copy = $component->clone();
-
-        $this->assertInstanceOf(ComponentNode::class, $component);
-        $this->assertInstanceOf(ComponentNode::class, $copy);
-
-        $this->assertClonedBasicDetailsMatch($component, $copy);
-        $this->assertSame($component->isSelfClosing, $copy->isSelfClosing);
-        $this->assertSame($component->isClosingTag, $copy->isClosingTag);
-        $this->assertSame($component->innerContent, $copy->innerContent);
-        $this->assertSame($component->parameterContent, $copy->parameterContent);
-        $this->assertSame($component->name, $copy->name);
-        $this->assertSame($component->tagName, $copy->tagName);
-
-        $this->assertClonedPositionsMatch($component->namePosition, $copy->namePosition);
-        $this->assertClonedPositionsMatch($component->parameterContentPosition, $copy->parameterContentPosition);
-
-        $this->assertSame($component->parameterCount, $copy->parameterCount);
-
-        for ($i = 0; $i < count($component->parameters); $i++) {
-            /** @var ParameterNode $parameter */
-            $parameter = $component->parameters[$i];
-            $paramClone = $parameter->clone();
-
-            $this->assertInstanceOf(ParameterNode::class, $parameter);
-            $this->assertInstanceOf(ParameterNode::class, $paramClone);
-
-            $this->assertClonedBasicDetailsMatch($parameter, $paramClone);
-            $this->assertSame($parameter->name, $paramClone->name);
-            $this->assertSame($parameter->materializedName, $paramClone->materializedName);
-            $this->assertSame($parameter->value, $paramClone->value);
-
-            /** @var ParameterAttribute $name */
-            $name = $parameter->nameNode;
-            $nameCopy = $name->clone();
-
-            $this->assertInstanceOf(ParameterAttribute::class, $name);
-            $this->assertInstanceOf(ParameterAttribute::class, $nameCopy);
-
-            $this->assertClonedBasicDetailsMatch($name, $nameCopy);
-            $this->assertSame($name->content, $nameCopy->content);
-
-            /** @var ParameterAttribute $value */
-            $value = $parameter->valueNode;
-            $valueCopy = $value->clone();
-
-            $this->assertInstanceOf(ParameterAttribute::class, $value);
-            $this->assertInstanceOf(ParameterAttribute::class, $valueCopy);
-
-            $this->assertClonedBasicDetailsMatch($value, $valueCopy);
-            $this->assertSame($value->content, $valueCopy->content);
-        }
-    }
-}
+});

@@ -1,67 +1,59 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Reflection;
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
+test('basic component reflection', function () {
+    $template = 'a<x-alert />b<x-alert />c<x-alert-two />';
+    $document = $this->getDocument($template);
 
-use Stillat\BladeParser\Tests\ParserTestCase;
+    expect($document->getLiterals())->toHaveCount(3);
+    expect($document->findComponentsByTagName('alert'))->toHaveCount(2);
+    expect($document->findComponentsByTagName('alert-two'))->toHaveCount(1);
 
-class ComponentReflectionTest extends ParserTestCase
-{
-    public function testBasicComponentReflection()
-    {
-        $template = 'a<x-alert />b<x-alert />c<x-alert-two />';
-        $document = $this->getDocument($template);
+    $nodes = $document->getNodes();
 
-        $this->assertCount(3, $document->getLiterals());
-        $this->assertCount(2, $document->findComponentsByTagName('alert'));
-        $this->assertCount(1, $document->findComponentsByTagName('alert-two'));
+    // Should return the first one.
+    expect($document->findComponentByTagName('alert'))->toBe($nodes[1]);
+});
 
-        $nodes = $document->getNodes();
-        // Should return the first one.
-        $this->assertSame($nodes[1], $document->findComponentByTagName('alert'));
-    }
+test('component has parameter', function () {
+    $template = 'a<x-alert message="The message" />b<x-alert />c<x-alert-two />';
+    $doc = $this->getDocument($template);
+    expect($doc->hasAnyComponents())->toBeTrue();
+    $component = $doc->getComponents()->first();
 
-    public function testComponentHasParameter()
-    {
-        $template = 'a<x-alert message="The message" />b<x-alert />c<x-alert-two />';
-        $doc = $this->getDocument($template);
-        $this->assertTrue($doc->hasAnyComponents());
-        $component = $doc->getComponents()->first();
+    $firstParam = $component->parameters[0];
+    $firstParamByName = $component->getParameter('message');
+    expect($firstParamByName)->not->toBeNull();
+    expect($firstParam)->toEqual($firstParamByName);
 
-        $firstParam = $component->parameters[0];
-        $firstParamByName = $component->getParameter('message');
-        $this->assertNotNull($firstParamByName);
-        $this->assertEquals($firstParamByName, $firstParam);
+    expect($component->hasParameterInstance($firstParam))->toBeTrue();
+    expect($component->hasParameters())->toBeTrue();
+    expect($component->hasParameter('some_parameter'))->toBeFalse();
+    expect($component->hasParameter('message'))->toBeTrue();
+});
 
-        $this->assertTrue($component->hasParameterInstance($firstParam));
-        $this->assertTrue($component->hasParameters());
-        $this->assertFalse($component->hasParameter('some_parameter'));
-        $this->assertTrue($component->hasParameter('message'));
-    }
-
-    public function testComponentSlotInformation()
-    {
-        $template = <<<'BLADE'
+test('component slot information', function () {
+    $template = <<<'BLADE'
 <x-input-with-slot>
     <x-slot:input class="text-input-lg" :name="'my_form_field'" data-test="data">Test</x-slot:input>
 </x-input-with-slot>
 BLADE;
 
-        $slot = $this->getDocument($template)->findComponentByTagName('slot');
+    $slot = $this->getDocument($template)->findComponentByTagName('slot');
 
-        $this->assertTrue($slot->isSlot());
-        $this->assertSame('slot', $slot->getTagName());
-        $this->assertSame('input', $slot->getName());
+    expect($slot->isSlot())->toBeTrue();
+    expect($slot->getTagName())->toBe('slot');
+    expect($slot->getName())->toBe('input');
 
-        $template = <<<'BLADE'
+    $template = <<<'BLADE'
 <x-input-with-slot>
     <x-slot :name="'my_form_field'" class="text-input-lg" :name="'my_form_field'" data-test="data">Test</x-slot>
 </x-input-with-slot>
 BLADE;
 
-        $slot = $this->getDocument($template)->findComponentByTagName('slot');
+    $slot = $this->getDocument($template)->findComponentByTagName('slot');
 
-        $this->assertTrue($slot->isSlot());
-        $this->assertSame('slot', $slot->getTagName());
-        $this->assertSame("'my_form_field'", $slot->getName()->value);
-    }
-}
+    expect($slot->isSlot())->toBeTrue();
+    expect($slot->getTagName())->toBe('slot');
+    expect($slot->getName()->value)->toBe("'my_form_field'");
+});

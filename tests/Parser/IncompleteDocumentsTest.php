@@ -1,51 +1,29 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Parser;
-
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
 use Stillat\BladeParser\Tests\DocumentSplitter;
-use Stillat\BladeParser\Tests\ParserTestCase;
 
-/**
- * These tests ensure that the parser & structure resolver can
- * accept a variety of incomplete input and not crash entirely.
- *
- * Everything about these test documents is horrible.
- */
-class IncompleteDocumentsTest extends ParserTestCase
+test('incomplete documents one', function (string $template) {
+    $doc = $this->getDocument($template)->resolveStructures();
+
+    expect((string) $doc)->toBe($template);
+})->with(splitWelcomeView());
+
+test('incomplete documents two', function (string $template) {
+    $doc = $this->getDocument($template)->resolveStructures();
+
+    expect((string) $doc)->toBe($template);
+})->with(splitWithVerbatim());
+
+test('incomplete documents three', function (string $template) {
+    $doc = $this->getDocument($template)->resolveStructures();
+
+    expect((string) $doc)->toBe($template);
+})->with(charSplitWithVerbatim());
+
+function charSplitWithVerbatim(): array
 {
-    /**
-     * @dataProvider splitWelcomeView
-     */
-    public function testIncompleteDocumentsOne(string $template)
-    {
-        $doc = $this->getDocument($template)->resolveStructures();
-
-        $this->assertSame($template, (string) $doc);
-    }
-
-    /**
-     * @dataProvider splitWithVerbatim
-     */
-    public function testIncompleteDocumentsTwo(string $template)
-    {
-        $doc = $this->getDocument($template)->resolveStructures();
-
-        $this->assertSame($template, (string) $doc);
-    }
-
-    /**
-     * @dataProvider charSplitWithVerbatim
-     */
-    public function testIncompleteDocumentsThree(string $template)
-    {
-        $doc = $this->getDocument($template)->resolveStructures();
-
-        $this->assertSame($template, (string) $doc);
-    }
-
-    public static function charSplitWithVerbatim()
-    {
-        $template = <<<'EOT'
+    $template = <<<'EOT'
 start @verbatim
 {{-- comment!!! --}}3
 s1@props-two(['color' => (true ?? 'gray')])
@@ -61,12 +39,12 @@ s3@props-three  (['color' => (true ?? 'gray')])
 end @endverbatim end
 EOT;
 
-        return DocumentSplitter::splitDocumentOnChar($template);
-    }
+    return DocumentSplitter::splitDocumentOnChar($template);
+}
 
-    public static function splitWithVerbatim()
-    {
-        $template = <<<'EOT'
+function splitWithVerbatim(): array
+{
+    $template = <<<'EOT'
 start @verbatim start
 
 start
@@ -112,12 +90,12 @@ s3@props-three  (['color' => (true ?? 'gray')])
 end @endverbatim end
 EOT;
 
-        return DocumentSplitter::splitDocumentOnNewLines($template);
-    }
+    return DocumentSplitter::splitDocumentOnNewLines($template);
+}
 
-    public static function splitWelcomeView()
-    {
-        $template = <<<'EOT'
+function splitWelcomeView(): array
+{
+    $template = <<<'EOT'
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-',
  app()->getLocale()) }}">
@@ -256,6 +234,5 @@ EOT;
 
 EOT;
 
-        return DocumentSplitter::splitDocumentOnNewLines($template);
-    }
+    return DocumentSplitter::splitDocumentOnNewLines($template);
 }

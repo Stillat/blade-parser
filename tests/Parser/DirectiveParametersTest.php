@@ -1,48 +1,41 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Parser;
-
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
 use Stillat\BladeParser\Nodes\ArgumentContentType;
 use Stillat\BladeParser\Nodes\DirectiveNode;
-use Stillat\BladeParser\Tests\ParserTestCase;
 
-class DirectiveParametersTest extends ParserTestCase
-{
-    public function testDirectiveParametersContainingParenthesis()
-    {
-        $template = '@php($conditionOne || ($conditionTwo && $conditionThree))';
-        $nodes = $this->parseNodes($template);
-        $this->assertCount(1, $nodes);
-        $this->assertInstanceOf(DirectiveNode::class, $nodes[0]);
+test('directive parameters containing parenthesis', function () {
+    $template = '@php($conditionOne || ($conditionTwo && $conditionThree))';
+    $nodes = $this->parseNodes($template);
+    expect($nodes)->toHaveCount(1);
+    expect($nodes[0])->toBeInstanceOf(DirectiveNode::class);
 
-        /** @var DirectiveNode $directive */
-        $directive = $nodes[0];
+    /** @var DirectiveNode $directive */
+    $directive = $nodes[0];
 
-        $this->assertNotNull($directive->arguments);
+    expect($directive->arguments)->not->toBeNull();
 
-        $this->assertSame('($conditionOne || ($conditionTwo && $conditionThree))', $directive->arguments->content);
-        $this->assertSame('$conditionOne || ($conditionTwo && $conditionThree)', $directive->arguments->innerContent);
-    }
+    expect($directive->arguments->content)->toBe('($conditionOne || ($conditionTwo && $conditionThree))');
+    expect($directive->arguments->innerContent)->toBe('$conditionOne || ($conditionTwo && $conditionThree)');
+});
 
-    public function testDirectiveParametersContainingMismatchedParenthesisInsideStrings()
-    {
-        $template = '@php($conditionOne || ($conditionTwo && $conditionThree) || "(((((" != ")) (( )) )))")';
-        $nodes = $this->parseNodes($template);
-        $this->assertCount(1, $nodes);
-        $this->assertInstanceOf(DirectiveNode::class, $nodes[0]);
+test('directive parameters containing mismatched parenthesis inside strings', function () {
+    $template = '@php($conditionOne || ($conditionTwo && $conditionThree) || "(((((" != ")) (( )) )))")';
+    $nodes = $this->parseNodes($template);
+    expect($nodes)->toHaveCount(1);
+    expect($nodes[0])->toBeInstanceOf(DirectiveNode::class);
 
-        /** @var DirectiveNode $directive */
-        $directive = $nodes[0];
+    /** @var DirectiveNode $directive */
+    $directive = $nodes[0];
 
-        $this->assertNotNull($directive->arguments);
+    expect($directive->arguments)->not->toBeNull();
 
-        $this->assertSame('($conditionOne || ($conditionTwo && $conditionThree) || "(((((" != ")) (( )) )))")', $directive->arguments->content);
-        $this->assertSame('$conditionOne || ($conditionTwo && $conditionThree) || "(((((" != ")) (( )) )))"', $directive->arguments->innerContent);
-    }
+    expect($directive->arguments->content)->toBe('($conditionOne || ($conditionTwo && $conditionThree) || "(((((" != ")) (( )) )))")');
+    expect($directive->arguments->innerContent)->toBe('$conditionOne || ($conditionTwo && $conditionThree) || "(((((" != ")) (( )) )))"');
+});
 
-    public function testDirectiveParametersContainingPhpLineComments()
-    {
-        $template = <<<'EOT'
+test('directive parameters containing php line comments', function () {
+    $template = <<<'EOT'
 @isset(
         $records // @isset())2
         )
@@ -50,47 +43,46 @@ class DirectiveParametersTest extends ParserTestCase
 @endisset
 EOT;
 
-        $literalContent = <<<'LITERAL'
+    $literalContent = <<<'LITERAL'
 
 // $records is defined and is not null...
 
 LITERAL;
 
-        $nodes = $this->parseNodes($template);
-        $this->assertCount(3, $nodes);
-        $this->assertInstanceOf(DirectiveNode::class, $nodes[0]);
+    $nodes = $this->parseNodes($template);
+    expect($nodes)->toHaveCount(3);
+    expect($nodes[0])->toBeInstanceOf(DirectiveNode::class);
 
-        $this->assertLiteralContent($nodes[1], $literalContent);
+    $this->assertLiteralContent($nodes[1], $literalContent);
 
-        $this->assertInstanceOf(DirectiveNode::class, $nodes[2]);
+    expect($nodes[2])->toBeInstanceOf(DirectiveNode::class);
 
-        $isset = $nodes[0];
-        $this->assertNotNull($isset->arguments);
-        $this->assertSame('isset', $isset->content);
+    $isset = $nodes[0];
+    expect($isset->arguments)->not->toBeNull();
+    expect($isset->content)->toBe('isset');
 
-        $argsOuterContent = <<<'OUTER'
+    $argsOuterContent = <<<'OUTER'
 (
         $records // @isset())2
         )
 OUTER;
-        $argsInnerContent = <<<'INNER'
+    $argsInnerContent = <<<'INNER'
 
         $records // @isset())2
         
 INNER;
 
-        $this->assertSame($argsOuterContent, $isset->arguments->content);
-        $this->assertSame($argsInnerContent, $isset->arguments->innerContent);
+    expect($isset->arguments->content)->toBe($argsOuterContent);
+    expect($isset->arguments->innerContent)->toBe($argsInnerContent);
 
-        /** @var DirectiveNode $endIsset */
-        $endIsset = $nodes[2];
-        $this->assertNull($endIsset->arguments);
-        $this->assertSame('endisset', $endIsset->content);
-    }
+    /** @var DirectiveNode $endIsset */
+    $endIsset = $nodes[2];
+    expect($endIsset->arguments)->toBeNull();
+    expect($endIsset->content)->toBe('endisset');
+});
 
-    public function testDirectivesContainingMultilinePhpComments()
-    {
-        $template = <<<'EOT'
+test('directives containing multiline php comments', function () {
+    $template = <<<'EOT'
 @isset(
         $records /* @isset())2
         @isset(
@@ -103,24 +95,24 @@ INNER;
 // $records is defined and is not null...
 @endisset
 EOT;
-        $nodes = $this->parseNodes($template);
-        $this->assertCount(3, $nodes);
-        $this->assertInstanceOf(DirectiveNode::class, $nodes[0]);
+    $nodes = $this->parseNodes($template);
+    expect($nodes)->toHaveCount(3);
+    expect($nodes[0])->toBeInstanceOf(DirectiveNode::class);
 
-        $literalContent = <<<'LITERAL'
+    $literalContent = <<<'LITERAL'
 b
 // $records is defined and is not null...
 
 LITERAL;
 
-        $this->assertLiteralContent($nodes[1], $literalContent);
-        $this->assertInstanceOf(DirectiveNode::class, $nodes[2]);
+    $this->assertLiteralContent($nodes[1], $literalContent);
+    expect($nodes[2])->toBeInstanceOf(DirectiveNode::class);
 
-        $isset = $nodes[0];
-        $this->assertNotNull($isset->arguments);
-        $this->assertSame('isset', $isset->content);
+    $isset = $nodes[0];
+    expect($isset->arguments)->not->toBeNull();
+    expect($isset->content)->toBe('isset');
 
-        $argsOuterContent = <<<'OUTER'
+    $argsOuterContent = <<<'OUTER'
 (
         $records /* @isset())2
         @isset(
@@ -131,7 +123,7 @@ LITERAL;
     */
         a)
 OUTER;
-        $argsInnerContent = <<<'INNER'
+    $argsInnerContent = <<<'INNER'
 
         $records /* @isset())2
         @isset(
@@ -143,89 +135,84 @@ OUTER;
         a
 INNER;
 
-        $this->assertSame($argsOuterContent, $isset->arguments->content);
-        $this->assertSame($argsInnerContent, $isset->arguments->innerContent);
+    expect($isset->arguments->content)->toBe($argsOuterContent);
+    expect($isset->arguments->innerContent)->toBe($argsInnerContent);
 
-        /** @var DirectiveNode $endIsset */
-        $endIsset = $nodes[2];
-        $this->assertNull($endIsset->arguments);
-        $this->assertSame('endisset', $endIsset->content);
-    }
+    /** @var DirectiveNode $endIsset */
+    $endIsset = $nodes[2];
+    expect($endIsset->arguments)->toBeNull();
+    expect($endIsset->content)->toBe('endisset');
+});
 
-    public function testArgumentsWithPhpContentType()
-    {
-        $this->registerDirective('directive');
+test('arguments with php content type', function () {
+    $this->registerDirective('directive');
 
-        $template = <<<'EOT'
+    $template = <<<'EOT'
 @directive($that == $this)
 EOT;
-        $nodes = $this->parseNodes($template);
-        $this->assertCount(1, $nodes);
-        $this->assertInstanceOf(DirectiveNode::class, $nodes[0]);
+    $nodes = $this->parseNodes($template);
+    expect($nodes)->toHaveCount(1);
+    expect($nodes[0])->toBeInstanceOf(DirectiveNode::class);
 
-        /** @var DirectiveNode $directive */
-        $directive = $nodes[0];
-        $this->assertSame('directive', $directive->content);
-        $this->assertNotNull($directive->arguments);
+    /** @var DirectiveNode $directive */
+    $directive = $nodes[0];
+    expect($directive->content)->toBe('directive');
+    expect($directive->arguments)->not->toBeNull();
 
-        $this->assertSame('($that == $this)', $directive->arguments->content);
-        $this->assertSame('$that == $this', $directive->arguments->innerContent);
-        $this->assertSame(ArgumentContentType::Php, $directive->arguments->contentType);
-    }
+    expect($directive->arguments->content)->toBe('($that == $this)');
+    expect($directive->arguments->innerContent)->toBe('$that == $this');
+    expect($directive->arguments->contentType)->toBe(ArgumentContentType::Php);
+});
 
-    public function testArgumentsWithJsonContentType()
-    {
-        $this->registerDirective('directive');
+test('arguments with json content type', function () {
+    $this->registerDirective('directive');
 
-        $template = <<<'EOT'
+    $template = <<<'EOT'
     @directive({
         "key": "value",
         "key2": "value2"
     })
     EOT;
-        $nodes = $this->parseNodes($template);
-        $this->assertCount(1, $nodes);
-        $this->assertInstanceOf(DirectiveNode::class, $nodes[0]);
+    $nodes = $this->parseNodes($template);
+    expect($nodes)->toHaveCount(1);
+    expect($nodes[0])->toBeInstanceOf(DirectiveNode::class);
 
-        /** @var DirectiveNode $directive */
-        $directive = $nodes[0];
-        $this->assertSame('directive', $directive->content);
-        $this->assertNotNull($directive->arguments);
+    /** @var DirectiveNode $directive */
+    $directive = $nodes[0];
+    expect($directive->content)->toBe('directive');
+    expect($directive->arguments)->not->toBeNull();
 
-        $outerContent = <<<'OUTER'
+    $outerContent = <<<'OUTER'
     ({
         "key": "value",
         "key2": "value2"
     })
     OUTER;
 
-        $innerContent = <<<'INNER'
+    $innerContent = <<<'INNER'
     {
         "key": "value",
         "key2": "value2"
     }
     INNER;
 
-        $this->assertSame($outerContent, $directive->arguments->content);
-        $this->assertSame($innerContent, $directive->arguments->innerContent);
-        $this->assertSame(ArgumentContentType::Json, $directive->arguments->contentType);
-    }
+    expect($directive->arguments->content)->toBe($outerContent);
+    expect($directive->arguments->innerContent)->toBe($innerContent);
+    expect($directive->arguments->contentType)->toBe(ArgumentContentType::Json);
+});
 
-    public function testJsonArgsDoNotHaveStringValues()
-    {
-        $directive = $this->getDocument(' @lang({"something": true}) ')->findDirectiveByName('lang');
-        $this->assertFalse($directive->arguments->hasStringValue());
-        $this->assertSame('', $directive->arguments->getStringValue());
-    }
+test('json args do not have string values', function () {
+    $directive = $this->getDocument(' @lang({"something": true}) ')->findDirectiveByName('lang');
+    expect($directive->arguments->hasStringValue())->toBeFalse();
+    expect($directive->arguments->getStringValue())->toBe('');
+});
 
-    public function testStringArgsHaveStringValues()
-    {
-        $directive = $this->getDocument(' @lang("something") ')->findDirectiveByName('lang');
-        $this->assertTrue($directive->arguments->hasStringValue());
-        $this->assertSame('something', $directive->arguments->getStringValue());
+test('string args have string values', function () {
+    $directive = $this->getDocument(' @lang("something") ')->findDirectiveByName('lang');
+    expect($directive->arguments->hasStringValue())->toBeTrue();
+    expect($directive->arguments->getStringValue())->toBe('something');
 
-        $directive = $this->getDocument(" @lang('something') ")->findDirectiveByName('lang');
-        $this->assertTrue($directive->arguments->hasStringValue());
-        $this->assertSame('something', $directive->arguments->getStringValue());
-    }
-}
+    $directive = $this->getDocument(" @lang('something') ")->findDirectiveByName('lang');
+    expect($directive->arguments->hasStringValue())->toBeTrue();
+    expect($directive->arguments->getStringValue())->toBe('something');
+});

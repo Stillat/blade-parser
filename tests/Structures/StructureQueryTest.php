@@ -1,16 +1,11 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Structures;
-
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
 use Stillat\BladeParser\Nodes\Structures\CaseStatement;
 use Stillat\BladeParser\Nodes\Structures\SwitchStatement;
-use Stillat\BladeParser\Tests\ParserTestCase;
 
-class StructureQueryTest extends ParserTestCase
-{
-    public function testBasicStructureQueries()
-    {
-        $template = <<<'EOT'
+test('basic structure queries', function () {
+    $template = <<<'EOT'
 @if ($something)
 
     @forelse($users as $user)
@@ -19,17 +14,16 @@ class StructureQueryTest extends ParserTestCase
 
 @endif
 EOT;
-        $doc = $this->getDocument($template);
-        $this->assertCount(2, $doc->getAllStructures());
-        $this->assertCount(1, $doc->getRootStructures());
+    $doc = $this->getDocument($template);
+    expect($doc->getAllStructures())->toHaveCount(2);
+    expect($doc->getRootStructures())->toHaveCount(1);
 
-        $this->assertCount(1, $doc->findDirectiveByName('if')->getRootStructures());
-        $this->assertCount(1, $doc->findDirectiveByName('if')->getAllStructures());
-    }
+    expect($doc->findDirectiveByName('if')->getRootStructures())->toHaveCount(1);
+    expect($doc->findDirectiveByName('if')->getAllStructures())->toHaveCount(1);
+});
 
-    public function testNestedStructures()
-    {
-        $template = <<<'EOT'
+test('nested structures', function () {
+    $template = <<<'EOT'
 @switch($i)
     @case(1-2)
         First case...
@@ -98,30 +92,29 @@ EOT;
         @endswitch
 @endswitch
 EOT;
-        $doc = $this->getDocument($template);
-        $this->assertCount(20, $doc->getAllStructures());
-        $this->assertCount(1, $doc->getRootStructures());
-        $structures = $doc->getAllStructures();
+    $doc = $this->getDocument($template);
+    expect($doc->getAllStructures())->toHaveCount(20);
+    expect($doc->getRootStructures())->toHaveCount(1);
+    $structures = $doc->getAllStructures();
 
-        $this->assertInstanceOf(SwitchStatement::class, $structures[0]);
-        $this->assertInstanceOf(CaseStatement::class, $structures[1]);
-        $this->assertInstanceOf(SwitchStatement::class, $structures[2]);
-        $this->assertInstanceOf(CaseStatement::class, $structures[3]);
-        $this->assertInstanceOf(CaseStatement::class, $structures[4]);
-        $this->assertInstanceOf(CaseStatement::class, $structures[5]);
-        $this->assertInstanceOf(CaseStatement::class, $structures[6]);
-        $this->assertInstanceOf(SwitchStatement::class, $structures[7]);
-        $this->assertInstanceOf(CaseStatement::class, $structures[8]);
-        $this->assertInstanceOf(CaseStatement::class, $structures[9]);
-        $this->assertInstanceOf(CaseStatement::class, $structures[10]);
-        $this->assertInstanceOf(CaseStatement::class, $structures[11]);
-        $this->assertInstanceOf(SwitchStatement::class, $structures[12]);
-        $this->assertInstanceOf(CaseStatement::class, $structures[13]);
-        $this->assertInstanceOf(SwitchStatement::class, $structures[14]);
-        $this->assertInstanceOf(CaseStatement::class, $structures[15]);
-        $this->assertInstanceOf(CaseStatement::class, $structures[16]);
-        $this->assertInstanceOf(CaseStatement::class, $structures[17]);
-        $this->assertInstanceOf(CaseStatement::class, $structures[18]);
-        $this->assertInstanceOf(CaseStatement::class, $structures[19]);
-    }
-}
+    expect($structures[0])->toBeInstanceOf(SwitchStatement::class);
+    expect($structures[1])->toBeInstanceOf(CaseStatement::class);
+    expect($structures[2])->toBeInstanceOf(SwitchStatement::class);
+    expect($structures[3])->toBeInstanceOf(CaseStatement::class);
+    expect($structures[4])->toBeInstanceOf(CaseStatement::class);
+    expect($structures[5])->toBeInstanceOf(CaseStatement::class);
+    expect($structures[6])->toBeInstanceOf(CaseStatement::class);
+    expect($structures[7])->toBeInstanceOf(SwitchStatement::class);
+    expect($structures[8])->toBeInstanceOf(CaseStatement::class);
+    expect($structures[9])->toBeInstanceOf(CaseStatement::class);
+    expect($structures[10])->toBeInstanceOf(CaseStatement::class);
+    expect($structures[11])->toBeInstanceOf(CaseStatement::class);
+    expect($structures[12])->toBeInstanceOf(SwitchStatement::class);
+    expect($structures[13])->toBeInstanceOf(CaseStatement::class);
+    expect($structures[14])->toBeInstanceOf(SwitchStatement::class);
+    expect($structures[15])->toBeInstanceOf(CaseStatement::class);
+    expect($structures[16])->toBeInstanceOf(CaseStatement::class);
+    expect($structures[17])->toBeInstanceOf(CaseStatement::class);
+    expect($structures[18])->toBeInstanceOf(CaseStatement::class);
+    expect($structures[19])->toBeInstanceOf(CaseStatement::class);
+});

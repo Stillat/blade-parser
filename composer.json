@@ -11,14 +11,14 @@
         }
     },
     "require": {
-        "php": "^8.1",
+        "php": "^8.2.0",
         "laravel/framework": "^9.36 || ^10.0  || ^11.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^8.5 || ^9.0 || ^10.0",
         "orchestra/testbench": "*",
         "laravel/pint": "^1.4",
-        "brianium/paratest": "*"
+        "brianium/paratest": "*",
+        "pestphp/pest": "^3.3"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
@@ -28,6 +28,11 @@
                 "Stillat\\BladeParser\\ServiceProvider",
                 "Stillat\\BladeParser\\Providers\\ValidatorServiceProvider"
             ]
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
         }
     }
 }

@@ -1,34 +1,26 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Compiler;
-
-use Stillat\BladeParser\Tests\ParserTestCase;
-
-class BladeWhileStatementsTest extends ParserTestCase
-{
-    public function testWhileStatementsAreCompiled()
-    {
-        $string = '@while ($foo)
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
+test('while statements are compiled', function () {
+    $string = '@while ($foo)
 test
 @endwhile';
-        $expected = '<?php while($foo): ?>
+    $expected = '<?php while($foo): ?>
 test
 <?php endwhile; ?>';
-        $this->assertEquals($expected, $this->compiler->compileString($string));
-    }
+    expect($this->compiler->compileString($string))->toEqual($expected);
+});
 
-    public function testNestedWhileStatementsAreCompiled()
-    {
-        $string = '@while ($foo)
+test('nested while statements are compiled', function () {
+    $string = '@while ($foo)
 @while ($bar)
 test
 @endwhile
 @endwhile';
-        $expected = '<?php while($foo): ?>
+    $expected = '<?php while($foo): ?>
 <?php while($bar): ?>
 test
 <?php endwhile; ?>
 <?php endwhile; ?>';
-        $this->assertEquals($expected, $this->compiler->compileString($string));
-    }
-}
+    expect($this->compiler->compileString($string))->toEqual($expected);
+});

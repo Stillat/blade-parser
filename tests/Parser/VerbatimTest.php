@@ -1,15 +1,10 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Parser;
-
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
 use Stillat\BladeParser\Nodes\VerbatimNode;
-use Stillat\BladeParser\Tests\ParserTestCase;
 
-class VerbatimTest extends ParserTestCase
-{
-    public function testVerbatimDoesNotCreateAdditionalNodes()
-    {
-        $template = <<<'EOT'
+test('verbatim does not create additional nodes', function () {
+    $template = <<<'EOT'
 start @verbatim start
 
 start
@@ -26,12 +21,12 @@ s3@props-three  (['color' => (true ?? 'gray')])
 
 end @endverbatim end
 EOT;
-        $nodes = $this->parseNodes($template);
-        $this->assertCount(3, $nodes);
-        $this->assertLiteralContent($nodes[0], 'start ');
-        $this->assertLiteralContent($nodes[2], ' end');
+    $nodes = $this->parseNodes($template);
+    expect($nodes)->toHaveCount(3);
+    $this->assertLiteralContent($nodes[0], 'start ');
+    $this->assertLiteralContent($nodes[2], ' end');
 
-        $outerContent = <<<'CONTENT'
+    $outerContent = <<<'CONTENT'
 @verbatim start
 
 start
@@ -49,7 +44,7 @@ s3@props-three  (['color' => (true ?? 'gray')])
 end @endverbatim
 CONTENT;
 
-        $innerContent = <<<'INNER'
+    $innerContent = <<<'INNER'
  start
 
 start
@@ -66,12 +61,11 @@ s3@props-three  (['color' => (true ?? 'gray')])
 
 end 
 INNER;
-        $this->assertInstanceOf(VerbatimNode::class, $nodes[1]);
+    expect($nodes[1])->toBeInstanceOf(VerbatimNode::class);
 
-        /** @var VerbatimNode $verbatim */
-        $verbatim = $nodes[1];
+    /** @var VerbatimNode $verbatim */
+    $verbatim = $nodes[1];
 
-        $this->assertSame($outerContent, $verbatim->content);
-        $this->assertSame($innerContent, $verbatim->innerContent);
-    }
-}
+    expect($verbatim->content)->toBe($outerContent);
+    expect($verbatim->innerContent)->toBe($innerContent);
+});

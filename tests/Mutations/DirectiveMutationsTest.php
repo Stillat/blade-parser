@@ -1,68 +1,59 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Mutations;
-
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
 use Stillat\BladeParser\Nodes\DirectiveNode;
-use Stillat\BladeParser\Tests\ParserTestCase;
 
-class DirectiveMutationsTest extends ParserTestCase
-{
-    public function testDirectiveNamesCanBeChanged()
-    {
-        $doc = $this->getDocument('One @can Two');
-        $directive = $doc->getDirectives()->first();
-        $directive->setName('auth');
+test('directive names can be changed', function () {
+    $doc = $this->getDocument('One @can Two');
+    $directive = $doc->getDirectives()->first();
+    $directive->setName('auth');
 
-        $this->assertSame('One @auth Two', (string) $doc);
-    }
+    expect((string) $doc)->toBe('One @auth Two');
+});
 
-    public function testArgumentsCanBeRemoved()
-    {
-        $doc = $this->getDocument('One @if ($this == that) Two');
-        /** @var DirectiveNode $directive */
-        $directive = $doc->getDirectives()->first();
-        $directive->setName('auth');
-        $directive->removeArguments();
+test('arguments can be removed', function () {
+    $doc = $this->getDocument('One @if ($this == that) Two');
 
-        $this->assertSame('One @auth Two', (string) $doc);
-    }
+    /** @var DirectiveNode $directive */
+    $directive = $doc->getDirectives()->first();
+    $directive->setName('auth');
+    $directive->removeArguments();
 
-    public function testDirectiveArgumentsCanBeChanged()
-    {
-        $doc = $this->getDocument('One @if ($this == $that) Two');
-        $directive = $doc->getDirectives()->first();
+    expect((string) $doc)->toBe('One @auth Two');
+});
 
-        $directive->setName('unless');
-        $directive->setArguments('$that == $this');
+test('directive arguments can be changed', function () {
+    $doc = $this->getDocument('One @if ($this == $that) Two');
+    $directive = $doc->getDirectives()->first();
 
-        $this->assertSame('One @unless ($that == $this) Two', (string) $doc);
-    }
+    $directive->setName('unless');
+    $directive->setArguments('$that == $this');
 
-    public function testPassingParenthesesDoesNotDoubleUp()
-    {
-        $doc = $this->getDocument('One @if ($this == $that) Two');
-        $directive = $doc->getDirectives()->first();
+    expect((string) $doc)->toBe('One @unless ($that == $this) Two');
+});
 
-        $directive->setName('unless');
-        $directive->setArguments('($that == $this)');
+test('passing parentheses does not double up', function () {
+    $doc = $this->getDocument('One @if ($this == $that) Two');
+    $directive = $doc->getDirectives()->first();
 
-        $this->assertSame('One @unless ($that == $this) Two', (string) $doc);
+    $directive->setName('unless');
+    $directive->setArguments('($that == $this)');
 
-        $directive->setName('unless');
-        $directive->setArguments('((((((($that == $this)))))))');
+    expect((string) $doc)->toBe('One @unless ($that == $this) Two');
 
-        $this->assertSame('One @unless ($that == $this) Two', (string) $doc);
-    }
+    $directive->setName('unless');
+    $directive->setArguments('((((((($that == $this)))))))');
 
-    public function testArgumentsCanBeAdded()
-    {
-        $doc = $this->getDocument(' @lang ');
-        $directive = $doc->findDirectiveByName('lang');
-        $this->assertNull($directive->arguments);
-        $directive->setArguments('"something"');
-        $this->assertTrue($directive->isDirty());
-        $this->assertNotNull($directive->arguments);
+    expect((string) $doc)->toBe('One @unless ($that == $this) Two');
+});
 
-        $this->assertSame('@lang ("something")', $directive->toString());
-    }
-}
+test('arguments can be added', function () {
+    $doc = $this->getDocument(' @lang ');
+    $directive = $doc->findDirectiveByName('lang');
+    expect($directive->arguments)->toBeNull();
+    $directive->setArguments('"something"');
+    expect($directive->isDirty())->toBeTrue();
+    expect($directive->arguments)->not->toBeNull();
+
+    expect($directive->toString())->toBe('@lang ("something")');
+});

@@ -1,13 +1,6 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Compiler;
-
-use Stillat\BladeParser\Tests\ParserTestCase;
-
-class BladeAppendTest extends ParserTestCase
-{
-    public function testAppendSectionsAreCompiled()
-    {
-        $this->assertSame('<?php $__env->appendSection(); ?>', $this->compiler->compileString('@append'));
-    }
-}
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
+test('append sections are compiled', function () {
+    expect($this->compiler->compileString('@append'))->toBe('<?php $__env->appendSection(); ?>');
+});

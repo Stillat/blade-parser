@@ -1,59 +1,48 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Parser;
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
+test('directives with leading underscores are parsed', function () {
+    $this->registerDirective('_test');
+    $nodes = $this->parseNodes('@_test');
 
-use Stillat\BladeParser\Tests\ParserTestCase;
+    expect($nodes)->toHaveCount(1);
+    $this->assertDirectiveName($nodes[0], '_test');
 
-class DirectiveNamesTest extends ParserTestCase
-{
-    public function testDirectivesWithLeadingUnderscoresAreParsed()
-    {
-        $this->registerDirective('_test');
-        $nodes = $this->parseNodes('@_test');
+    $this->registerDirective('___test');
+    $nodes = $this->parseNodes('@___test');
 
-        $this->assertCount(1, $nodes);
-        $this->assertDirectiveName($nodes[0], '_test');
+    expect($nodes)->toHaveCount(1);
+    $this->assertDirectiveName($nodes[0], '___test');
+});
 
-        $this->registerDirective('___test');
-        $nodes = $this->parseNodes('@___test');
+test('directives containing underscores are parsed', function () {
+    $this->registerDirective('_directive_test');
+    $nodes = $this->parseNodes('@_directive_test');
 
-        $this->assertCount(1, $nodes);
-        $this->assertDirectiveName($nodes[0], '___test');
-    }
+    expect($nodes)->toHaveCount(1);
+    $this->assertDirectiveName($nodes[0], '_directive_test');
+});
 
-    public function testDirectivesContainingUnderscoresAreParsed()
-    {
-        $this->registerDirective('_directive_test');
-        $nodes = $this->parseNodes('@_directive_test');
+test('directives with trailing underscore', function () {
+    $this->registerDirective('test_');
+    $nodes = $this->parseNodes('@test_');
 
-        $this->assertCount(1, $nodes);
-        $this->assertDirectiveName($nodes[0], '_directive_test');
-    }
+    expect($nodes)->toHaveCount(1);
+    $this->assertDirectiveName($nodes[0], 'test_');
+});
 
-    public function testDirectivesWithTrailingUnderscore()
-    {
-        $this->registerDirective('test_');
-        $nodes = $this->parseNodes('@test_');
+test('directive names with double colons', function () {
+    $this->registerDirective('test::directive');
+    $nodes = $this->parseNodes('@test::directive');
 
-        $this->assertCount(1, $nodes);
-        $this->assertDirectiveName($nodes[0], 'test_');
-    }
+    expect($nodes)->toHaveCount(1);
+    $this->assertDirectiveName($nodes[0], 'test::directive');
+});
 
-    public function testDirectiveNamesWithDoubleColons()
-    {
-        $this->registerDirective('test::directive');
-        $nodes = $this->parseNodes('@test::directive');
+test('camel cased directive names', function () {
+    $this->registerDirective('testDirective');
+    $nodes = $this->parseNodes('@testDirective');
 
-        $this->assertCount(1, $nodes);
-        $this->assertDirectiveName($nodes[0], 'test::directive');
-    }
-
-    public function testCamelCasedDirectiveNames()
-    {
-        $this->registerDirective('testDirective');
-        $nodes = $this->parseNodes('@testDirective');
-
-        $this->assertCount(1, $nodes);
-        $this->assertDirectiveName($nodes[0], 'testDirective');
-    }
-}
+    expect($nodes)->toHaveCount(1);
+    $this->assertDirectiveName($nodes[0], 'testDirective');
+});

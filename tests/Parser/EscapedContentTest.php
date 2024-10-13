@@ -1,43 +1,37 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Parser;
-
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
 use Stillat\BladeParser\Compiler\CompilerServices\CoreDirectiveRetriever;
 use Stillat\BladeParser\Nodes\LiteralNode;
-use Stillat\BladeParser\Tests\ParserTestCase;
 
-class EscapedContentTest extends ParserTestCase
-{
-    public function testBasicEscapedContent()
-    {
-        $template = <<<'EOT'
+test('basic escaped content', function () {
+    $template = <<<'EOT'
 @{{ $variable }}
 @{!! $variable !!}
 @@directive
 @{{ $var
 @{{{ $variable }}}
 EOT;
-        $expected = <<<'EXPECTED'
+    $expected = <<<'EXPECTED'
 {{ $variable }}
 {!! $variable !!}
 @directive
 {{ $var
 {{{ $variable }}}
 EXPECTED;
-        $nodes = $this->parseNodes($template);
-        $this->assertCount(1, $nodes);
-        $this->assertInstanceOf(LiteralNode::class, $nodes[0]);
+    $nodes = $this->parseNodes($template);
+    expect($nodes)->toHaveCount(1);
+    expect($nodes[0])->toBeInstanceOf(LiteralNode::class);
 
-        /** @var LiteralNode $literal */
-        $literal = $nodes[0];
+    /** @var LiteralNode $literal */
+    $literal = $nodes[0];
 
-        $this->assertSame($template, $literal->content);
-        $this->assertSame($expected, $literal->unescapedContent);
-    }
+    expect($literal->content)->toBe($template);
+    expect($literal->unescapedContent)->toBe($expected);
+});
 
-    public function testNestedEscapedDirectives()
-    {
-        $template = <<<'EOT'
+test('nested escaped directives', function () {
+    $template = <<<'EOT'
 @php
     $arrayOne = [];
     $arrayTwo = [];
@@ -56,7 +50,7 @@ EXPECTED;
 @endforeach
 EOT;
 
-        $expected = <<<'EOT'
+    $expected = <<<'EOT'
 <?php $arrayOne = [];
     $arrayTwo = []; ?>
 
@@ -73,23 +67,16 @@ EOT;
 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 EOT;
 
-        $this->assertSame($expected, $this->getDocument($template)->compile());
-    }
+    expect($this->getDocument($template)->compile())->toBe($expected);
+});
 
-    /**
-     * @dataProvider coreDirectiveEscapedContent
-     *
-     * @return void
-     */
-    public function testCoreDirectivesEscapedOutput($template, $output)
-    {
-        $this->assertSame($output, $this->compiler->compileString($template));
-    }
+test('core directives escaped output', function ($template, $output) {
+    expect($this->compiler->compileString($template))->toBe($output);
+})->with(coreDirectiveEscapedContent());
 
-    public static function coreDirectiveEscapedContent()
-    {
-        return collect(CoreDirectiveRetriever::instance()->getDirectiveNames())->map(function ($name) {
-            return ['@@'.$name, '@'.$name];
-        })->all();
-    }
+function coreDirectiveEscapedContent(): array
+{
+    return collect(CoreDirectiveRetriever::instance()->getDirectiveNames())->map(function ($name) {
+        return ['@@'.$name, '@'.$name];
+    })->all();
 }

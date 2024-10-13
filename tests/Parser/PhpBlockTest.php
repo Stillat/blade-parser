@@ -1,89 +1,79 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Parser;
-
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
 use Stillat\BladeParser\Nodes\PhpBlockNode;
-use Stillat\BladeParser\Tests\ParserTestCase;
 
-class PhpBlockTest extends ParserTestCase
-{
-    public function testPhpBlockDoesNotConsumeLiteralCharacter()
-    {
-        $template = <<<'EOT'
+test('php block does not consume literal character', function () {
+    $template = <<<'EOT'
 start @php
  
  
 @endphp end
 EOT;
-        $nodes = $this->parseNodes($template);
-        $this->assertCount(3, $nodes);
+    $nodes = $this->parseNodes($template);
+    expect($nodes)->toHaveCount(3);
 
-        $this->assertLiteralContent($nodes[0], 'start ');
-        $this->assertLiteralContent($nodes[2], ' end');
+    $this->assertLiteralContent($nodes[0], 'start ');
+    $this->assertLiteralContent($nodes[2], ' end');
 
-        $this->assertInstanceOf(PhpBlockNode::class, $nodes[1]);
-    }
+    expect($nodes[1])->toBeInstanceOf(PhpBlockNode::class);
+});
 
-    public function testManyOpeningPhpBlockDirectives()
-    {
-        $template = <<<'EOT'
+test('many opening php block directives', function () {
+    $template = <<<'EOT'
 @php @php @php $counter++;
 @endphp
 EOT;
-        $expected = <<<'EXP'
+    $expected = <<<'EXP'
 <?php @php @php $counter++; ?>
 EXP;
 
-        $this->assertSame($expected, $this->compiler->compileString($template));
-    }
+    expect($this->compiler->compileString($template))->toBe($expected);
+});
 
-    public function testNeighboringPhpBlockDirectives()
-    {
-        $template = <<<'EOT'
+test('neighboring php block directives', function () {
+    $template = <<<'EOT'
 @php
     $counter += 1;
 @endphp @php
     $counter += 2;
 @endphp
 EOT;
-        $expected = <<<'EXP'
+    $expected = <<<'EXP'
 <?php $counter += 1; ?> <?php $counter += 2; ?>
 EXP;
 
-        $this->assertSame($expected, $this->compiler->compileString($template));
-    }
+    expect($this->compiler->compileString($template))->toBe($expected);
+});
 
-    public function testDetachedPhpBlockDirectivesWithValidPhpBlocks()
-    {
-        $template = <<<'EOT'
+test('detached php block directives with valid php blocks', function () {
+    $template = <<<'EOT'
 @php @php
 $counter += 1;
 @endphp @php
 $counter += 2;
 @endphp @php @php @php @php $counter += 3; @endphp
 EOT;
-        $expected = <<<'EXP'
+    $expected = <<<'EXP'
 <?php @php
 $counter += 1; ?> <?php $counter += 2; ?> <?php @php @php @php $counter += 3; ?>
 EXP;
 
-        $this->assertSame($expected, $this->compiler->compileString($template));
-    }
+    expect($this->compiler->compileString($template))->toBe($expected);
+});
 
-    public function testPhpBlocksContainingLoops()
-    {
-        $template = <<<'EOT'
+test('php blocks containing loops', function () {
+    $template = <<<'EOT'
 @php $counter++;
 for($i = 0; $i++;$=) {}
 @endphp @php $counter_two++;
 for($i = 0; $i++;$=two) {}
 @endphp
 EOT;
-        $expected = <<<'EXP'
+    $expected = <<<'EXP'
 <?php $counter++;
 for($i = 0; $i++;$=) {} ?> <?php $counter_two++;
 for($i = 0; $i++;$=two) {} ?>
 EXP;
-        $this->assertSame($expected, $this->compiler->compileString($template));
-    }
-}
+    expect($this->compiler->compileString($template))->toBe($expected);
+});

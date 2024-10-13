@@ -1,89 +1,74 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\CompilerServices;
-
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
 use Stillat\BladeParser\Compiler\CompilerServices\StringSplitter;
-use Stillat\BladeParser\Tests\ParserTestCase;
 
-class StringSplitterTest extends ParserTestCase
-{
-    protected StringSplitter $splitter;
+beforeEach(function () {
+    $this->splitter = new StringSplitter();
+});
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+test('basic string splitting', function () {
+    $input = '($foo as $bar)';
+    $result = $this->splitter->split($input);
 
-        $this->splitter = new StringSplitter();
-    }
+    $expected = [
+        '($foo',
+        'as',
+        '$bar)',
+    ];
 
-    public function testBasicStringSplitting()
-    {
-        $input = '($foo as $bar)';
-        $result = $this->splitter->split($input);
+    expect($result)->toBe($expected);
+});
 
-        $expected = [
-            '($foo',
-            'as',
-            '$bar)',
-        ];
+test('string splitting with nested strings', function () {
+    $input = '(explode(",", "foo, bar, baz") as $bar)';
+    $result = $this->splitter->split($input);
 
-        $this->assertSame($expected, $result);
-    }
+    $expected = [
+        '(explode(",",',
+        '"foo, bar, baz")',
+        'as',
+        '$bar)',
+    ];
 
-    public function testStringSplittingWithNestedStrings()
-    {
-        $input = '(explode(",", "foo, bar, baz") as $bar)';
-        $result = $this->splitter->split($input);
+    expect($result)->toBe($expected);
+});
 
-        $expected = [
-            '(explode(",",',
-            '"foo, bar, baz")',
-            'as',
-            '$bar)',
-        ];
+test('string containing astring', function () {
+    $input = '"just a string"';
+    $result = $this->splitter->split($input);
 
-        $this->assertSame($expected, $result);
-    }
+    $expected = [
+        '"just a string"',
+    ];
 
-    public function testStringContainingAString()
-    {
-        $input = '"just a string"';
-        $result = $this->splitter->split($input);
+    expect($result)->toBe($expected);
+});
 
-        $expected = [
-            '"just a string"',
-        ];
+test('string ending with astring', function () {
+    $input = 'one two three "four"';
+    $result = $this->splitter->split($input);
 
-        $this->assertSame($expected, $result);
-    }
+    $expected = [
+        'one',
+        'two',
+        'three',
+        '"four"',
+    ];
 
-    public function testStringEndingWithAString()
-    {
-        $input = 'one two three "four"';
-        $result = $this->splitter->split($input);
+    expect($result)->toBe($expected);
+});
 
-        $expected = [
-            'one',
-            'two',
-            'three',
-            '"four"',
-        ];
+test('single quoted strings', function () {
+    $input = "one two three 'four'";
+    $result = $this->splitter->split($input);
 
-        $this->assertSame($expected, $result);
-    }
+    $expected = [
+        'one',
+        'two',
+        'three',
+        "'four'",
+    ];
 
-    public function testSingleQuotedStrings()
-    {
-        $input = "one two three 'four'";
-        $result = $this->splitter->split($input);
-
-        $expected = [
-            'one',
-            'two',
-            'three',
-            "'four'",
-        ];
-
-        $this->assertSame($expected, $result);
-    }
-}
+    expect($result)->toBe($expected);
+});

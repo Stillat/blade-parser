@@ -1,131 +1,121 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Parser;
-
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
 use Stillat\BladeParser\Nodes\PhpTagNode;
 use Stillat\BladeParser\Nodes\PhpTagType;
-use Stillat\BladeParser\Tests\ParserTestCase;
 
-class PhpTagTest extends ParserTestCase
-{
-    public function testBasicPhpTags()
-    {
-        $template = <<<'EOT'
+test('basic php tags', function () {
+    $template = <<<'EOT'
 <?php
     $variable = 'value';
 ?>
 EOT;
-        $nodes = $this->parseNodes($template);
-        $this->assertCount(1, $nodes);
-        $this->assertInstanceOf(PhpTagNode::class, $nodes[0]);
+    $nodes = $this->parseNodes($template);
+    expect($nodes)->toHaveCount(1);
+    expect($nodes[0])->toBeInstanceOf(PhpTagNode::class);
 
-        /** @var PhpTagNode $phpTag */
-        $phpTag = $nodes[0];
-        $this->assertSame(PhpTagType::PhpOpenTag, $phpTag->type);
+    /** @var PhpTagNode $phpTag */
+    $phpTag = $nodes[0];
+    expect($phpTag->type)->toBe(PhpTagType::PhpOpenTag);
 
-        $this->assertSame($template, $phpTag->content);
-    }
+    expect($phpTag->content)->toBe($template);
+});
 
-    public function testPhpTagsNeighboringLiteralNodes()
-    {
-        $template = <<<'EOT'
+test('php tags neighboring literal nodes', function () {
+    $template = <<<'EOT'
 start<?php
     $variable = 'value';
 ?>end
 EOT;
-        $nodes = $this->parseNodes($template);
-        $this->assertCount(3, $nodes);
-        $this->assertLiteralContent($nodes[0], 'start');
-        $this->assertLiteralContent($nodes[2], 'end');
+    $nodes = $this->parseNodes($template);
+    expect($nodes)->toHaveCount(3);
+    $this->assertLiteralContent($nodes[0], 'start');
+    $this->assertLiteralContent($nodes[2], 'end');
 
-        $phpContent = <<<'EOT'
+    $phpContent = <<<'EOT'
 <?php
     $variable = 'value';
 ?>
 EOT;
-        $this->assertInstanceOf(PhpTagNode::class, $nodes[1]);
+    expect($nodes[1])->toBeInstanceOf(PhpTagNode::class);
 
-        /** @var PhpTagNode $phpTag */
-        $phpTag = $nodes[1];
-        $this->assertSame(PhpTagType::PhpOpenTag, $phpTag->type);
-        $this->assertSame($phpContent, $phpTag->content);
-    }
+    /** @var PhpTagNode $phpTag */
+    $phpTag = $nodes[1];
+    expect($phpTag->type)->toBe(PhpTagType::PhpOpenTag);
+    expect($phpTag->content)->toBe($phpContent);
+});
 
-    public function testEchoPhpTag()
-    {
-        $template = <<<'EOT'
+test('echo php tag', function () {
+    $template = <<<'EOT'
 start<?= $variable ?>end
 EOT;
-        $nodes = $this->parseNodes($template);
-        $this->assertCount(3, $nodes);
-        $this->assertLiteralContent($nodes[0], 'start');
-        $this->assertLiteralContent($nodes[2], 'end');
+    $nodes = $this->parseNodes($template);
+    expect($nodes)->toHaveCount(3);
+    $this->assertLiteralContent($nodes[0], 'start');
+    $this->assertLiteralContent($nodes[2], 'end');
 
-        $phpContent = <<<'EOT'
+    $phpContent = <<<'EOT'
 <?= $variable ?>
 EOT;
 
-        $this->assertInstanceOf(PhpTagNode::class, $nodes[1]);
+    expect($nodes[1])->toBeInstanceOf(PhpTagNode::class);
 
-        /** @var PhpTagNode $phpTag */
-        $phpTag = $nodes[1];
-        $this->assertSame(PhpTagType::PhpOpenTagWithEcho, $phpTag->type);
-        $this->assertSame($phpContent, $phpTag->content);
-    }
+    /** @var PhpTagNode $phpTag */
+    $phpTag = $nodes[1];
+    expect($phpTag->type)->toBe(PhpTagType::PhpOpenTagWithEcho);
+    expect($phpTag->content)->toBe($phpContent);
+});
 
-    public function testMixedPhpTagTypes()
-    {
-        $template = <<<'EOT'
+test('mixed php tag types', function () {
+    $template = <<<'EOT'
 start<?php $variable = 'value'; ?>inner<?= $variable ?>end
 EOT;
-        $nodes = $this->parseNodes($template);
-        $this->assertCount(5, $nodes);
-        $this->assertLiteralContent($nodes[0], 'start');
-        $this->assertLiteralContent($nodes[2], 'inner');
-        $this->assertLiteralContent($nodes[4], 'end');
+    $nodes = $this->parseNodes($template);
+    expect($nodes)->toHaveCount(5);
+    $this->assertLiteralContent($nodes[0], 'start');
+    $this->assertLiteralContent($nodes[2], 'inner');
+    $this->assertLiteralContent($nodes[4], 'end');
 
-        $this->assertInstanceOf(PhpTagNode::class, $nodes[1]);
-        $this->assertInstanceOf(PhpTagNode::class, $nodes[3]);
+    expect($nodes[1])->toBeInstanceOf(PhpTagNode::class);
+    expect($nodes[3])->toBeInstanceOf(PhpTagNode::class);
 
-        /** @var PhpTagNode $firstPhpNode */
-        $firstPhpNode = $nodes[1];
-        $this->assertSame(PhpTagType::PhpOpenTag, $firstPhpNode->type);
-        $this->assertSame('<?php $variable = \'value\'; ?>', $firstPhpNode->content);
+    /** @var PhpTagNode $firstPhpNode */
+    $firstPhpNode = $nodes[1];
+    expect($firstPhpNode->type)->toBe(PhpTagType::PhpOpenTag);
+    expect($firstPhpNode->content)->toBe('<?php $variable = \'value\'; ?>');
 
-        /** @var PhpTagNode $secondPhpNode */
-        $secondPhpNode = $nodes[3];
-        $this->assertSame(PhpTagType::PhpOpenTagWithEcho, $secondPhpNode->type);
-        $this->assertSame('<?= $variable ?>', $secondPhpNode->content);
-    }
+    /** @var PhpTagNode $secondPhpNode */
+    $secondPhpNode = $nodes[3];
+    expect($secondPhpNode->type)->toBe(PhpTagType::PhpOpenTagWithEcho);
+    expect($secondPhpNode->content)->toBe('<?= $variable ?>');
+});
 
-    public function testPhpTagsDoNotConsumeLiteralCharacters()
-    {
-        $template = <<<'EOT'
+test('php tags do not consume literal characters', function () {
+    $template = <<<'EOT'
 start <?php
  
  
 ?> end
 EOT;
-        $nodes = $this->parseNodes($template);
-        $this->assertCount(3, $nodes);
+    $nodes = $this->parseNodes($template);
+    expect($nodes)->toHaveCount(3);
 
-        $this->assertLiteralContent($nodes[0], 'start ');
-        $this->assertLiteralContent($nodes[2], ' end');
+    $this->assertLiteralContent($nodes[0], 'start ');
+    $this->assertLiteralContent($nodes[2], ' end');
 
-        $this->assertInstanceOf(PhpTagNode::class, $nodes[1]);
+    expect($nodes[1])->toBeInstanceOf(PhpTagNode::class);
 
-        $template = <<<'EOT'
+    $template = <<<'EOT'
 start <?=
  
  
 ?> end
 EOT;
-        $nodes = $this->parseNodes($template);
-        $this->assertCount(3, $nodes);
+    $nodes = $this->parseNodes($template);
+    expect($nodes)->toHaveCount(3);
 
-        $this->assertLiteralContent($nodes[0], 'start ');
-        $this->assertLiteralContent($nodes[2], ' end');
+    $this->assertLiteralContent($nodes[0], 'start ');
+    $this->assertLiteralContent($nodes[2], ' end');
 
-        $this->assertInstanceOf(PhpTagNode::class, $nodes[1]);
-    }
-}
+    expect($nodes[1])->toBeInstanceOf(PhpTagNode::class);
+});

@@ -1,32 +1,27 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Validation;
-
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
 use Stillat\BladeParser\Document\Document;
-use Stillat\BladeParser\Tests\ParserTestCase;
 use Stillat\BladeParser\Validation\Validators\UnpairedConditionValidator;
 
-class UnpairedConditionTest extends ParserTestCase
-{
-    public function testUnpairedConditionValidatorDetectsIssues()
-    {
-        $template = <<<'BLADE'
+
+test('unpaired condition validator detects issues', function () {
+    $template = <<<'BLADE'
 @if ($this)
 
 @elseif ($that)
 BLADE;
-        $results = Document::fromText($template)
-            ->addValidator(new UnpairedConditionValidator)
-            ->validate()->getValidationErrors();
+    $results = Document::fromText($template)
+        ->addValidator(new UnpairedConditionValidator)
+        ->validate()->getValidationErrors();
 
-        $this->assertCount(2, $results);
-        $this->assertSame('Unpaired condition [@if]', $results[0]->message);
-        $this->assertSame('Unpaired condition [@elseif]', $results[1]->message);
-    }
+    expect($results)->toHaveCount(2);
+    expect($results[0]->message)->toBe('Unpaired condition [@if]');
+    expect($results[1]->message)->toBe('Unpaired condition [@elseif]');
+});
 
-    public function testUnpairedConditionValidatorDoesNotDetectIssues()
-    {
-        $template = <<<'BLADE'
+test('unpaired condition validator does not detect issues', function () {
+    $template = <<<'BLADE'
 @if ($this)
 
 @elseif ($that)
@@ -35,10 +30,9 @@ BLADE;
 
 @endif
 BLADE;
-        $results = Document::fromText($template)
-            ->addValidator(new UnpairedConditionValidator)
-            ->validate()->getValidationErrors();
+    $results = Document::fromText($template)
+        ->addValidator(new UnpairedConditionValidator)
+        ->validate()->getValidationErrors();
 
-        $this->assertCount(0, $results);
-    }
-}
+    expect($results)->toHaveCount(0);
+});

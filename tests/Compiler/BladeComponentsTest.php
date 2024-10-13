@@ -1,42 +1,34 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Compiler;
-
-use Illuminate\View\Component;
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
 use Illuminate\View\ComponentAttributeBag;
+use \Illuminate\View\Component;
 use Mockery as m;
-use Stillat\BladeParser\Tests\ParserTestCase;
 
-class BladeComponentsTest extends ParserTestCase
-{
-    public function testComponentsAreCompiled()
-    {
-        $this->assertSame('<?php $__env->startComponent(\'foo\', ["foo" => "bar"]); ?>', $this->compiler->compileString('@component(\'foo\', ["foo" => "bar"])'));
-        $this->assertSame('<?php $__env->startComponent(\'foo\'); ?>', $this->compiler->compileString('@component(\'foo\')'));
-    }
+test('components are compiled', function () {
+    expect($this->compiler->compileString('@component(\'foo\', ["foo" => "bar"])'))->toBe('<?php $__env->startComponent(\'foo\', ["foo" => "bar"]); ?>');
+    expect($this->compiler->compileString('@component(\'foo\')'))->toBe('<?php $__env->startComponent(\'foo\'); ?>');
+});
 
-    public function testClassComponentsAreCompiled()
-    {
-        $this->assertSame('<?php if (isset($component)) { $__componentOriginald797ca481a3632d6131474d33f4e32d7 = $component; } ?>
+test('class components are compiled', function () {
+    expect($this->compiler->compileString('@component(\'Stillat\BladeParser\Tests\Compiler\ComponentStub::class\', \'test\', ["foo" => "bar"])'))->toBe('<?php if (isset($component)) { $__componentOriginald797ca481a3632d6131474d33f4e32d7 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginald797ca481a3632d6131474d33f4e32d7 = $attributes; } ?>
 <?php $component = Stillat\BladeParser\Tests\Compiler\ComponentStub::class::resolve(["foo" => "bar"] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? (array) $attributes->getIterator() : [])); ?>
 <?php $component->withName(\'test\'); ?>
 <?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>', $this->compiler->compileString('@component(\'Stillat\BladeParser\Tests\Compiler\ComponentStub::class\', \'test\', ["foo" => "bar"])'));
-    }
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>');
+});
 
-    public function testEndComponentsAreCompiled()
-    {
-        $this->compiler->newComponentHash('foo');
+test('end components are compiled', function () {
+    $this->compiler->newComponentHash('foo');
 
-        $this->assertSame('<?php echo $__env->renderComponent(); ?>', $this->compiler->compileString('@endcomponent'));
-    }
+    expect($this->compiler->compileString('@endcomponent'))->toBe('<?php echo $__env->renderComponent(); ?>');
+});
 
-    public function testEndComponentClassesAreCompiled()
-    {
-        $this->compiler->newComponentHash('foo');
+test('end component classes are compiled', function () {
+    $this->compiler->newComponentHash('foo');
 
-        $this->assertSame('<?php echo $__env->renderComponent(); ?>
+    expect($this->compiler->compileString('@endcomponentClass'))->toBe('<?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginal79aef92e83454121ab6e5f64077e7d8a)): ?>
 <?php $attributes = $__attributesOriginal79aef92e83454121ab6e5f64077e7d8a; ?>
@@ -45,42 +37,31 @@ class BladeComponentsTest extends ParserTestCase
 <?php if (isset($__componentOriginal79aef92e83454121ab6e5f64077e7d8a)): ?>
 <?php $component = $__componentOriginal79aef92e83454121ab6e5f64077e7d8a; ?>
 <?php unset($__componentOriginal79aef92e83454121ab6e5f64077e7d8a); ?>
-<?php endif; ?>', $this->compiler->compileString('@endcomponentClass'));
-    }
+<?php endif; ?>');
+});
 
-    public function testSlotsAreCompiled()
-    {
-        $this->assertSame('<?php $__env->slot(\'foo\', null, ["foo" => "bar"]); ?>', $this->compiler->compileString('@slot(\'foo\', null, ["foo" => "bar"])'));
-        $this->assertSame('<?php $__env->slot(\'foo\'); ?>', $this->compiler->compileString('@slot(\'foo\')'));
-    }
+test('slots are compiled', function () {
+    expect($this->compiler->compileString('@slot(\'foo\', null, ["foo" => "bar"])'))->toBe('<?php $__env->slot(\'foo\', null, ["foo" => "bar"]); ?>');
+    expect($this->compiler->compileString('@slot(\'foo\')'))->toBe('<?php $__env->slot(\'foo\'); ?>');
+});
 
-    public function testEndSlotsAreCompiled()
-    {
-        $this->assertSame('<?php $__env->endSlot(); ?>', $this->compiler->compileString('@endslot'));
-    }
+test('end slots are compiled', function () {
+    expect($this->compiler->compileString('@endslot'))->toBe('<?php $__env->endSlot(); ?>');
+});
 
-    public function testPropsAreExtractedFromParentAttributesCorrectlyForClassComponents()
-    {
-        $attributes = new ComponentAttributeBag(['foo' => 'baz', 'other' => 'ok']);
+test('props are extracted from parent attributes correctly for class components', function () {
+    $attributes = new ComponentAttributeBag(['foo' => 'baz', 'other' => 'ok']);
 
-        $component = m::mock(Component::class);
-        $component->shouldReceive('withName', 'test');
-        $component->shouldReceive('shouldRender')->andReturn(false);
+    $component = m::mock(Component::class);
+    $component->shouldReceive('withName', 'test');
+    $component->shouldReceive('shouldRender')->andReturn(false);
 
-        Component::resolveComponentsUsing(fn () => $component);
+    Component::resolveComponentsUsing(fn () => $component);
 
-        $template = $this->compiler->compileString('@component(\'Stillat\BladeParser\Tests\Compiler\ComponentStub::class\', \'test\', ["foo" => "bar"])');
+    $template = $this->compiler->compileString('@component(\'Stillat\BladeParser\Tests\Compiler\ComponentStub::class\', \'test\', ["foo" => "bar"])');
 
-        ob_start();
-        eval(" ?> $template <?php endif; ");
-        ob_get_clean();
-    }
-}
+    ob_start();
+    eval(" ?> $template <?php endif; ");
+    ob_get_clean();
+});
 
-class ComponentStub extends Component
-{
-    public function render()
-    {
-        return '';
-    }
-}

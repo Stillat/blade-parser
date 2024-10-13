@@ -1,16 +1,11 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Compiler;
-
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
 use Illuminate\View\ComponentAttributeBag;
 use Stillat\BladeParser\Compiler\CompilerServices\StringUtilities;
-use Stillat\BladeParser\Tests\ParserTestCase;
 
-class BladePropsTest extends ParserTestCase
-{
-    public function testPropsAreCompiled()
-    {
-        $this->assertSame(StringUtilities::normalizeLineEndings('<?php $attributes ??= new \Illuminate\View\ComponentAttributeBag; ?>
+test('props are compiled', function () {
+    expect(StringUtilities::normalizeLineEndings($this->compiler->compileString('@props([\'one\' => true, \'two\' => \'string\'])')))->toBe(StringUtilities::normalizeLineEndings('<?php $attributes ??= new \Illuminate\View\ComponentAttributeBag; ?>
 <?php foreach($attributes->onlyProps([\'one\' => true, \'two\' => \'string\']) as $__key => $__value) {
     $$__key = $$__key ?? $__value;
 } ?>
@@ -22,28 +17,26 @@ class BladePropsTest extends ParserTestCase
 <?php foreach ($attributes as $__key => $__value) {
     if (array_key_exists($__key, $__defined_vars)) unset($$__key);
 } ?>
-<?php unset($__defined_vars); ?>'), StringUtilities::normalizeLineEndings($this->compiler->compileString('@props([\'one\' => true, \'two\' => \'string\'])')));
-    }
+<?php unset($__defined_vars); ?>'));
+});
 
-    public function testPropsAreExtractedFromParentAttributesCorrectly()
-    {
-        $test1 = $test2 = $test4 = null;
+test('props are extracted from parent attributes correctly', function () {
+    $test1 = $test2 = $test4 = null;
 
-        $attributes = new ComponentAttributeBag(['test1' => 'value1', 'test2' => 'value2', 'test3' => 'value3']);
+    $attributes = new ComponentAttributeBag(['test1' => 'value1', 'test2' => 'value2', 'test3' => 'value3']);
 
-        $template = $this->compiler->compileString('@props([\'test1\' => \'default\', \'test2\', \'test4\' => \'default\'])');
+    $template = $this->compiler->compileString('@props([\'test1\' => \'default\', \'test2\', \'test4\' => \'default\'])');
 
-        ob_start();
-        eval(" ?> $template <?php ");
-        ob_get_clean();
+    ob_start();
+    eval(" ?> $template <?php ");
+    ob_get_clean();
 
-        $this->assertSame($test1, 'value1');
-        $this->assertSame($test2, 'value2');
-        $this->assertFalse(isset($test3));
-        $this->assertSame($test4, 'default');
+    expect('value1')->toBe($test1);
+    expect('value2')->toBe($test2);
+    expect(isset($test3))->toBeFalse();
+    expect('default')->toBe($test4);
 
-        $this->assertNull($attributes->get('test1'));
-        $this->assertNull($attributes->get('test2'));
-        $this->assertSame($attributes->get('test3'), 'value3');
-    }
-}
+    expect($attributes->get('test1'))->toBeNull();
+    expect($attributes->get('test2'))->toBeNull();
+    expect('value3')->toBe($attributes->get('test3'));
+});

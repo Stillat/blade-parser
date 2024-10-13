@@ -1,57 +1,49 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Reflection;
-
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
 use Stillat\BladeParser\Nodes\DirectiveNode;
 use Stillat\BladeParser\Nodes\EchoNode;
 use Stillat\BladeParser\Nodes\LiteralNode;
 use Stillat\BladeParser\Nodes\PhpTagNode;
-use Stillat\BladeParser\Tests\ParserTestCase;
 
-class NodeQueriesTest extends ParserTestCase
-{
-    public function testAllNotOfType()
-    {
-        $template = <<<'EOT'
+test('all not of type', function () {
+    $template = <<<'EOT'
 Literal One {{ $echo }} @lang {{ $echo }}
 EOT;
-        $doc = $this->getDocument($template);
-        $nodes = $doc->allNotOfType(DirectiveNode::class);
-        $this->assertCount(5, $nodes);
+    $doc = $this->getDocument($template);
+    $nodes = $doc->allNotOfType(DirectiveNode::class);
+    expect($nodes)->toHaveCount(5);
 
-        $this->assertInstanceOf(LiteralNode::class, $nodes[0]);
-        $this->assertInstanceOf(EchoNode::class, $nodes[1]);
-        $this->assertInstanceOf(LiteralNode::class, $nodes[2]);
-        $this->assertInstanceOf(LiteralNode::class, $nodes[3]);
-        $this->assertInstanceOf(EchoNode::class, $nodes[4]);
-    }
+    expect($nodes[0])->toBeInstanceOf(LiteralNode::class);
+    expect($nodes[1])->toBeInstanceOf(EchoNode::class);
+    expect($nodes[2])->toBeInstanceOf(LiteralNode::class);
+    expect($nodes[3])->toBeInstanceOf(LiteralNode::class);
+    expect($nodes[4])->toBeInstanceOf(EchoNode::class);
+});
 
-    public function testFirstOfTypeCanReturnNull()
-    {
-        $template = <<<'EOT'
+test('first of type can return null', function () {
+    $template = <<<'EOT'
 Literal One {{ $echo }} @lang {{ $echo }}
 EOT;
-        $doc = $this->getDocument($template);
-        $this->assertNull($doc->firstOfType(PhpTagNode::class));
-    }
+    $doc = $this->getDocument($template);
+    expect($doc->firstOfType(PhpTagNode::class))->toBeNull();
+});
 
-    public function testFindAllNodesStartingOnLine()
-    {
-        $template = <<<'EOT'
+test('find all nodes starting on line', function () {
+    $template = <<<'EOT'
 Literal One {{ $echo }} @lang {{ $echo }}
     @if ('something')    @endif
 EOT;
-        $doc = $this->getDocument($template);
-        $nodes = $doc->findAllNodesStartingOnLine(2);
-        $this->assertCount(3, $nodes);
-        $this->assertInstanceOf(DirectiveNode::class, $nodes[0]);
-        $this->assertInstanceOf(LiteralNode::class, $nodes[1]);
-        $this->assertInstanceOf(DirectiveNode::class, $nodes[2]);
-    }
+    $doc = $this->getDocument($template);
+    $nodes = $doc->findAllNodesStartingOnLine(2);
+    expect($nodes)->toHaveCount(3);
+    expect($nodes[0])->toBeInstanceOf(DirectiveNode::class);
+    expect($nodes[1])->toBeInstanceOf(LiteralNode::class);
+    expect($nodes[2])->toBeInstanceOf(DirectiveNode::class);
+});
 
-    public function testQueryingSwitchStatements()
-    {
-        $template = <<<'EOT'
+test('querying switch statements', function () {
+    $template = <<<'EOT'
 @if ($something)
     @switch($value)
        @case(1)
@@ -66,16 +58,15 @@ EOT;
    @break
 @endswitch
 EOT;
-        $doc = $this->getDocument($template)->resolveStructures();
-        $this->assertCount(2, $doc->getAllSwitchStatements());
-        $if = $doc->findDirectiveByName('if');
+    $doc = $this->getDocument($template)->resolveStructures();
+    expect($doc->getAllSwitchStatements())->toHaveCount(2);
+    $if = $doc->findDirectiveByName('if');
 
-        $this->assertCount(1, $if->getRootSwitchStatements());
-    }
+    expect($if->getRootSwitchStatements())->toHaveCount(1);
+});
 
-    public function testQueryingConditions()
-    {
-        $template = <<<'EOT'
+test('querying conditions', function () {
+    $template = <<<'EOT'
 @if ($something)
     @if ($somethingElse)
     
@@ -86,16 +77,15 @@ EOT;
 
 @endif
 EOT;
-        $doc = $this->getDocument($template)->resolveStructures();
-        $this->assertCount(3, $doc->getAllConditions());
-        $if = $doc->findDirectiveByName('if');
+    $doc = $this->getDocument($template)->resolveStructures();
+    expect($doc->getAllConditions())->toHaveCount(3);
+    $if = $doc->findDirectiveByName('if');
 
-        $this->assertCount(1, $if->getRootConditions());
-    }
+    expect($if->getRootConditions())->toHaveCount(1);
+});
 
-    public function testQueryingForElse()
-    {
-        $template = <<<'EOT'
+test('querying for else', function () {
+    $template = <<<'EOT'
 @if ($something)
     @forelse ($users as $user)
        
@@ -110,16 +100,15 @@ EOT;
 
 @endforelse
 EOT;
-        $doc = $this->getDocument($template)->resolveStructures();
-        $this->assertCount(2, $doc->getAllForElse());
-        $if = $doc->findDirectiveByName('if');
+    $doc = $this->getDocument($template)->resolveStructures();
+    expect($doc->getAllForElse())->toHaveCount(2);
+    $if = $doc->findDirectiveByName('if');
 
-        $this->assertCount(1, $if->getRootForElse());
-    }
+    expect($if->getRootForElse())->toHaveCount(1);
+});
 
-    public function testFindNodePattern()
-    {
-        $template = <<<'EOT'
+test('find node pattern', function () {
+    $template = <<<'EOT'
 D0 @include ('something')
 D1 @include ('something-else')
 E0 {{ $hello }}
@@ -128,50 +117,49 @@ D2 @if ($something)
 E2 {{ $greetings }}
 D3 @elseif 
 EOT;
-        $doc = $this->getDocument($template);
-        $allNodes = $doc->getNodes();
+    $doc = $this->getDocument($template);
+    $allNodes = $doc->getNodes();
 
-        $patternOneResults = $doc->findNodePattern([
-            EchoNode::class,
-            DirectiveNode::class,
-        ]);
+    $patternOneResults = $doc->findNodePattern([
+        EchoNode::class,
+        DirectiveNode::class,
+    ]);
 
-        $this->assertCount(2, $patternOneResults);
+    expect($patternOneResults)->toHaveCount(2);
 
-        $ex1 = $patternOneResults[0]->all();
-        $this->assertEchoContent($ex1[0], '{{ $world }}');
-        $this->assertDirectiveContent($ex1[2], 'if', '($something)');
+    $ex1 = $patternOneResults[0]->all();
+    $this->assertEchoContent($ex1[0], '{{ $world }}');
+    $this->assertDirectiveContent($ex1[2], 'if', '($something)');
 
-        $ex2 = $patternOneResults[1]->all();
-        $this->assertEchoContent($ex2[0], '{{ $greetings }}');
-        $this->assertDirectiveContent($ex2[2], 'elseif');
+    $ex2 = $patternOneResults[1]->all();
+    $this->assertEchoContent($ex2[0], '{{ $greetings }}');
+    $this->assertDirectiveContent($ex2[2], 'elseif');
 
-        $patternTwoResults = $doc->findNodePattern([
-            DirectiveNode::class,
-            EchoNode::class,
-            EchoNode::class,
-            DirectiveNode::class,
-        ]);
+    $patternTwoResults = $doc->findNodePattern([
+        DirectiveNode::class,
+        EchoNode::class,
+        EchoNode::class,
+        DirectiveNode::class,
+    ]);
 
-        $this->assertCount(1, $patternTwoResults);
-        $ex3 = $patternTwoResults[0];
-        $this->assertDirectiveContent($ex3[0], 'include', "('something-else')");
-        $this->assertEchoContent($ex3[2], '{{ $hello }}');
-        $this->assertEchoContent($ex3[4], '{{ $world }}');
-        $this->assertDirectiveContent($ex3[6], 'if', '($something)');
+    expect($patternTwoResults)->toHaveCount(1);
+    $ex3 = $patternTwoResults[0];
+    $this->assertDirectiveContent($ex3[0], 'include', "('something-else')");
+    $this->assertEchoContent($ex3[2], '{{ $hello }}');
+    $this->assertEchoContent($ex3[4], '{{ $world }}');
+    $this->assertDirectiveContent($ex3[6], 'if', '($something)');
 
-        $patternThreeResults = $doc->findNodePattern([
-            DirectiveNode::class,
-            EchoNode::class,
-        ]);
-        $this->assertCount(2, $patternThreeResults);
+    $patternThreeResults = $doc->findNodePattern([
+        DirectiveNode::class,
+        EchoNode::class,
+    ]);
+    expect($patternThreeResults)->toHaveCount(2);
 
-        $ex4 = $patternThreeResults[0];
-        $this->assertDirectiveContent($ex4[0], 'include', "('something-else')");
-        $this->assertEchoContent($ex4[2], '{{ $hello }}');
+    $ex4 = $patternThreeResults[0];
+    $this->assertDirectiveContent($ex4[0], 'include', "('something-else')");
+    $this->assertEchoContent($ex4[2], '{{ $hello }}');
 
-        $ex5 = $patternThreeResults[1];
-        $this->assertDirectiveContent($ex5[0], 'if', '($something)');
-        $this->assertEchoContent($ex5[2], '{{ $greetings }}');
-    }
-}
+    $ex5 = $patternThreeResults[1];
+    $this->assertDirectiveContent($ex5[0], 'if', '($something)');
+    $this->assertEchoContent($ex5[2], '{{ $greetings }}');
+});

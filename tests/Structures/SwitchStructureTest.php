@@ -1,18 +1,13 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Structures;
-
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
 use Stillat\BladeParser\Nodes\DirectiveNode;
 use Stillat\BladeParser\Nodes\LiteralNode;
 use Stillat\BladeParser\Nodes\Structures\CaseStatement;
 use Stillat\BladeParser\Nodes\Structures\SwitchStatement;
-use Stillat\BladeParser\Tests\ParserTestCase;
 
-class SwitchStructureTest extends ParserTestCase
-{
-    public function testBasicSwitchStatements()
-    {
-        $template = <<<'EOT'
+test('basic switch statements', function () {
+    $template = <<<'EOT'
 @switch($i)
     @case(1)
         First case...
@@ -26,53 +21,52 @@ class SwitchStructureTest extends ParserTestCase
         Default case...
 @endswitch
 EOT;
-        $doc = $this->getDocument($template);
-        $doc->resolveStructures();
+    $doc = $this->getDocument($template);
+    $doc->resolveStructures();
 
-        $switchDirective = $doc->findDirectiveByName('switch');
-        $this->assertNotNull($switchDirective);
-        $this->assertNotNull($switchDirective->structure);
-        $this->assertTrue($switchDirective->isStructure);
-        $this->assertInstanceOf(SwitchStatement::class, $switchDirective->structure);
+    $switchDirective = $doc->findDirectiveByName('switch');
+    expect($switchDirective)->not->toBeNull();
+    expect($switchDirective->structure)->not->toBeNull();
+    expect($switchDirective->isStructure)->toBeTrue();
+    expect($switchDirective->structure)->toBeInstanceOf(SwitchStatement::class);
 
-        /** @var SwitchStatement $switch */
-        $switch = $switchDirective->structure;
-        $this->assertCount(1, $switch->leadingNodes);
-        $this->assertCount(1, $switch->getLeadingNodes());
-        $this->assertCount(3, $switch->cases);
-        $this->assertFalse($switch->hasInvalidCases());
-        $this->assertTrue($switch->hasDefaultCase());
-        $this->assertSame(2, $switch->getCaseCount());
-        $this->assertSame(1, $switch->getDefaultCount());
+    /** @var SwitchStatement $switch */
+    $switch = $switchDirective->structure;
+    expect($switch->leadingNodes)->toHaveCount(1);
+    expect($switch->getLeadingNodes())->toHaveCount(1);
+    expect($switch->cases)->toHaveCount(3);
+    expect($switch->hasInvalidCases())->toBeFalse();
+    expect($switch->hasDefaultCase())->toBeTrue();
+    expect($switch->getCaseCount())->toBe(2);
+    expect($switch->getDefaultCount())->toBe(1);
 
-        $firstCase = $switch->cases[0];
-        $this->assertCount(3, $firstCase->caseBody);
-        $this->assertDirectiveContent($firstCase->getCondition(), 'case', '(1)');
-        $this->assertInstanceOf(LiteralNode::class, $firstCase->caseBody[0]);
-        $this->assertStringContainsString('First case...', $firstCase->caseBody[0]->content);
-        $this->assertInstanceOf(DirectiveNode::class, $firstCase->caseBody[1]);
-        $this->assertDirectiveContent($firstCase->caseBody[1], 'break');
-        $this->assertInstanceOf(LiteralNode::class, $firstCase->caseBody[2]);
+    $firstCase = $switch->cases[0];
+    expect($firstCase->caseBody)->toHaveCount(3);
+    $this->assertDirectiveContent($firstCase->getCondition(), 'case', '(1)');
+    expect($firstCase->caseBody[0])->toBeInstanceOf(LiteralNode::class);
+    $this->assertStringContainsString('First case...', $firstCase->caseBody[0]->content);
+    expect($firstCase->caseBody[1])->toBeInstanceOf(DirectiveNode::class);
+    $this->assertDirectiveContent($firstCase->caseBody[1], 'break');
+    expect($firstCase->caseBody[2])->toBeInstanceOf(LiteralNode::class);
 
-        $secondCase = $switch->cases[1];
-        $this->assertCount(3, $secondCase->caseBody);
-        $this->assertDirectiveContent($secondCase->getCondition(), 'case', '(2)');
-        $this->assertInstanceOf(LiteralNode::class, $secondCase->caseBody[0]);
-        $this->assertStringContainsString('Second case...', $secondCase->caseBody[0]->content);
-        $this->assertInstanceOf(DirectiveNode::class, $secondCase->caseBody[1]);
-        $this->assertDirectiveContent($secondCase->caseBody[1], 'break');
-        $this->assertInstanceOf(LiteralNode::class, $secondCase->caseBody[2]);
+    $secondCase = $switch->cases[1];
+    expect($secondCase->caseBody)->toHaveCount(3);
+    $this->assertDirectiveContent($secondCase->getCondition(), 'case', '(2)');
+    expect($secondCase->caseBody[0])->toBeInstanceOf(LiteralNode::class);
+    $this->assertStringContainsString('Second case...', $secondCase->caseBody[0]->content);
+    expect($secondCase->caseBody[1])->toBeInstanceOf(DirectiveNode::class);
+    $this->assertDirectiveContent($secondCase->caseBody[1], 'break');
+    expect($secondCase->caseBody[2])->toBeInstanceOf(LiteralNode::class);
 
-        $thirdCase = $switch->cases[2];
-        $this->assertCount(1, $thirdCase->caseBody);
-        $this->assertDirectiveContent($thirdCase->getCondition(), 'default');
-        $this->assertInstanceOf(LiteralNode::class, $thirdCase->caseBody[0]);
-        $this->assertStringContainsString('Default case...', $thirdCase->caseBody[0]->content);
-    }
+    $thirdCase = $switch->cases[2];
+    expect($thirdCase->caseBody)->toHaveCount(1);
+    $this->assertDirectiveContent($thirdCase->getCondition(), 'default');
+    expect($thirdCase->caseBody[0])->toBeInstanceOf(LiteralNode::class);
+    $this->assertStringContainsString('Default case...', $thirdCase->caseBody[0]->content);
+});
 
-    public function testNestedSwitchStatements()
-    {
-        $template = <<<'EOT'
+test('nested switch statements', function () {
+    $template = <<<'EOT'
 @switch($i)
     @case(1)
         First case...
@@ -100,96 +94,95 @@ EOT;
         Default case...
 @endswitch
 EOT;
-        $doc = $this->getDocument($template);
-        $doc->resolveStructures();
+    $doc = $this->getDocument($template);
+    $doc->resolveStructures();
 
-        $switchStatements = $doc->findDirectivesByName('switch');
-        $this->assertCount(2, $switchStatements);
+    $switchStatements = $doc->findDirectivesByName('switch');
+    expect($switchStatements)->toHaveCount(2);
 
-        $switchDirective = $switchStatements[0];
-        $this->assertNotNull($switchDirective);
-        $this->assertNotNull($switchDirective->structure);
-        $this->assertTrue($switchDirective->isStructure);
-        $this->assertInstanceOf(SwitchStatement::class, $switchDirective->structure);
+    $switchDirective = $switchStatements[0];
+    expect($switchDirective)->not->toBeNull();
+    expect($switchDirective->structure)->not->toBeNull();
+    expect($switchDirective->isStructure)->toBeTrue();
+    expect($switchDirective->structure)->toBeInstanceOf(SwitchStatement::class);
 
-        /** @var SwitchStatement $switch */
-        $switch = $switchDirective->structure;
-        $this->assertCount(1, $switch->leadingNodes);
-        $this->assertCount(3, $switch->cases);
-        $this->assertFalse($switch->hasInvalidCases());
-        $this->assertTrue($switch->hasDefaultCase());
-        $this->assertSame(2, $switch->getCaseCount());
-        $this->assertSame(1, $switch->getDefaultCount());
+    /** @var SwitchStatement $switch */
+    $switch = $switchDirective->structure;
+    expect($switch->leadingNodes)->toHaveCount(1);
+    expect($switch->cases)->toHaveCount(3);
+    expect($switch->hasInvalidCases())->toBeFalse();
+    expect($switch->hasDefaultCase())->toBeTrue();
+    expect($switch->getCaseCount())->toBe(2);
+    expect($switch->getDefaultCount())->toBe(1);
 
-        $firstCase = $switch->cases[0];
-        $this->assertCount(3, $firstCase->caseBody);
-        $this->assertDirectiveContent($firstCase->getCondition(), 'case', '(1)');
-        $this->assertInstanceOf(LiteralNode::class, $firstCase->caseBody[0]);
-        $this->assertStringContainsString('First case...', $firstCase->caseBody[0]->content);
-        $this->assertInstanceOf(DirectiveNode::class, $firstCase->caseBody[1]);
-        $this->assertDirectiveContent($firstCase->caseBody[1], 'break');
-        $this->assertInstanceOf(LiteralNode::class, $firstCase->caseBody[2]);
+    $firstCase = $switch->cases[0];
+    expect($firstCase->caseBody)->toHaveCount(3);
+    $this->assertDirectiveContent($firstCase->getCondition(), 'case', '(1)');
+    expect($firstCase->caseBody[0])->toBeInstanceOf(LiteralNode::class);
+    $this->assertStringContainsString('First case...', $firstCase->caseBody[0]->content);
+    expect($firstCase->caseBody[1])->toBeInstanceOf(DirectiveNode::class);
+    $this->assertDirectiveContent($firstCase->caseBody[1], 'break');
+    expect($firstCase->caseBody[2])->toBeInstanceOf(LiteralNode::class);
 
-        $secondCase = $switch->cases[1];
-        $this->assertCount(5, $secondCase->caseBody);
-        $this->assertDirectiveContent($secondCase->getCondition(), 'case', '(2)');
-        $this->assertInstanceOf(LiteralNode::class, $secondCase->caseBody[0]);
-        $this->assertStringContainsString('Second case...', $secondCase->caseBody[0]->content);
-        $this->assertInstanceOf(DirectiveNode::class, $secondCase->caseBody[1]);
-        $this->assertDirectiveContent($secondCase->caseBody[1], 'switch');
-        $this->assertInstanceOf(LiteralNode::class, $secondCase->caseBody[2]);
-        $this->assertDirectiveContent($secondCase->caseBody[3], 'break');
-        $this->assertInstanceOf(LiteralNode::class, $secondCase->caseBody[4]);
+    $secondCase = $switch->cases[1];
+    expect($secondCase->caseBody)->toHaveCount(5);
+    $this->assertDirectiveContent($secondCase->getCondition(), 'case', '(2)');
+    expect($secondCase->caseBody[0])->toBeInstanceOf(LiteralNode::class);
+    $this->assertStringContainsString('Second case...', $secondCase->caseBody[0]->content);
+    expect($secondCase->caseBody[1])->toBeInstanceOf(DirectiveNode::class);
+    $this->assertDirectiveContent($secondCase->caseBody[1], 'switch');
+    expect($secondCase->caseBody[2])->toBeInstanceOf(LiteralNode::class);
+    $this->assertDirectiveContent($secondCase->caseBody[3], 'break');
+    expect($secondCase->caseBody[4])->toBeInstanceOf(LiteralNode::class);
 
-        $thirdCase = $switch->cases[2];
-        $this->assertCount(1, $thirdCase->caseBody);
-        $this->assertDirectiveContent($thirdCase->getCondition(), 'default');
-        $this->assertInstanceOf(LiteralNode::class, $thirdCase->caseBody[0]);
-        $this->assertStringContainsString('Default case...', $thirdCase->caseBody[0]->content);
+    $thirdCase = $switch->cases[2];
+    expect($thirdCase->caseBody)->toHaveCount(1);
+    $this->assertDirectiveContent($thirdCase->getCondition(), 'default');
+    expect($thirdCase->caseBody[0])->toBeInstanceOf(LiteralNode::class);
+    $this->assertStringContainsString('Default case...', $thirdCase->caseBody[0]->content);
 
-        $switchDirective = $switchStatements[1];
-        $this->assertNotNull($switchDirective);
-        $this->assertNotNull($switchDirective->structure);
-        $this->assertTrue($switchDirective->isStructure);
-        $this->assertInstanceOf(SwitchStatement::class, $switchDirective->structure);
+    $switchDirective = $switchStatements[1];
+    expect($switchDirective)->not->toBeNull();
+    expect($switchDirective->structure)->not->toBeNull();
+    expect($switchDirective->isStructure)->toBeTrue();
+    expect($switchDirective->structure)->toBeInstanceOf(SwitchStatement::class);
 
-        /** @var SwitchStatement $switch */
-        $switch = $switchDirective->structure;
-        $this->assertCount(1, $switch->leadingNodes);
-        $this->assertCount(3, $switch->cases);
-        $this->assertFalse($switch->hasInvalidCases());
-        $this->assertTrue($switch->hasDefaultCase());
-        $this->assertSame(2, $switch->getCaseCount());
-        $this->assertSame(1, $switch->getDefaultCount());
+    /** @var SwitchStatement $switch */
+    $switch = $switchDirective->structure;
+    expect($switch->leadingNodes)->toHaveCount(1);
+    expect($switch->cases)->toHaveCount(3);
+    expect($switch->hasInvalidCases())->toBeFalse();
+    expect($switch->hasDefaultCase())->toBeTrue();
+    expect($switch->getCaseCount())->toBe(2);
+    expect($switch->getDefaultCount())->toBe(1);
 
-        $firstCase = $switch->cases[0];
-        $this->assertCount(3, $firstCase->caseBody);
-        $this->assertDirectiveContent($firstCase->getCondition(), 'case', '(2.1)');
-        $this->assertInstanceOf(LiteralNode::class, $firstCase->caseBody[0]);
-        $this->assertStringContainsString('First case two...', $firstCase->caseBody[0]->content);
-        $this->assertInstanceOf(DirectiveNode::class, $firstCase->caseBody[1]);
-        $this->assertDirectiveContent($firstCase->caseBody[1], 'break');
-        $this->assertInstanceOf(LiteralNode::class, $firstCase->caseBody[2]);
+    $firstCase = $switch->cases[0];
+    expect($firstCase->caseBody)->toHaveCount(3);
+    $this->assertDirectiveContent($firstCase->getCondition(), 'case', '(2.1)');
+    expect($firstCase->caseBody[0])->toBeInstanceOf(LiteralNode::class);
+    $this->assertStringContainsString('First case two...', $firstCase->caseBody[0]->content);
+    expect($firstCase->caseBody[1])->toBeInstanceOf(DirectiveNode::class);
+    $this->assertDirectiveContent($firstCase->caseBody[1], 'break');
+    expect($firstCase->caseBody[2])->toBeInstanceOf(LiteralNode::class);
 
-        $secondCase = $switch->cases[1];
-        $this->assertCount(3, $secondCase->caseBody);
-        $this->assertDirectiveContent($secondCase->getCondition(), 'case', '(2.2)');
-        $this->assertInstanceOf(LiteralNode::class, $secondCase->caseBody[0]);
-        $this->assertStringContainsString('Second case two...', $secondCase->caseBody[0]->content);
-        $this->assertInstanceOf(DirectiveNode::class, $secondCase->caseBody[1]);
-        $this->assertDirectiveContent($secondCase->caseBody[1], 'break');
-        $this->assertInstanceOf(LiteralNode::class, $secondCase->caseBody[2]);
+    $secondCase = $switch->cases[1];
+    expect($secondCase->caseBody)->toHaveCount(3);
+    $this->assertDirectiveContent($secondCase->getCondition(), 'case', '(2.2)');
+    expect($secondCase->caseBody[0])->toBeInstanceOf(LiteralNode::class);
+    $this->assertStringContainsString('Second case two...', $secondCase->caseBody[0]->content);
+    expect($secondCase->caseBody[1])->toBeInstanceOf(DirectiveNode::class);
+    $this->assertDirectiveContent($secondCase->caseBody[1], 'break');
+    expect($secondCase->caseBody[2])->toBeInstanceOf(LiteralNode::class);
 
-        $thirdCase = $switch->cases[2];
-        $this->assertCount(1, $thirdCase->caseBody);
-        $this->assertDirectiveContent($thirdCase->getCondition(), 'default');
-        $this->assertInstanceOf(LiteralNode::class, $thirdCase->caseBody[0]);
-        $this->assertStringContainsString('Default case two...', $thirdCase->caseBody[0]->content);
-    }
+    $thirdCase = $switch->cases[2];
+    expect($thirdCase->caseBody)->toHaveCount(1);
+    $this->assertDirectiveContent($thirdCase->getCondition(), 'default');
+    expect($thirdCase->caseBody[0])->toBeInstanceOf(LiteralNode::class);
+    $this->assertStringContainsString('Default case two...', $thirdCase->caseBody[0]->content);
+});
 
-    public function testDeeplyNestedSwitchStatements()
-    {
-        $template = <<<'EOT'
+test('deeply nested switch statements', function () {
+    $template = <<<'EOT'
 @switch($i)
     @case(1-2)
         First case...
@@ -258,86 +251,85 @@ EOT;
         @endswitch
 @endswitch
 EOT;
-        $doc = $this->getDocument($template);
-        $doc->resolveStructures();
-        $switchStatements = $doc->findDirectivesByName('switch');
-        $this->assertCount(5, $switchStatements);
+    $doc = $this->getDocument($template);
+    $doc->resolveStructures();
+    $switchStatements = $doc->findDirectivesByName('switch');
+    expect($switchStatements)->toHaveCount(5);
 
-        /** @var DirectiveNode $statement */
-        foreach ($switchStatements as $statement) {
-            $this->assertNotNull($statement->structure);
-            $this->assertInstanceOf(SwitchStatement::class, $statement->structure);
-        }
-
-        /** @var SwitchStatement $switchOne */
-        $switchOne = $switchStatements[0]->structure;
-        $this->assertCount(3, $switchOne->getCases());
-        $this->assertSame(2, $switchOne->getCaseCount());
-        $this->assertCount(2, $switchOne->getConditionCases());
-        $this->assertSame(1, $switchOne->getDefaultCount());
-        $this->assertCount(1, $switchOne->getDefaultCases());
-
-        /** @var CaseStatement $defaultOne */
-        $defaultOne = $switchOne->getDefaultCases()->first();
-        $this->assertNotNull($defaultOne);
-
-        $defaultOneNode = $defaultOne->getNode();
-        $this->assertCount(3, $defaultOneNode->getDirectChildren());
-        $defaultOneChildren = $defaultOneNode->getDirectChildren();
-        $this->assertInstanceOf(LiteralNode::class, $defaultOneChildren[0]);
-        $this->assertInstanceOf(DirectiveNode::class, $defaultOneChildren[1]);
-        $this->assertDirectiveContent($defaultOneChildren[1], 'switch', '($i4)');
-        $this->assertInstanceOf(LiteralNode::class, $defaultOneChildren[2]);
-
-        $this->assertNotNull($defaultOneChildren[1]->structure);
-        $this->assertInstanceOf(SwitchStatement::class, $defaultOneChildren[1]->structure);
-
-        /** @var SwitchStatement $ns1 */
-        $ns1 = $defaultOneChildren[1]->structure;
-        $this->assertCount(2, $ns1->getConditionCases());
-        $this->assertCount(1, $ns1->getDefaultCases());
-        $ns1SwChildren = $ns1->getConditionCases()->first()->getNode()->getDirectChildren();
-        $this->assertCount(5, $ns1SwChildren);
-        $this->assertInstanceOf(LiteralNode::class, $ns1SwChildren[0]);
-        $this->assertInstanceOf(DirectiveNode::class, $ns1SwChildren[1]);
-        $this->assertDirectiveContent($ns1SwChildren[1], 'switch', '($i5)');
-        $this->assertInstanceOf(LiteralNode::class, $ns1SwChildren[2]);
-        $this->assertInstanceOf(DirectiveNode::class, $ns1SwChildren[3]);
-        $this->assertDirectiveContent($ns1SwChildren[3], 'break');
-        $this->assertInstanceOf(LiteralNode::class, $ns1SwChildren[4]);
-
-        /** @var DirectiveNode $caseOne */
-        $caseOne = $switchOne->getConditionCases()[0]->getNode();
-        $c1Direct = $caseOne->getDirectChildren();
-        $this->assertCount(5, $c1Direct);
-        $this->assertInstanceOf(DirectiveNode::class, $c1Direct[1]);
-        $this->assertDirectiveContent($c1Direct[1], 'switch', '($i2)');
-        $this->assertNotNull($c1Direct[1]->structure);
-        $this->assertInstanceOf(SwitchStatement::class, $c1Direct[1]->structure);
-
-        /** @var SwitchStatement $nc2 */
-        $nc2 = $c1Direct[1]->structure;
-        $this->assertCount(1, $nc2->getDefaultCases());
-        $this->assertCount(2, $nc2->getConditionCases());
-
-        $nc2c1 = $nc2->cases[0];
-        $this->assertDirectiveContent($nc2c1->constructedFrom, 'case', '(1.1)');
-        $this->assertCount(3, $nc2c1->caseBody);
-        $this->assertInstanceOf(LiteralNode::class, $nc2c1->caseBody[0]);
-        $this->assertInstanceOf(DirectiveNode::class, $nc2c1->caseBody[1]);
-        $this->assertInstanceOf(LiteralNode::class, $nc2c1->caseBody[2]);
-
-        $nc2c2 = $nc2->cases[1];
-        $this->assertDirectiveContent($nc2c2->constructedFrom, 'case', '(2.2)');
-        $this->assertCount(3, $nc2c2->caseBody);
-        $this->assertInstanceOf(LiteralNode::class, $nc2c2->caseBody[0]);
-        $this->assertInstanceOf(DirectiveNode::class, $nc2c2->caseBody[1]);
-        $this->assertInstanceOf(LiteralNode::class, $nc2c2->caseBody[2]);
+    /** @var DirectiveNode $statement */
+    foreach ($switchStatements as $statement) {
+        expect($statement->structure)->not->toBeNull();
+        expect($statement->structure)->toBeInstanceOf(SwitchStatement::class);
     }
 
-    public function testMangledCaseStatement()
-    {
-        $template = <<<'EOT'
+    /** @var SwitchStatement $switchOne */
+    $switchOne = $switchStatements[0]->structure;
+    expect($switchOne->getCases())->toHaveCount(3);
+    expect($switchOne->getCaseCount())->toBe(2);
+    expect($switchOne->getConditionCases())->toHaveCount(2);
+    expect($switchOne->getDefaultCount())->toBe(1);
+    expect($switchOne->getDefaultCases())->toHaveCount(1);
+
+    /** @var CaseStatement $defaultOne */
+    $defaultOne = $switchOne->getDefaultCases()->first();
+    expect($defaultOne)->not->toBeNull();
+
+    $defaultOneNode = $defaultOne->getNode();
+    expect($defaultOneNode->getDirectChildren())->toHaveCount(3);
+    $defaultOneChildren = $defaultOneNode->getDirectChildren();
+    expect($defaultOneChildren[0])->toBeInstanceOf(LiteralNode::class);
+    expect($defaultOneChildren[1])->toBeInstanceOf(DirectiveNode::class);
+    $this->assertDirectiveContent($defaultOneChildren[1], 'switch', '($i4)');
+    expect($defaultOneChildren[2])->toBeInstanceOf(LiteralNode::class);
+
+    expect($defaultOneChildren[1]->structure)->not->toBeNull();
+    expect($defaultOneChildren[1]->structure)->toBeInstanceOf(SwitchStatement::class);
+
+    /** @var SwitchStatement $ns1 */
+    $ns1 = $defaultOneChildren[1]->structure;
+    expect($ns1->getConditionCases())->toHaveCount(2);
+    expect($ns1->getDefaultCases())->toHaveCount(1);
+    $ns1SwChildren = $ns1->getConditionCases()->first()->getNode()->getDirectChildren();
+    expect($ns1SwChildren)->toHaveCount(5);
+    expect($ns1SwChildren[0])->toBeInstanceOf(LiteralNode::class);
+    expect($ns1SwChildren[1])->toBeInstanceOf(DirectiveNode::class);
+    $this->assertDirectiveContent($ns1SwChildren[1], 'switch', '($i5)');
+    expect($ns1SwChildren[2])->toBeInstanceOf(LiteralNode::class);
+    expect($ns1SwChildren[3])->toBeInstanceOf(DirectiveNode::class);
+    $this->assertDirectiveContent($ns1SwChildren[3], 'break');
+    expect($ns1SwChildren[4])->toBeInstanceOf(LiteralNode::class);
+
+    /** @var DirectiveNode $caseOne */
+    $caseOne = $switchOne->getConditionCases()[0]->getNode();
+    $c1Direct = $caseOne->getDirectChildren();
+    expect($c1Direct)->toHaveCount(5);
+    expect($c1Direct[1])->toBeInstanceOf(DirectiveNode::class);
+    $this->assertDirectiveContent($c1Direct[1], 'switch', '($i2)');
+    expect($c1Direct[1]->structure)->not->toBeNull();
+    expect($c1Direct[1]->structure)->toBeInstanceOf(SwitchStatement::class);
+
+    /** @var SwitchStatement $nc2 */
+    $nc2 = $c1Direct[1]->structure;
+    expect($nc2->getDefaultCases())->toHaveCount(1);
+    expect($nc2->getConditionCases())->toHaveCount(2);
+
+    $nc2c1 = $nc2->cases[0];
+    $this->assertDirectiveContent($nc2c1->constructedFrom, 'case', '(1.1)');
+    expect($nc2c1->caseBody)->toHaveCount(3);
+    expect($nc2c1->caseBody[0])->toBeInstanceOf(LiteralNode::class);
+    expect($nc2c1->caseBody[1])->toBeInstanceOf(DirectiveNode::class);
+    expect($nc2c1->caseBody[2])->toBeInstanceOf(LiteralNode::class);
+
+    $nc2c2 = $nc2->cases[1];
+    $this->assertDirectiveContent($nc2c2->constructedFrom, 'case', '(2.2)');
+    expect($nc2c2->caseBody)->toHaveCount(3);
+    expect($nc2c2->caseBody[0])->toBeInstanceOf(LiteralNode::class);
+    expect($nc2c2->caseBody[1])->toBeInstanceOf(DirectiveNode::class);
+    expect($nc2c2->caseBody[2])->toBeInstanceOf(LiteralNode::class);
+});
+
+test('mangled case statement', function () {
+    $template = <<<'EOT'
 @switch($i)
     @case(1)
         First case...
@@ -352,41 +344,39 @@ EOT;
         Default case...
 @endswitch
 EOT;
-        $doc = $this->getDocument($template);
-        $doc->resolveStructures();
-        $case = $doc->findDirectiveByName('case')->getCaseStatement();
+    $doc = $this->getDocument($template);
+    $doc->resolveStructures();
+    $case = $doc->findDirectiveByName('case')->getCaseStatement();
 
-        $this->assertTrue($case->hasBody());
-        $this->assertSame($doc->findDirectiveByName('switch')->getSwitchStatement(), $case->getSwitch());
-        $this->assertCount(5, $case->caseBody);
-        $this->assertInstanceOf(LiteralNode::class, $case->caseBody[0]);
-        $this->assertDirectiveContent($case->caseBody[1], 'break');
-        $this->assertDirectiveContent($case->caseBody[3], 'break');
+    expect($case->hasBody())->toBeTrue();
+    expect($case->getSwitch())->toBe($doc->findDirectiveByName('switch')->getSwitchStatement());
+    expect($case->caseBody)->toHaveCount(5);
+    expect($case->caseBody[0])->toBeInstanceOf(LiteralNode::class);
+    $this->assertDirectiveContent($case->caseBody[1], 'break');
+    $this->assertDirectiveContent($case->caseBody[3], 'break');
 
-        $this->assertSame(2, $case->getBreakCount());
-        $this->assertFalse($case->isValid());
-    }
+    expect($case->getBreakCount())->toBe(2);
+    expect($case->isValid())->toBeFalse();
+});
 
-    public function testCaseStatementsWithoutBreaksAreInvalid()
-    {
-        $template = <<<'EOT'
+test('case statements without breaks are invalid', function () {
+    $template = <<<'EOT'
 @switch($i)
     @case(1)
         First case...
 @endswitch
 EOT;
-        $doc = $this->getDocument($template);
-        $doc->resolveStructures();
-        $case = $doc->findDirectiveByName('case')->getCaseStatement();
-        $this->assertSame(0, $case->getBreakCount());
-        $this->assertFalse($case->isValid());
-        $this->assertTrue($doc->findDirectiveByName('switch')->getSwitchStatement()->hasInvalidCases());
-        $this->assertFalse($doc->findDirectiveByName('switch')->getSwitchStatement()->isValid());
-    }
+    $doc = $this->getDocument($template);
+    $doc->resolveStructures();
+    $case = $doc->findDirectiveByName('case')->getCaseStatement();
+    expect($case->getBreakCount())->toBe(0);
+    expect($case->isValid())->toBeFalse();
+    expect($doc->findDirectiveByName('switch')->getSwitchStatement()->hasInvalidCases())->toBeTrue();
+    expect($doc->findDirectiveByName('switch')->getSwitchStatement()->isValid())->toBeFalse();
+});
 
-    public function testSwitchCaseNodeQueries()
-    {
-        $template = <<<'EOT'
+test('switch case node queries', function () {
+    $template = <<<'EOT'
 @switch($i)
     @case(1)
         First case...
@@ -407,12 +397,12 @@ EOT;
         Default case...
 @endswitch
 EOT;
-        $doc = $this->getDocument($template);
-        $doc->resolveStructures();
-        /** @var CaseStatement $case */
-        $case = $doc->findDirectiveByName('switch')->getSwitchStatement()->getCases()->first();
+    $doc = $this->getDocument($template);
+    $doc->resolveStructures();
 
-        $this->assertCount(5, $case->getDirectChildren());
-        $this->assertCount(6, $case->getNodes());
-    }
-}
+    /** @var CaseStatement $case */
+    $case = $doc->findDirectiveByName('switch')->getSwitchStatement()->getCases()->first();
+
+    expect($case->getDirectChildren())->toHaveCount(5);
+    expect($case->getNodes())->toHaveCount(6);
+});

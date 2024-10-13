@@ -1,14 +1,8 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Mutations;
-
-use Stillat\BladeParser\Tests\ParserTestCase;
-
-class VerbatimMutationsTest extends ParserTestCase
-{
-    public function testVerbatimContentCanBeChanged()
-    {
-        $template = <<<'EOT'
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
+test('verbatim content can be changed', function () {
+    $template = <<<'EOT'
 One
 @verbatim
 start
@@ -25,10 +19,10 @@ s3@props-three  (['color' => (true ?? 'gray')])
 @endverbatim
 Two
 EOT;
-        $doc = $this->getDocument($template);
-        $doc->getVerbatimBlocks()->first()->setContent('{{ some_new_content }}');
+    $doc = $this->getDocument($template);
+    $doc->getVerbatimBlocks()->first()->setContent('{{ some_new_content }}');
 
-        $expected = <<<'EXPECTED'
+    $expected = <<<'EXPECTED'
 One
 @verbatim 
 {{ some_new_content }}
@@ -36,12 +30,11 @@ One
 Two
 EXPECTED;
 
-        $this->assertSame($expected, (string) $doc);
-    }
+    expect((string) $doc)->toBe($expected);
+});
 
-    public function testVerbatimOriginalWhitespaceCanBeOverridden()
-    {
-        $template = <<<'EOT'
+test('verbatim original whitespace can be overridden', function () {
+    $template = <<<'EOT'
 One
 @verbatim                 
                       {{ something }}
@@ -49,15 +42,14 @@ One
                    @endverbatim
 Two
 EOT;
-        $doc = $this->getDocument($template);
-        $doc->getVerbatimBlocks()->first()->setContent('{{ something_else }}', false);
+    $doc = $this->getDocument($template);
+    $doc->getVerbatimBlocks()->first()->setContent('{{ something_else }}', false);
 
-        $expected = <<<'EXPECTED'
+    $expected = <<<'EXPECTED'
 One
 @verbatim {{ something_else }} @endverbatim
 Two
 EXPECTED;
 
-        $this->assertSame($expected, (string) $doc);
-    }
-}
+    expect((string) $doc)->toBe($expected);
+});

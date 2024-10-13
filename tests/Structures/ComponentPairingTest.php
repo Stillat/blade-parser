@@ -1,34 +1,28 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Structures;
-
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
 use Stillat\BladeParser\Nodes\Components\ComponentNode;
-use Stillat\BladeParser\Tests\ParserTestCase;
 
-class ComponentPairingTest extends ParserTestCase
-{
-    public function testBasicComponentPairing()
-    {
-        $template = <<<'EOT'
+test('basic component pairing', function () {
+    $template = <<<'EOT'
 <div>
     <x-alert message="the message">
         <p>Inner text.</p>
     </x-alert>
 </div>
 EOT;
-        $doc = $this->getDocument($template);
-        $doc->resolveStructures();
+    $doc = $this->getDocument($template);
+    $doc->resolveStructures();
 
-        $components = $doc->getComponents();
-        $c1 = $components[0];
-        $c2 = $components[1];
+    $components = $doc->getComponents();
+    $c1 = $components[0];
+    $c2 = $components[1];
 
-        $this->assertComponentsArePaired($c1, $c2);
-    }
+    $this->assertComponentsArePaired($c1, $c2);
+});
 
-    public function testSelfClosingComponentsAreSkipped()
-    {
-        $template = <<<'EOT'
+test('self closing components are skipped', function () {
+    $template = <<<'EOT'
 <div>
     <x-alert message="the message">
         <p>Inner text.</p>
@@ -36,162 +30,138 @@ EOT;
     </x-alert>
 </div>
 EOT;
-        $doc = $this->getDocument($template);
-        $doc->resolveStructures();
+    $doc = $this->getDocument($template);
+    $doc->resolveStructures();
 
-        $components = $doc->getComponents();
-        $c1 = $components[0];
-        /** @var ComponentNode $c2 */
-        $c2 = $components[1];
-        $c3 = $components[2];
+    $components = $doc->getComponents();
+    $c1 = $components[0];
 
-        $this->assertNull($c2->isClosedBy);
-        $this->assertComponentsArePaired($c1, $c3);
-    }
+    /** @var ComponentNode $c2 */
+    $c2 = $components[1];
+    $c3 = $components[2];
 
-    public function testDeeplyNestedComponentsArePaired()
-    {
-        $numberOfTags = 50;
+    expect($c2->isClosedBy)->toBeNull();
+    $this->assertComponentsArePaired($c1, $c3);
+});
 
-        $template = str_repeat('<x-alert message="a message">', $numberOfTags);
-        $template .= str_repeat('</x-alert>', $numberOfTags);
-        $doc = $this->getDocument($template);
-        $doc->resolveStructures();
-        $components = $doc->getComponents()->values()->all();
-        $this->assertCount(100, $components);
+test('deeply nested components are paired', function () {
+    $numberOfTags = 50;
 
-        $this->assertManyComponentsArePaired($components);
-    }
+    $template = str_repeat('<x-alert message="a message">', $numberOfTags);
+    $template .= str_repeat('</x-alert>', $numberOfTags);
+    $doc = $this->getDocument($template);
+    $doc->resolveStructures();
+    $components = $doc->getComponents()->values()->all();
+    expect($components)->toHaveCount(100);
 
-    public function testDeeplyNestedMixedComponentsArePaired()
-    {
-        $numberOfTags = 50;
+    assertManyComponentsArePaired($components);
+});
 
-        $template = str_repeat('<x-alert message="a message">', $numberOfTags);
-        $template .= str_repeat('<x-banner type="some type">', $numberOfTags);
-        $template .= str_repeat('</x-banner>', $numberOfTags);
-        $template .= str_repeat('</x-alert>', $numberOfTags);
+test('deeply nested mixed components are paired', function () {
+    $numberOfTags = 50;
 
-        $doc = $this->getDocument($template);
-        $doc->resolveStructures();
-        $components = $doc->getComponents()->values()->all();
-        $this->assertCount(200, $components);
+    $template = str_repeat('<x-alert message="a message">', $numberOfTags);
+    $template .= str_repeat('<x-banner type="some type">', $numberOfTags);
+    $template .= str_repeat('</x-banner>', $numberOfTags);
+    $template .= str_repeat('</x-alert>', $numberOfTags);
 
-        $this->assertManyComponentsArePaired($components);
-    }
+    $doc = $this->getDocument($template);
+    $doc->resolveStructures();
+    $components = $doc->getComponents()->values()->all();
+    expect($components)->toHaveCount(200);
 
-    public function testNamespacedComponentPairing()
-    {
-        $template = <<<'EOT'
+    assertManyComponentsArePaired($components);
+});
+
+test('namespaced component pairing', function () {
+    $template = <<<'EOT'
 One <x:third> Two </x:third> Three
 EOT;
-        $doc = $this->getDocument($template);
-        $doc->resolveStructures();
+    $doc = $this->getDocument($template);
+    $doc->resolveStructures();
 
-        /** @var ComponentNode[] $components */
-        $components = $doc->getComponents()->values()->all();
+    /** @var ComponentNode[] $components */
+    $components = $doc->getComponents()->values()->all();
 
-        $this->assertCount(2, $components);
+    expect($components)->toHaveCount(2);
 
-        $c1 = $components[0];
-        $c2 = $components[1];
+    $c1 = $components[0];
+    $c2 = $components[1];
 
-        $this->assertComponentsArePaired($c1, $c2);
-    }
+    $this->assertComponentsArePaired($c1, $c2);
+});
 
-    public function testMixedStyleComponentPairing()
-    {
-        $template = <<<'EOT'
+test('mixed style component pairing', function () {
+    $template = <<<'EOT'
 One <x:third> Two </x-third> Three
 EOT;
-        $doc = $this->getDocument($template);
-        $doc->resolveStructures();
+    $doc = $this->getDocument($template);
+    $doc->resolveStructures();
 
-        /** @var ComponentNode[] $components */
-        $components = $doc->getComponents()->values()->all();
+    /** @var ComponentNode[] $components */
+    $components = $doc->getComponents()->values()->all();
 
-        $this->assertCount(2, $components);
+    expect($components)->toHaveCount(2);
 
-        $c1 = $components[0];
-        $c2 = $components[1];
+    $c1 = $components[0];
+    $c2 = $components[1];
 
-        $this->assertComponentsArePaired($c1, $c2);
-    }
+    $this->assertComponentsArePaired($c1, $c2);
+});
 
-    public function testMixedStyleComponentPairingTwo()
-    {
-        $template = <<<'EOT'
+test('mixed style component pairing two', function () {
+    $template = <<<'EOT'
 One <x-third> Two </x:third> Three
 EOT;
-        $doc = $this->getDocument($template);
-        $doc->resolveStructures();
+    $doc = $this->getDocument($template);
+    $doc->resolveStructures();
 
-        /** @var ComponentNode[] $components */
-        $components = $doc->getComponents()->values()->all();
+    /** @var ComponentNode[] $components */
+    $components = $doc->getComponents()->values()->all();
 
-        $this->assertCount(2, $components);
+    expect($components)->toHaveCount(2);
 
-        $c1 = $components[0];
-        $c2 = $components[1];
+    $c1 = $components[0];
+    $c2 = $components[1];
 
-        $this->assertComponentsArePaired($c1, $c2);
-    }
+    $this->assertComponentsArePaired($c1, $c2);
+});
 
-    public function testMixedStyleComponentPairingThree()
-    {
-        $template = <<<'EOT'
+test('mixed style component pairing three', function () {
+    $template = <<<'EOT'
 One <x-slot:slot_name> Two </x:slot> Three
 EOT;
-        $doc = $this->getDocument($template);
-        $doc->resolveStructures();
+    $doc = $this->getDocument($template);
+    $doc->resolveStructures();
 
-        /** @var ComponentNode[] $components */
-        $components = $doc->getComponents()->values()->all();
+    /** @var ComponentNode[] $components */
+    $components = $doc->getComponents()->values()->all();
 
-        $this->assertCount(2, $components);
+    expect($components)->toHaveCount(2);
 
-        $c1 = $components[0];
-        $c2 = $components[1];
+    $c1 = $components[0];
+    $c2 = $components[1];
 
-        $this->assertComponentsArePaired($c1, $c2);
-    }
+    $this->assertComponentsArePaired($c1, $c2);
+});
 
-    public function testMixedStyleComponentPairingFour()
-    {
-        $template = <<<'EOT'
+test('mixed style component pairing four', function () {
+    $template = <<<'EOT'
 One <x-slot:slot_name> <x-slot:name> </x-slot:name> </x:slot> Three
 EOT;
-        $doc = $this->getDocument($template);
-        $doc->resolveStructures();
+    $doc = $this->getDocument($template);
+    $doc->resolveStructures();
 
-        /** @var ComponentNode[] $components */
-        $components = $doc->getComponents()->values()->all();
+    /** @var ComponentNode[] $components */
+    $components = $doc->getComponents()->values()->all();
 
-        $this->assertCount(4, $components);
+    expect($components)->toHaveCount(4);
 
-        $c1 = $components[0];
-        $c2 = $components[1];
-        $c3 = $components[2];
-        $c4 = $components[3];
+    $c1 = $components[0];
+    $c2 = $components[1];
+    $c3 = $components[2];
+    $c4 = $components[3];
 
-        $this->assertComponentsArePaired($c1, $c4);
-        $this->assertComponentsArePaired($c2, $c3);
-    }
-
-    /**
-     * @param  ComponentNode[]  $components
-     */
-    private function assertManyComponentsArePaired(array $components): void
-    {
-        $componentCount = count($components);
-        $limit = $componentCount / 2;
-
-        for ($i = 0; $i < $limit; $i++) {
-            $closeIndex = $componentCount - ($i + 1);
-            $openComponent = $components[$i];
-            $closeComponent = $components[$closeIndex];
-
-            $this->assertComponentsArePaired($openComponent, $closeComponent);
-        }
-    }
-}
+    $this->assertComponentsArePaired($c1, $c4);
+    $this->assertComponentsArePaired($c2, $c3);
+});

@@ -1,38 +1,30 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Compiler;
-
-use Stillat\BladeParser\Tests\ParserTestCase;
-
-class BladeElseAuthStatementsTest extends ParserTestCase
-{
-    public function testElseAuthStatementsAreCompiled()
-    {
-        $string = '@auth("api")
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
+test('else auth statements are compiled', function () {
+    $string = '@auth("api")
 breeze
 @elseauth("standard")
 wheeze
 @endauth';
-        $expected = '<?php if(auth()->guard("api")->check()): ?>
+    $expected = '<?php if(auth()->guard("api")->check()): ?>
 breeze
 <?php elseif(auth()->guard("standard")->check()): ?>
 wheeze
 <?php endif; ?>';
-        $this->assertEquals($expected, $this->compiler->compileString($string));
-    }
+    expect($this->compiler->compileString($string))->toEqual($expected);
+});
 
-    public function testPlainElseAuthStatementsAreCompiled()
-    {
-        $string = '@auth("api")
+test('plain else auth statements are compiled', function () {
+    $string = '@auth("api")
 breeze
 @elseauth
 wheeze
 @endauth';
-        $expected = '<?php if(auth()->guard("api")->check()): ?>
+    $expected = '<?php if(auth()->guard("api")->check()): ?>
 breeze
 <?php elseif(auth()->guard()->check()): ?>
 wheeze
 <?php endif; ?>';
-        $this->assertEquals($expected, $this->compiler->compileString($string));
-    }
-}
+    expect($this->compiler->compileString($string))->toEqual($expected);
+});

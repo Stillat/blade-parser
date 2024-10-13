@@ -1,17 +1,12 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Structures;
-
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
 use Stillat\BladeParser\Nodes\DirectiveNode;
 use Stillat\BladeParser\Nodes\Structures\Condition;
 use Stillat\BladeParser\Nodes\Structures\ConditionalBranch;
-use Stillat\BladeParser\Tests\ParserTestCase;
 
-class ConditionStructureTest extends ParserTestCase
-{
-    public function testBasicConditionStructures()
-    {
-        $template = <<<'EOT'
+test('basic condition structures', function () {
+    $template = <<<'EOT'
 One
 @if ($that == 'this')
     Two
@@ -22,27 +17,26 @@ One
 @endif 
 Five
 EOT;
-        $doc = $this->getDocument($template);
-        $doc->resolveStructures();
+    $doc = $this->getDocument($template);
+    $doc->resolveStructures();
 
-        $if = $doc->findDirectiveByName('if');
-        $this->assertNotNull($if);
+    $if = $doc->findDirectiveByName('if');
+    expect($if)->not->toBeNull();
 
-        $this->assertTrue($if->isStructure);
-        $this->assertNotNull($if->structure);
+    expect($if->isStructure)->toBeTrue();
+    expect($if->structure)->not->toBeNull();
 
-        /** @var Condition $structure */
-        $structure = $if->structure;
+    /** @var Condition $structure */
+    $structure = $if->structure;
 
-        $this->assertTrue($structure->hasElseIfBranches());
-        $this->assertTrue($structure->hasElseBranch());
-        $this->assertCount(3, $structure->branches);
-        $this->assertSame($structure->constructedFrom, $if);
-    }
+    expect($structure->hasElseIfBranches())->toBeTrue();
+    expect($structure->hasElseBranch())->toBeTrue();
+    expect($structure->branches)->toHaveCount(3);
+    expect($if)->toBe($structure->constructedFrom);
+});
 
-    public function testNestedConditionStructures()
-    {
-        $template = <<<'EOT'
+test('nested condition structures', function () {
+    $template = <<<'EOT'
 One
 @if ($that == 'this')
     Two
@@ -64,50 +58,51 @@ One
 @endif 
 Five
 EOT;
-        $doc = $this->getDocument($template);
-        $doc->resolveStructures();
-        $ifStatements = $doc->findDirectivesByName('if');
-        $this->assertCount(2, $ifStatements);
+    $doc = $this->getDocument($template);
+    $doc->resolveStructures();
+    $ifStatements = $doc->findDirectivesByName('if');
+    expect($ifStatements)->toHaveCount(2);
 
-        /** @var DirectiveNode $ifOne */
-        $ifOne = $ifStatements[0];
-        /** @var DirectiveNode $ifTwo */
-        $ifTwo = $ifStatements[1];
+    /** @var DirectiveNode $ifOne */
+    $ifOne = $ifStatements[0];
 
-        $this->assertTrue($ifOne->isStructure);
-        $this->assertNotNull($ifOne->structure);
-        $this->assertTrue($ifTwo->isStructure);
-        $this->assertNotNull($ifTwo->structure);
+    /** @var DirectiveNode $ifTwo */
+    $ifTwo = $ifStatements[1];
 
-        /** @var Condition $conditionOne */
-        $conditionOne = $ifOne->structure;
-        /** @var Condition $conditionTwo */
-        $conditionTwo = $ifTwo->structure;
+    expect($ifOne->isStructure)->toBeTrue();
+    expect($ifOne->structure)->not->toBeNull();
+    expect($ifTwo->isStructure)->toBeTrue();
+    expect($ifTwo->structure)->not->toBeNull();
 
-        $this->assertFalse($conditionOne->containsDuplicateConditions());
-        $this->assertFalse($conditionTwo->containsDuplicateConditions());
+    /** @var Condition $conditionOne */
+    $conditionOne = $ifOne->structure;
 
-        $this->assertCount(3, $conditionOne->branches);
-        $this->assertSame($conditionOne->constructedFrom, $ifOne);
+    /** @var Condition $conditionTwo */
+    $conditionTwo = $ifTwo->structure;
 
-        $ifOneBranches = $conditionOne->branches;
-        $this->assertDirectiveContent($ifOneBranches[0]->target, 'if', "(\$that == 'this')");
-        $this->assertDirectiveContent($ifOneBranches[1]->target, 'elseif', "(\$somethingElse == 'that')");
-        $this->assertDirectiveContent($ifOneBranches[2]->target, 'else');
+    expect($conditionOne->containsDuplicateConditions())->toBeFalse();
+    expect($conditionTwo->containsDuplicateConditions())->toBeFalse();
 
-        $this->assertCount(4, $conditionTwo->branches);
-        $this->assertSame($conditionTwo->constructedFrom, $ifTwo);
+    expect($conditionOne->branches)->toHaveCount(3);
+    expect($ifOne)->toBe($conditionOne->constructedFrom);
 
-        $ifTwoBranches = $conditionTwo->branches;
-        $this->assertDirectiveContent($ifTwoBranches[0]->target, 'if', "(\$that == 'this')");
-        $this->assertDirectiveContent($ifTwoBranches[1]->target, 'elseif', "(\$somethingElse == 'that')");
-        $this->assertDirectiveContent($ifTwoBranches[2]->target, 'elseif', "(\$anotherThing == 'some value')");
-        $this->assertDirectiveContent($ifTwoBranches[3]->target, 'else');
-    }
+    $ifOneBranches = $conditionOne->branches;
+    $this->assertDirectiveContent($ifOneBranches[0]->target, 'if', "(\$that == 'this')");
+    $this->assertDirectiveContent($ifOneBranches[1]->target, 'elseif', "(\$somethingElse == 'that')");
+    $this->assertDirectiveContent($ifOneBranches[2]->target, 'else');
 
-    public function testBasicConditionStructureDetails()
-    {
-        $template = <<<'EOT'
+    expect($conditionTwo->branches)->toHaveCount(4);
+    expect($ifTwo)->toBe($conditionTwo->constructedFrom);
+
+    $ifTwoBranches = $conditionTwo->branches;
+    $this->assertDirectiveContent($ifTwoBranches[0]->target, 'if', "(\$that == 'this')");
+    $this->assertDirectiveContent($ifTwoBranches[1]->target, 'elseif', "(\$somethingElse == 'that')");
+    $this->assertDirectiveContent($ifTwoBranches[2]->target, 'elseif', "(\$anotherThing == 'some value')");
+    $this->assertDirectiveContent($ifTwoBranches[3]->target, 'else');
+});
+
+test('basic condition structure details', function () {
+    $template = <<<'EOT'
 @if ($something)
     One
 @elseif ($somethingElse)
@@ -116,42 +111,40 @@ EOT;
     Three
 @endif
 EOT;
-        $doc = $this->getDocument($template);
-        $doc->resolveStructures();
-        $if = $doc->findDirectiveByName('if')->getCondition();
+    $doc = $this->getDocument($template);
+    $doc->resolveStructures();
+    $if = $doc->findDirectiveByName('if')->getCondition();
 
-        $this->assertFalse($if->containsDuplicateConditions());
-        $this->assertCount(3, $if->getBranches());
-        $this->assertCount(1, $if->getElseBranches());
-        $this->assertCount(1, $if->getElseIfBranches());
-        $this->assertTrue($if->isValid());
-        $this->assertFalse($if->isUnless());
-    }
+    expect($if->containsDuplicateConditions())->toBeFalse();
+    expect($if->getBranches())->toHaveCount(3);
+    expect($if->getElseBranches())->toHaveCount(1);
+    expect($if->getElseIfBranches())->toHaveCount(1);
+    expect($if->isValid())->toBeTrue();
+    expect($if->isUnless())->toBeFalse();
+});
 
-    public function testBasicUnlessStructureDetails()
-    {
-        $template = <<<'EOT'
+test('basic unless structure details', function () {
+    $template = <<<'EOT'
 @unless ($something)
     One
 @endunless
 EOT;
-        $doc = $this->getDocument($template);
-        $doc->resolveStructures();
-        $if = $doc->findDirectiveByName('unless')->getCondition();
+    $doc = $this->getDocument($template);
+    $doc->resolveStructures();
+    $if = $doc->findDirectiveByName('unless')->getCondition();
 
-        $this->assertFalse($if->hasElseBranch());
-        $this->assertFalse($if->hasElseIfBranches());
-        $this->assertFalse($if->containsDuplicateConditions());
-        $this->assertCount(1, $if->getBranches());
-        $this->assertCount(0, $if->getElseBranches());
-        $this->assertCount(0, $if->getElseIfBranches());
-        $this->assertTrue($if->isValid());
-        $this->assertTrue($if->isUnless());
-    }
+    expect($if->hasElseBranch())->toBeFalse();
+    expect($if->hasElseIfBranches())->toBeFalse();
+    expect($if->containsDuplicateConditions())->toBeFalse();
+    expect($if->getBranches())->toHaveCount(1);
+    expect($if->getElseBranches())->toHaveCount(0);
+    expect($if->getElseIfBranches())->toHaveCount(0);
+    expect($if->isValid())->toBeTrue();
+    expect($if->isUnless())->toBeTrue();
+});
 
-    public function testRetrievingConditionContent()
-    {
-        $template = <<<'EOT'
+test('retrieving condition content', function () {
+    $template = <<<'EOT'
 @if ($something)
     One
 @elseif ($somethingElse)
@@ -160,22 +153,21 @@ EOT;
     Three
 @endif
 EOT;
-        $doc = $this->getDocument($template);
-        $doc->resolveStructures();
-        $if = $doc->findDirectiveByName('if')->getCondition();
+    $doc = $this->getDocument($template);
+    $doc->resolveStructures();
+    $if = $doc->findDirectiveByName('if')->getCondition();
 
-        $expected = [
-            '$something',
-            '$somethingElse',
-        ];
+    $expected = [
+        '$something',
+        '$somethingElse',
+    ];
 
-        $this->assertFalse($if->containsDuplicateConditions());
-        $this->assertSame($expected, $if->getConditionText()->all());
-    }
+    expect($if->containsDuplicateConditions())->toBeFalse();
+    expect($if->getConditionText()->all())->toBe($expected);
+});
 
-    public function testConditionContentRemovesExtraParentheses()
-    {
-        $template = <<<'EOT'
+test('condition content removes extra parentheses', function () {
+    $template = <<<'EOT'
 @if (((((((((((($something))))))))))))
     One
 @elseif ((((((((((($somethingElse)))))))))))
@@ -184,21 +176,20 @@ EOT;
     Three
 @endif
 EOT;
-        $doc = $this->getDocument($template);
-        $doc->resolveStructures();
-        $if = $doc->findDirectiveByName('if')->getCondition();
+    $doc = $this->getDocument($template);
+    $doc->resolveStructures();
+    $if = $doc->findDirectiveByName('if')->getCondition();
 
-        $expected = [
-            '$something',
-            '$somethingElse',
-        ];
+    $expected = [
+        '$something',
+        '$somethingElse',
+    ];
 
-        $this->assertSame($expected, $if->getConditionText()->all());
-    }
+    expect($if->getConditionText()->all())->toBe($expected);
+});
 
-    public function testEmptyBranches()
-    {
-        $template = <<<'EOT'
+test('empty branches', function () {
+    $template = <<<'EOT'
 @if ($something)
     One
 @elseif ($somethingElse)
@@ -211,21 +202,21 @@ EOT;
     Five
 @endif
 EOT;
-        $doc = $this->getDocument($template);
-        $doc->resolveStructures();
-        /** @var ConditionalBranch[] $branches */
-        $branches = $doc->findDirectiveByName('if')->getCondition()->getBranches();
+    $doc = $this->getDocument($template);
+    $doc->resolveStructures();
 
-        $this->assertFalse($branches[0]->isEmpty());
-        $this->assertFalse($branches[1]->isEmpty());
-        $this->assertTrue($branches[2]->isEmpty());
-        $this->assertTrue($branches[3]->isEmpty());
-        $this->assertFalse($branches[4]->isEmpty());
-    }
+    /** @var ConditionalBranch[] $branches */
+    $branches = $doc->findDirectiveByName('if')->getCondition()->getBranches();
 
-    public function testNaiveDuplicateConditionCheck()
-    {
-        $template = <<<'EOT'
+    expect($branches[0]->isEmpty())->toBeFalse();
+    expect($branches[1]->isEmpty())->toBeFalse();
+    expect($branches[2]->isEmpty())->toBeTrue();
+    expect($branches[3]->isEmpty())->toBeTrue();
+    expect($branches[4]->isEmpty())->toBeFalse();
+});
+
+test('naive duplicate condition check', function () {
+    $template = <<<'EOT'
 @if ($something)
     One
 @elseif ($something)
@@ -234,10 +225,9 @@ EOT;
     Three
 @endif
 EOT;
-        $doc = $this->getDocument($template);
-        $doc->resolveStructures();
-        $if = $doc->findDirectiveByName('if')->getCondition();
+    $doc = $this->getDocument($template);
+    $doc->resolveStructures();
+    $if = $doc->findDirectiveByName('if')->getCondition();
 
-        $this->assertTrue($if->containsDuplicateConditions());
-    }
-}
+    expect($if->containsDuplicateConditions())->toBeTrue();
+});

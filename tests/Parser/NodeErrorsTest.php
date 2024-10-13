@@ -1,51 +1,39 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Parser;
-
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
 use Stillat\BladeParser\Errors\Exceptions\InvalidCastException;
-use Stillat\BladeParser\Tests\ParserTestCase;
 
-class NodeErrorsTest extends ParserTestCase
-{
-    public function testAsDirectiveThrowsInvalidCastException()
-    {
-        $this->expectException(InvalidCastException::class);
-        $this->getDocument('{{ $hello }}')->getNodeArray()[0]->asDirective();
-    }
+test('as directive throws invalid cast exception', function () {
+    $this->expectException(InvalidCastException::class);
+    $this->getDocument('{{ $hello }}')->getNodeArray()[0]->asDirective();
+});
 
-    public function testAsLiteralThrowsInvalidCastException()
-    {
-        $this->expectException(InvalidCastException::class);
-        $this->getDocument('{{ $hello }}')->getNodeArray()[0]->asLiteral();
-    }
+test('as literal throws invalid cast exception', function () {
+    $this->expectException(InvalidCastException::class);
+    $this->getDocument('{{ $hello }}')->getNodeArray()[0]->asLiteral();
+});
 
-    public function testAsCommentThrowsInvalidCastException()
-    {
-        $this->expectException(InvalidCastException::class);
-        $this->getDocument('{{ $hello }}')->getNodeArray()[0]->asComment();
-    }
+test('as comment throws invalid cast exception', function () {
+    $this->expectException(InvalidCastException::class);
+    $this->getDocument('{{ $hello }}')->getNodeArray()[0]->asComment();
+});
 
-    public function testAsPhpBlockThrowsInvalidCastException()
-    {
-        $this->expectException(InvalidCastException::class);
-        $this->getDocument('{{ $hello }}')->getNodeArray()[0]->asPhpBlock();
-    }
+test('as php block throws invalid cast exception', function () {
+    $this->expectException(InvalidCastException::class);
+    $this->getDocument('{{ $hello }}')->getNodeArray()[0]->asPhpBlock();
+});
 
-    public function testAsVerbatimThrowsInvalidCastException()
-    {
-        $this->expectException(InvalidCastException::class);
-        $this->getDocument('{{ $hello }}')->getNodeArray()[0]->asVerbatim();
-    }
+test('as verbatim throws invalid cast exception', function () {
+    $this->expectException(InvalidCastException::class);
+    $this->getDocument('{{ $hello }}')->getNodeArray()[0]->asVerbatim();
+});
 
-    public function testAsPhpTagThrowsInvalidCastException()
-    {
-        $this->expectException(InvalidCastException::class);
-        $this->getDocument('{{ $hello }}')->getNodeArray()[0]->asPhpTag();
-    }
+test('as php tag throws invalid cast exception', function () {
+    $this->expectException(InvalidCastException::class);
+    $this->getDocument('{{ $hello }}')->getNodeArray()[0]->asPhpTag();
+});
 
-    public function testAsEchoThrowsInvalidCastException()
-    {
-        $this->expectException(InvalidCastException::class);
-        $this->getDocument('@lang("something")')->getNodeArray()[0]->asEcho();
-    }
-}
+test('as echo throws invalid cast exception', function () {
+    $this->expectException(InvalidCastException::class);
+    $this->getDocument('@lang("something")')->getNodeArray()[0]->asEcho();
+});

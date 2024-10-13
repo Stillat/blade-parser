@@ -1,14 +1,7 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Compiler;
-
-use Stillat\BladeParser\Tests\ParserTestCase;
-
-class BladeSectionTest extends ParserTestCase
-{
-    public function testSectionStartsAreCompiled()
-    {
-        $this->assertSame('<?php $__env->startSection(\'foo\'); ?>', $this->compiler->compileString('@section(\'foo\')'));
-        $this->assertSame('<?php $__env->startSection(name(foo)); ?>', $this->compiler->compileString('@section(name(foo))'));
-    }
-}
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
+test('section starts are compiled', function () {
+    expect($this->compiler->compileString('@section(\'foo\')'))->toBe('<?php $__env->startSection(\'foo\'); ?>');
+    expect($this->compiler->compileString('@section(name(foo))'))->toBe('<?php $__env->startSection(name(foo)); ?>');
+});

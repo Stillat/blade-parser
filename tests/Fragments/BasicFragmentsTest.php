@@ -1,7 +1,6 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Fragments;
-
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
 use Stillat\BladeParser\Document\Document;
 use Stillat\BladeParser\Nodes\AbstractNode;
 use Stillat\BladeParser\Nodes\DirectiveNode;
@@ -9,124 +8,118 @@ use Stillat\BladeParser\Nodes\EchoNode;
 use Stillat\BladeParser\Nodes\Fragments\FragmentParameterType;
 use Stillat\BladeParser\Nodes\Fragments\FragmentPosition;
 use Stillat\BladeParser\Nodes\Fragments\HtmlFragment;
-use Stillat\BladeParser\Tests\ParserTestCase;
 
-class BasicFragmentsTest extends ParserTestCase
-{
-    public function testBasicFragments()
-    {
-        $template = <<<'EOT'
+test('basic fragments', function () {
+    $template = <<<'EOT'
 <div></div>
 EOT;
-        $fragments = Document::fromText($template)->getFragments();
+    $fragments = Document::fromText($template)->getFragments();
 
-        $this->assertCount(2, $fragments);
+    expect($fragments)->toHaveCount(2);
 
-        /** @var HtmlFragment $fragmentOne */
-        $fragmentOne = $fragments[0];
-        $this->assertSame('div', $fragmentOne->tagName);
-        $this->assertSame('div', $fragmentOne->documentContent);
-        $this->assertSame('<div>', $fragmentOne->content);
-        $this->assertFalse($fragmentOne->isSelfClosing);
-        $this->assertFalse($fragmentOne->isClosingTag);
+    /** @var HtmlFragment $fragmentOne */
+    $fragmentOne = $fragments[0];
+    expect($fragmentOne->tagName)->toBe('div');
+    expect($fragmentOne->documentContent)->toBe('div');
+    expect($fragmentOne->content)->toBe('<div>');
+    expect($fragmentOne->isSelfClosing)->toBeFalse();
+    expect($fragmentOne->isClosingTag)->toBeFalse();
 
-        /** @var HtmlFragment $fragmentTwo */
-        $fragmentTwo = $fragments[1];
-        $this->assertSame('div', $fragmentTwo->tagName);
-        $this->assertSame('div', $fragmentTwo->documentContent);
-        $this->assertSame('</div>', $fragmentTwo->content);
-        $this->assertFalse($fragmentTwo->isSelfClosing);
-        $this->assertTrue($fragmentTwo->isClosingTag);
-    }
+    /** @var HtmlFragment $fragmentTwo */
+    $fragmentTwo = $fragments[1];
+    expect($fragmentTwo->tagName)->toBe('div');
+    expect($fragmentTwo->documentContent)->toBe('div');
+    expect($fragmentTwo->content)->toBe('</div>');
+    expect($fragmentTwo->isSelfClosing)->toBeFalse();
+    expect($fragmentTwo->isClosingTag)->toBeTrue();
+});
 
-    public function testSelfClosingFragments()
-    {
-        $template = <<<'EOT'
+test('self closing fragments', function () {
+    $template = <<<'EOT'
 <span v-text="title" />
 EOT;
-        $fragments = Document::fromText($template)->getFragments();
+    $fragments = Document::fromText($template)->getFragments();
 
-        $this->assertCount(1, $fragments);
+    expect($fragments)->toHaveCount(1);
 
-        /** @var HtmlFragment $fragment */
-        $fragment = $fragments[0];
+    /** @var HtmlFragment $fragment */
+    $fragment = $fragments[0];
 
-        $this->assertFalse($fragment->isClosingTag);
-        $this->assertTrue($fragment->isSelfClosing);
+    expect($fragment->isClosingTag)->toBeFalse();
+    expect($fragment->isSelfClosing)->toBeTrue();
 
-        $this->assertSame('<span v-text="title" />', $fragment->content);
-        $this->assertSame('span v-text="title" ', $fragment->documentContent);
-    }
+    expect($fragment->content)->toBe('<span v-text="title" />');
+    expect($fragment->documentContent)->toBe('span v-text="title" ');
+});
 
-    public function testFragmentPositions()
-    {
-        $template = <<<'EOT'
+test('fragment positions', function () {
+    $template = <<<'EOT'
 <div>
     <span text="hello, world">Content</span>
 </div>
 EOT;
-        /** @var HtmlFragment[] $fragments */
-        $fragments = Document::fromText($template)->getFragments();
-        $this->assertCount(4, $fragments);
 
-        $f1 = $fragments[0];
-        $this->assertFragmentPosition($f1, 1, 1, 1, 5);
-        $this->assertFragmentNamePosition($f1, 1, 2, 1, 4);
+    /** @var HtmlFragment[] $fragments */
+    $fragments = Document::fromText($template)->getFragments();
+    expect($fragments)->toHaveCount(4);
 
-        $f2 = $fragments[1];
-        $this->assertFragmentPosition($f2, 2, 5, 2, 30);
-        $this->assertFragmentNamePosition($f2, 2, 6, 2, 9);
+    $f1 = $fragments[0];
+    $this->assertFragmentPosition($f1, 1, 1, 1, 5);
+    $this->assertFragmentNamePosition($f1, 1, 2, 1, 4);
 
-        $this->assertCount(1, $f2->parameters);
-        $p1 = $f2->parameters[0];
-        $this->assertSame('text="hello, world"', $p1->content);
-        $this->assertSame('text', $p1->name);
-        $this->assertSame('"hello, world"', $p1->value);
-        $this->assertSame(FragmentParameterType::Parameter, $p1->type);
-        $this->assertFragmentParameterPosition($p1, 2, 11, 2, 29);
+    $f2 = $fragments[1];
+    $this->assertFragmentPosition($f2, 2, 5, 2, 30);
+    $this->assertFragmentNamePosition($f2, 2, 6, 2, 9);
 
-        $f3 = $fragments[2];
-        $this->assertFragmentPosition($f3, 2, 38, 2, 44);
-        $this->assertFragmentNamePosition($f3, 2, 40, 2, 43);
+    expect($f2->parameters)->toHaveCount(1);
+    $p1 = $f2->parameters[0];
+    expect($p1->content)->toBe('text="hello, world"');
+    expect($p1->name)->toBe('text');
+    expect($p1->value)->toBe('"hello, world"');
+    expect($p1->type)->toBe(FragmentParameterType::Parameter);
+    $this->assertFragmentParameterPosition($p1, 2, 11, 2, 29);
 
-        $f4 = $fragments[3];
-        $this->assertFragmentPosition($f4, 3, 1, 3, 6);
-        $this->assertFragmentNamePosition($f4, 3, 3, 3, 5);
-    }
+    $f3 = $fragments[2];
+    $this->assertFragmentPosition($f3, 2, 38, 2, 44);
+    $this->assertFragmentNamePosition($f3, 2, 40, 2, 43);
 
-    public function testFragmentParameters()
-    {
-        $template = <<<'EOT'
+    $f4 = $fragments[3];
+    $this->assertFragmentPosition($f4, 3, 1, 3, 6);
+    $this->assertFragmentNamePosition($f4, 3, 3, 3, 5);
+});
+
+test('fragment parameters', function () {
+    $template = <<<'EOT'
 <input type="text" required />
 EOT;
-        /** @var HtmlFragment[] $fragments */
-        $fragments = Document::fromText($template)->getFragments();
 
-        $this->assertCount(1, $fragments);
+    /** @var HtmlFragment[] $fragments */
+    $fragments = Document::fromText($template)->getFragments();
 
-        $f1 = $fragments[0];
+    expect($fragments)->toHaveCount(1);
 
-        $this->assertCount(2, $f1->parameters);
+    $f1 = $fragments[0];
 
-        $p1 = $f1->parameters[0];
-        $this->assertSame('type="text"', $p1->content);
-        $this->assertSame('type', $p1->name);
-        $this->assertSame('"text"', $p1->value);
-        $this->assertSame('text', $p1->getValue());
-        $this->assertSame('text', $f1->getParameter('type')->getValue());
-        $this->assertSame(FragmentParameterType::Parameter, $p1->type);
+    expect($f1->parameters)->toHaveCount(2);
 
-        $p2 = $f1->parameters[1];
-        $this->assertSame('required', $p2->content);
-        $this->assertSame('required', $p2->name);
-        $this->assertSame('', $p2->value);
-        $this->assertSame('', $f1->getParameter('required')->getValue());
-        $this->assertSame(FragmentParameterType::Attribute, $p2->type);
-    }
+    $p1 = $f1->parameters[0];
+    expect($p1->content)->toBe('type="text"');
+    expect($p1->name)->toBe('type');
+    expect($p1->value)->toBe('"text"');
+    expect($p1->getValue())->toBe('text');
+    expect($f1->getParameter('type')->getValue())->toBe('text');
+    expect($p1->type)->toBe(FragmentParameterType::Parameter);
 
-    public function testNodeFragmentPositions()
-    {
-        $template = <<<'EOT'
+    $p2 = $f1->parameters[1];
+    expect($p2->content)->toBe('required');
+    expect($p2->name)->toBe('required');
+    expect($p2->value)->toBe('');
+    expect($f1->getParameter('required')->getValue())->toBe('');
+    expect($p2->type)->toBe(FragmentParameterType::Attribute);
+});
+
+test('node fragment positions', function () {
+    $template = <<<'EOT'
 <span class=" @if ($something) mb-10 @endif "> {{ $var }} </span>
 
 <{{ $element }}>
@@ -139,35 +132,34 @@ EOT;
 
 </span>
 EOT;
-        $doc = Document::fromText($template);
-        $doc->getFragments();
+    $doc = Document::fromText($template);
+    $doc->getFragments();
 
-        /** @var DirectiveNode[] $directives */
-        $directives = $doc->getDirectives();
-        $if = $directives[0];
-        $this->assertSame(FragmentPosition::InsideParameter, $if->fragmentPosition);
+    /** @var DirectiveNode[] $directives */
+    $directives = $doc->getDirectives();
+    $if = $directives[0];
+    expect($if->fragmentPosition)->toBe(FragmentPosition::InsideParameter);
 
-        $endIf = $directives[1];
-        $this->assertSame(FragmentPosition::InsideParameter, $endIf->fragmentPosition);
+    $endIf = $directives[1];
+    expect($endIf->fragmentPosition)->toBe(FragmentPosition::InsideParameter);
 
-        /** @var EchoNode[] $echoes */
-        $echoes = $doc->getEchoes();
-        $varEcho = $echoes[0];
-        $this->assertSame(FragmentPosition::Unknown, $varEcho->fragmentPosition);
+    /** @var EchoNode[] $echoes */
+    $echoes = $doc->getEchoes();
+    $varEcho = $echoes[0];
+    expect($varEcho->fragmentPosition)->toBe(FragmentPosition::Unknown);
 
-        $elementEcho = $echoes[1];
-        $this->assertSame(FragmentPosition::InsideFragmentName, $elementEcho->fragmentPosition);
+    $elementEcho = $echoes[1];
+    expect($elementEcho->fragmentPosition)->toBe(FragmentPosition::InsideFragmentName);
 
-        $attributesEcho = $echoes[2];
-        $this->assertSame(FragmentPosition::InsideFragment, $attributesEcho->fragmentPosition);
+    $attributesEcho = $echoes[2];
+    expect($attributesEcho->fragmentPosition)->toBe(FragmentPosition::InsideFragment);
 
-        $closeElement = $echoes[3];
-        $this->assertSame(FragmentPosition::InsideFragmentName, $closeElement->fragmentPosition);
-    }
+    $closeElement = $echoes[3];
+    expect($closeElement->fragmentPosition)->toBe(FragmentPosition::InsideFragmentName);
+});
 
-    public function testFragmentHelperMethods()
-    {
-        $template = <<<'EOT'
+test('fragment helper methods', function () {
+    $template = <<<'EOT'
 <span class=" @if ($something) mb-10 @endif "> {{ $var }} </span>
 
 <{{ $element }}>
@@ -184,11 +176,10 @@ EOT;
 
 </span>
 EOT;
-        $doc = Document::fromText($template)->resolveFragments();
+    $doc = Document::fromText($template)->resolveFragments();
 
-        $this->assertCount(2, $doc->getNodes()->where(fn (AbstractNode $n) => $n->isInHtmlParameter()));
-        $this->assertCount(2, $doc->getNodes()->where(fn (AbstractNode $n) => $n->isInHtmlTagName()));
-        $this->assertCount(4, $doc->getNodes()->where(fn (AbstractNode $n) => $n->isInHtmlTagContent()));
-        $this->assertCount(1, $doc->getNodes()->where(fn (AbstractNode $n) => $n->isBetweenHtmlFragments()));
-    }
-}
+    expect($doc->getNodes()->where(fn (AbstractNode $n) => $n->isInHtmlParameter()))->toHaveCount(2);
+    expect($doc->getNodes()->where(fn (AbstractNode $n) => $n->isInHtmlTagName()))->toHaveCount(2);
+    expect($doc->getNodes()->where(fn (AbstractNode $n) => $n->isInHtmlTagContent()))->toHaveCount(4);
+    expect($doc->getNodes()->where(fn (AbstractNode $n) => $n->isBetweenHtmlFragments()))->toHaveCount(1);
+});

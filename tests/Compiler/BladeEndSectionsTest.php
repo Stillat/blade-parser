@@ -1,13 +1,6 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Compiler;
-
-use Stillat\BladeParser\Tests\ParserTestCase;
-
-class BladeEndSectionsTest extends ParserTestCase
-{
-    public function testEndSectionsAreCompiled()
-    {
-        $this->assertSame('<?php $__env->stopSection(); ?>', $this->compiler->compileString('@endsection'));
-    }
-}
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
+test('end sections are compiled', function () {
+    expect($this->compiler->compileString('@endsection'))->toBe('<?php $__env->stopSection(); ?>');
+});

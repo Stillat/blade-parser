@@ -1,22 +1,14 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Compiler;
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
+test('use statements are compiled', function () {
+    $string = "Foo @use('SomeNamespace\SomeClass', 'Foo') bar";
+    $expected = "Foo <?php use \SomeNamespace\SomeClass as Foo; ?> bar";
+    expect($this->compiler->compileString($string))->toEqual($expected);
+});
 
-use Stillat\BladeParser\Tests\ParserTestCase;
-
-class BladeUseTest extends ParserTestCase
-{
-    public function testUseStatementsAreCompiled()
-    {
-        $string = "Foo @use('SomeNamespace\SomeClass', 'Foo') bar";
-        $expected = "Foo <?php use \SomeNamespace\SomeClass as Foo; ?> bar";
-        $this->assertEquals($expected, $this->compiler->compileString($string));
-    }
-
-    public function testUseStatementsWithoutAsAreCompiled()
-    {
-        $string = "Foo @use('SomeNamespace\SomeClass') bar";
-        $expected = "Foo <?php use \SomeNamespace\SomeClass; ?> bar";
-        $this->assertEquals($expected, $this->compiler->compileString($string));
-    }
-}
+test('use statements without as are compiled', function () {
+    $string = "Foo @use('SomeNamespace\SomeClass') bar";
+    $expected = "Foo <?php use \SomeNamespace\SomeClass; ?> bar";
+    expect($this->compiler->compileString($string))->toEqual($expected);
+});

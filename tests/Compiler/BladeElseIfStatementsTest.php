@@ -1,23 +1,16 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Compiler;
-
-use Stillat\BladeParser\Tests\ParserTestCase;
-
-class BladeElseIfStatementsTest extends ParserTestCase
-{
-    public function testElseIfStatementsAreCompiled()
-    {
-        $string = '@if(name(foo(bar)))
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
+test('else if statements are compiled', function () {
+    $string = '@if(name(foo(bar)))
 breeze
 @elseif(boom(breeze))
 boom
 @endif';
-        $expected = '<?php if(name(foo(bar))): ?>
+    $expected = '<?php if(name(foo(bar))): ?>
 breeze
 <?php elseif(boom(breeze)): ?>
 boom
 <?php endif; ?>';
-        $this->assertEquals($expected, $this->compiler->compileString($string));
-    }
-}
+    expect($this->compiler->compileString($string))->toEqual($expected);
+});

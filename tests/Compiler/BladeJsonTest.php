@@ -1,34 +1,25 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Compiler;
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
+test('statement is compiled with safe default encoding options', function () {
+    $string = 'var foo = @json($var);';
+    $expected = 'var foo = <?php echo json_encode($var, 15, 512) ?>;';
 
-use Stillat\BladeParser\Tests\ParserTestCase;
+    expect($this->compiler->compileString($string))->toEqual($expected);
+});
 
-class BladeJsonTest extends ParserTestCase
-{
-    public function testStatementIsCompiledWithSafeDefaultEncodingOptions()
-    {
-        $string = 'var foo = @json($var);';
-        $expected = 'var foo = <?php echo json_encode($var, 15, 512) ?>;';
+test('encoding options can be overwritten', function () {
+    $string = 'var foo = @json($var, JSON_HEX_TAG);';
+    $expected = 'var foo = <?php echo json_encode($var, JSON_HEX_TAG, 512) ?>;';
 
-        $this->assertEquals($expected, $this->compiler->compileString($string));
-    }
+    expect($this->compiler->compileString($string))->toEqual($expected);
+});
 
-    public function testEncodingOptionsCanBeOverwritten()
-    {
-        $string = 'var foo = @json($var, JSON_HEX_TAG);';
-        $expected = 'var foo = <?php echo json_encode($var, JSON_HEX_TAG, 512) ?>;';
-
-        $this->assertEquals($expected, $this->compiler->compileString($string));
-    }
-
-    public function testComplexJsonExpressionsCanBeCompiled()
-    {
-        $string = 'var foo = @json(DB::query()->selectRaw("1, CONCAT(2, \' \', 3) AS name")->get())';
-        $expected = <<<'EXPECTED'
+test('complex json expressions can be compiled', function () {
+    $string = 'var foo = @json(DB::query()->selectRaw("1, CONCAT(2, \' \', 3) AS name")->get())';
+    $expected = <<<'EXPECTED'
 var foo = <?php echo json_encode(DB::query()->selectRaw("1, CONCAT(2, ' ', 3) AS name")->get(), 15, 512) ?>
 EXPECTED;
 
-        $this->assertEquals($expected, $this->compiler->compileString($string));
-    }
-}
+    expect($this->compiler->compileString($string))->toEqual($expected);
+});

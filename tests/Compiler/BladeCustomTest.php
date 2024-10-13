@@ -1,234 +1,206 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Compiler;
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
+test('custom php code is correctly handled', function () {
+    expect($this->compiler->compileString("@if(\$test) <?php @show('test'); ?> @endif"))->toBe('<?php if($test): ?> <?php @show(\'test\'); ?> <?php endif; ?>');
+});
 
-use InvalidArgumentException;
-use Stillat\BladeParser\Tests\ParserTestCase;
+test('mixing yield and echo', function () {
+    expect($this->compiler->compileString("@yield('title') - {{Config::get('site.title')}}"))->toBe('<?php echo $__env->yieldContent(\'title\'); ?> - <?php echo e(Config::get(\'site.title\')); ?>');
+});
 
-class BladeCustomTest extends ParserTestCase
-{
-    public function testCustomPhpCodeIsCorrectlyHandled()
-    {
-        $this->assertSame('<?php if($test): ?> <?php @show(\'test\'); ?> <?php endif; ?>', $this->compiler->compileString("@if(\$test) <?php @show('test'); ?> @endif"));
-    }
+test('custom extensions are compiled', function () {
+    $this->compiler->extend(function ($value) {
+        return str_replace('foo', 'bar', $value);
+    });
+    expect($this->compiler->compileString('foo'))->toBe('bar');
+});
 
-    public function testMixingYieldAndEcho()
-    {
-        $this->assertSame('<?php echo $__env->yieldContent(\'title\'); ?> - <?php echo e(Config::get(\'site.title\')); ?>', $this->compiler->compileString("@yield('title') - {{Config::get('site.title')}}"));
-    }
+test('custom statements', function () {
+    expect($this->compiler->getCustomDirectives())->toHaveCount(0);
+    $this->compiler->directive('customControl', function ($expression) {
+        return "<?php echo custom_control({$expression}); ?>";
+    });
+    expect($this->compiler->getCustomDirectives())->toHaveCount(1);
 
-    public function testCustomExtensionsAreCompiled()
-    {
-        $this->compiler->extend(function ($value) {
-            return str_replace('foo', 'bar', $value);
-        });
-        $this->assertSame('bar', $this->compiler->compileString('foo'));
-    }
-
-    public function testCustomStatements()
-    {
-        $this->assertCount(0, $this->compiler->getCustomDirectives());
-        $this->compiler->directive('customControl', function ($expression) {
-            return "<?php echo custom_control({$expression}); ?>";
-        });
-        $this->assertCount(1, $this->compiler->getCustomDirectives());
-
-        $string = '@if($foo)
+    $string = '@if($foo)
 @customControl(10, $foo, \'bar\')
 @endif';
-        $expected = '<?php if($foo): ?>
+    $expected = '<?php if($foo): ?>
 <?php echo custom_control(10, $foo, \'bar\'); ?>
 <?php endif; ?>';
-        $this->assertEquals($expected, $this->compiler->compileString($string));
-    }
+    expect($this->compiler->compileString($string))->toEqual($expected);
+});
 
-    public function testCustomShortStatements()
-    {
-        $this->compiler->directive('customControl', function ($expression) {
-            return '<?php echo custom_control(); ?>';
-        });
+test('custom short statements', function () {
+    $this->compiler->directive('customControl', function ($expression) {
+        return '<?php echo custom_control(); ?>';
+    });
 
-        $string = '@customControl';
-        $expected = '<?php echo custom_control(); ?>';
-        $this->assertEquals($expected, $this->compiler->compileString($string));
-    }
+    $string = '@customControl';
+    $expected = '<?php echo custom_control(); ?>';
+    expect($this->compiler->compileString($string))->toEqual($expected);
+});
 
-    public function testValidCustomNames()
-    {
-        $this->assertNull($this->compiler->directive('custom', function () {
-            //
-        }));
-        $this->assertNull($this->compiler->directive('custom_custom', function () {
-            //
-        }));
-        $this->assertNull($this->compiler->directive('customCustom', function () {
-            //
-        }));
-        $this->assertNull($this->compiler->directive('custom::custom', function () {
-            //
-        }));
-    }
+test('valid custom names', function () {
+    expect($this->compiler->directive('custom', function () {
+        //
+    }))->toBeNull();
+    expect($this->compiler->directive('custom_custom', function () {
+        //
+    }))->toBeNull();
+    expect($this->compiler->directive('customCustom', function () {
+        //
+    }))->toBeNull();
+    expect($this->compiler->directive('custom::custom', function () {
+        //
+    }))->toBeNull();
+});
 
-    public function testInvalidCustomNames()
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('The directive name [custom-custom] is not valid.');
-        $this->compiler->directive('custom-custom', function () {
-            //
-        });
-    }
+test('invalid custom names', function () {
+    $this->expectException(InvalidArgumentException::class);
+    $this->expectExceptionMessage('The directive name [custom-custom] is not valid.');
+    $this->compiler->directive('custom-custom', function () {
+        //
+    });
+});
 
-    public function testInvalidCustomNames2()
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('The directive name [custom:custom] is not valid.');
-        $this->compiler->directive('custom:custom', function () {
-            //
-        });
-    }
+test('invalid custom names2', function () {
+    $this->expectException(InvalidArgumentException::class);
+    $this->expectExceptionMessage('The directive name [custom:custom] is not valid.');
+    $this->compiler->directive('custom:custom', function () {
+        //
+    });
+});
 
-    public function testCustomExtensionOverwritesCore()
-    {
-        $this->compiler->directive('foreach', function ($expression) {
-            return '<?php custom(); ?>';
-        });
+test('custom extension overwrites core', function () {
+    $this->compiler->directive('foreach', function ($expression) {
+        return '<?php custom(); ?>';
+    });
 
-        $string = '@foreach';
-        $expected = '<?php custom(); ?>';
-        $this->assertEquals($expected, $this->compiler->compileString($string));
-    }
+    $string = '@foreach';
+    $expected = '<?php custom(); ?>';
+    expect($this->compiler->compileString($string))->toEqual($expected);
+});
 
-    public function testCustomConditions()
-    {
-        $this->compiler->if('custom', function ($user) {
-            return true;
-        });
+test('custom conditions', function () {
+    $this->compiler->if('custom', function ($user) {
+        return true;
+    });
 
-        $string = '@custom($user)
+    $string = '@custom($user)
 @endcustom';
-        $expected = '<?php if (\Illuminate\Support\Facades\Blade::check(\'custom\', $user)): ?>
+    $expected = '<?php if (\Illuminate\Support\Facades\Blade::check(\'custom\', $user)): ?>
 <?php endif; ?>';
-        $this->assertEquals($expected, $this->compiler->compileString($string));
-    }
+    expect($this->compiler->compileString($string))->toEqual($expected);
+});
 
-    public function testCustomIfElseConditions()
-    {
-        $this->compiler->if('custom', function ($anything) {
-            return true;
-        });
+test('custom if else conditions', function () {
+    $this->compiler->if('custom', function ($anything) {
+        return true;
+    });
 
-        $string = '@custom($user)
+    $string = '@custom($user)
 @elsecustom($product)
 @else
 @endcustom';
-        $expected = '<?php if (\Illuminate\Support\Facades\Blade::check(\'custom\', $user)): ?>
+    $expected = '<?php if (\Illuminate\Support\Facades\Blade::check(\'custom\', $user)): ?>
 <?php elseif (\Illuminate\Support\Facades\Blade::check(\'custom\', $product)): ?>
 <?php else: ?>
 <?php endif; ?>';
-        $this->assertEquals($expected, $this->compiler->compileString($string));
-    }
+    expect($this->compiler->compileString($string))->toEqual($expected);
+});
 
-    public function testCustomUnlessConditions()
-    {
-        $this->compiler->if('custom', function ($anything) {
-            return true;
-        });
+test('custom unless conditions', function () {
+    $this->compiler->if('custom', function ($anything) {
+        return true;
+    });
 
-        $string = '@unlesscustom($user)
+    $string = '@unlesscustom($user)
 @endcustom';
-        $expected = '<?php if (! \Illuminate\Support\Facades\Blade::check(\'custom\', $user)): ?>
+    $expected = '<?php if (! \Illuminate\Support\Facades\Blade::check(\'custom\', $user)): ?>
 <?php endif; ?>';
-        $this->assertEquals($expected, $this->compiler->compileString($string));
-    }
+    expect($this->compiler->compileString($string))->toEqual($expected);
+});
 
-    public function testCustomConditionsAccepts0AsArgument()
-    {
-        $this->compiler->if('custom', function ($number) {
-            return true;
-        });
+test('custom conditions accepts0 as argument', function () {
+    $this->compiler->if('custom', function ($number) {
+        return true;
+    });
 
-        $string = '@custom(0)
+    $string = '@custom(0)
 @elsecustom(0)
 @endcustom';
-        $expected = '<?php if (\Illuminate\Support\Facades\Blade::check(\'custom\', 0)): ?>
+    $expected = '<?php if (\Illuminate\Support\Facades\Blade::check(\'custom\', 0)): ?>
 <?php elseif (\Illuminate\Support\Facades\Blade::check(\'custom\', 0)): ?>
 <?php endif; ?>';
-        $this->assertEquals($expected, $this->compiler->compileString($string));
-    }
+    expect($this->compiler->compileString($string))->toEqual($expected);
+});
 
-    public function testCustomComponents()
-    {
-        $this->compiler->aliasComponent('app.components.alert', 'alert');
+test('custom components', function () {
+    $this->compiler->aliasComponent('app.components.alert', 'alert');
 
-        $string = '@alert
+    $string = '@alert
 @endalert';
-        $expected = '<?php $__env->startComponent(\'app.components.alert\'); ?>
+    $expected = '<?php $__env->startComponent(\'app.components.alert\'); ?>
 <?php echo $__env->renderComponent(); ?>';
-        $this->assertEquals($expected, $this->compiler->compileString($string));
-    }
+    expect($this->compiler->compileString($string))->toEqual($expected);
+});
 
-    public function testCustomComponentsWithSlots()
-    {
-        $this->compiler->aliasComponent('app.components.alert', 'alert');
+test('custom components with slots', function () {
+    $this->compiler->aliasComponent('app.components.alert', 'alert');
 
-        $string = '@alert([\'type\' => \'danger\'])
+    $string = '@alert([\'type\' => \'danger\'])
 @endalert';
-        $expected = '<?php $__env->startComponent(\'app.components.alert\', [\'type\' => \'danger\']); ?>
+    $expected = '<?php $__env->startComponent(\'app.components.alert\', [\'type\' => \'danger\']); ?>
 <?php echo $__env->renderComponent(); ?>';
-        $this->assertEquals($expected, $this->compiler->compileString($string));
-    }
+    expect($this->compiler->compileString($string))->toEqual($expected);
+});
 
-    public function testCustomComponentsWithExistingDirective()
-    {
-        $this->compiler->aliasComponent('app.components.foreach', 'foreach');
+test('custom components with existing directive', function () {
+    $this->compiler->aliasComponent('app.components.foreach', 'foreach');
 
-        $string = '@foreach
+    $string = '@foreach
 @endforeach';
-        $expected = '<?php $__env->startComponent(\'app.components.foreach\'); ?>
+    $expected = '<?php $__env->startComponent(\'app.components.foreach\'); ?>
 <?php echo $__env->renderComponent(); ?>';
-        $this->assertEquals($expected, $this->compiler->compileString($string));
-    }
+    expect($this->compiler->compileString($string))->toEqual($expected);
+});
 
-    public function testCustomIncludes()
-    {
-        $this->compiler->include('app.includes.input', 'input');
+test('custom includes', function () {
+    $this->compiler->include('app.includes.input', 'input');
 
-        $string = '@input';
-        $expected = '<?php echo $__env->make(\'app.includes.input\', [], \Illuminate\Support\Arr::except(get_defined_vars(), [\'__data\', \'__path\']))->render(); ?>';
-        $this->assertEquals($expected, $this->compiler->compileString($string));
-    }
+    $string = '@input';
+    $expected = '<?php echo $__env->make(\'app.includes.input\', [], \Illuminate\Support\Arr::except(get_defined_vars(), [\'__data\', \'__path\']))->render(); ?>';
+    expect($this->compiler->compileString($string))->toEqual($expected);
+});
 
-    public function testCustomIncludesWithData()
-    {
-        $this->compiler->include('app.includes.input', 'input');
+test('custom includes with data', function () {
+    $this->compiler->include('app.includes.input', 'input');
 
-        $string = '@input([\'type\' => \'email\'])';
-        $expected = '<?php echo $__env->make(\'app.includes.input\', [\'type\' => \'email\'], \Illuminate\Support\Arr::except(get_defined_vars(), [\'__data\', \'__path\']))->render(); ?>';
-        $this->assertEquals($expected, $this->compiler->compileString($string));
-    }
+    $string = '@input([\'type\' => \'email\'])';
+    $expected = '<?php echo $__env->make(\'app.includes.input\', [\'type\' => \'email\'], \Illuminate\Support\Arr::except(get_defined_vars(), [\'__data\', \'__path\']))->render(); ?>';
+    expect($this->compiler->compileString($string))->toEqual($expected);
+});
 
-    public function testCustomIncludesDefaultAlias()
-    {
-        $this->compiler->include('app.includes.input');
+test('custom includes default alias', function () {
+    $this->compiler->include('app.includes.input');
 
-        $string = '@input';
-        $expected = '<?php echo $__env->make(\'app.includes.input\', [], \Illuminate\Support\Arr::except(get_defined_vars(), [\'__data\', \'__path\']))->render(); ?>';
-        $this->assertEquals($expected, $this->compiler->compileString($string));
-    }
+    $string = '@input';
+    $expected = '<?php echo $__env->make(\'app.includes.input\', [], \Illuminate\Support\Arr::except(get_defined_vars(), [\'__data\', \'__path\']))->render(); ?>';
+    expect($this->compiler->compileString($string))->toEqual($expected);
+});
 
-    public function testCustomIncludesWithExistingDirective()
-    {
-        $this->compiler->include('app.includes.foreach');
+test('custom includes with existing directive', function () {
+    $this->compiler->include('app.includes.foreach');
 
-        $string = '@foreach';
-        $expected = '<?php echo $__env->make(\'app.includes.foreach\', [], \Illuminate\Support\Arr::except(get_defined_vars(), [\'__data\', \'__path\']))->render(); ?>';
-        $this->assertEquals($expected, $this->compiler->compileString($string));
-    }
+    $string = '@foreach';
+    $expected = '<?php echo $__env->make(\'app.includes.foreach\', [], \Illuminate\Support\Arr::except(get_defined_vars(), [\'__data\', \'__path\']))->render(); ?>';
+    expect($this->compiler->compileString($string))->toEqual($expected);
+});
 
-    public function testUnescapedNonRegisteredDirective()
-    {
-        $string = '@media only screen and (min-width:480px) {';
-        $expected = '@media only screen and (min-width:480px) {';
-        $this->assertEquals($expected, $this->compiler->compileString($string));
-    }
-}
+test('unescaped non registered directive', function () {
+    $string = '@media only screen and (min-width:480px) {';
+    $expected = '@media only screen and (min-width:480px) {';
+    expect($this->compiler->compileString($string))->toEqual($expected);
+});

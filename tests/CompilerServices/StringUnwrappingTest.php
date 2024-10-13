@@ -1,30 +1,20 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\CompilerServices;
-
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
 use Stillat\BladeParser\Compiler\CompilerServices\StringUtilities;
-use Stillat\BladeParser\Tests\ParserTestCase;
 
-class StringUnwrappingTest extends ParserTestCase
-{
-    /**
-     * @dataProvider stringUnwrapDataProvider
-     */
-    public function testBasicStringUnwrapping($input, $expected)
-    {
-        $this->assertSame($expected, StringUtilities::unwrapParentheses($input));
-    }
+test('basic string unwrapping', function ($input, $expected) {
+    expect(StringUtilities::unwrapParentheses($input))->toBe($expected);
+})->with('stringUnwrapDataProvider');
 
-    public static function stringUnwrapDataProvider()
-    {
-        return [
-            ['((()))', ''],
-            ['(', '('],
-            [')', ')'],
-            ['(()', '('],
-            ['((((Foo)))', '(Foo'],
-            ['Foo)))))', 'Foo)))))'],
-            ['(((((((Foo)))))))', 'Foo'],
-        ];
-    }
-}
+dataset('stringUnwrapDataProvider', function () {
+    return [
+        ['((()))', ''],
+        ['(', '('],
+        [')', ')'],
+        ['(()', '('],
+        ['((((Foo)))', '(Foo'],
+        ['Foo)))))', 'Foo)))))'],
+        ['(((((((Foo)))))))', 'Foo'],
+    ];
+});

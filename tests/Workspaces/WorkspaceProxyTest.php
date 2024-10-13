@@ -1,144 +1,113 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Workspaces;
-
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
 use Stillat\BladeParser\Nodes\LiteralNode;
-use Stillat\BladeParser\Tests\ParserTestCase;
 use Stillat\BladeParser\Workspaces\Workspace;
 
-class WorkspaceProxyTest extends ParserTestCase
+
+beforeEach(function () {
+    $this->workspace = $this->getWorkspace('two');
+    $this->workspace->resolveStructures();
+});
+
+test('find directives by name', function () {
+    expect($this->workspace->findDirectivesByName('include'))->toHaveCount(2);
+});
+
+test('get comments', function () {
+    expect($this->workspace->getComments())->toHaveCount(4);
+});
+
+test('has any comments', function () {
+    expect($this->workspace->hasAnyComments())->toBeTrue();
+});
+
+test('get echoes', function () {
+    expect($this->workspace->getEchoes())->toHaveCount(1);
+});
+
+test('get php blocks', function () {
+    expect($this->workspace->getPhpBlocks())->toHaveCount(2);
+});
+
+test('get php tags', function () {
+    expect($this->workspace->getPhpTags())->toHaveCount(2);
+});
+
+test('get verbatim blocks', function () {
+    expect($this->workspace->getVerbatimBlocks())->toHaveCount(2);
+});
+
+test('get literals', function () {
+    expect($this->workspace->getLiterals())->toHaveCount(55);
+});
+
+test('get directives', function () {
+    expect($this->workspace->getDirectives())->toHaveCount(42);
+});
+
+test('get has any directives', function () {
+    expect($this->workspace->hasAnyDirectives())->toBeTrue();
+});
+
+function getGetComponents()
 {
-    protected ?Workspace $workspace = null;
-
-    protected function setUp(): void
-    {
-        $this->workspace = $this->getWorkspace('two');
-        $this->workspace->resolveStructures();
-    }
-
-    public function testFindDirectivesByName()
-    {
-        $this->assertCount(2, $this->workspace->findDirectivesByName('include'));
-    }
-
-    public function testGetComments()
-    {
-        $this->assertCount(4, $this->workspace->getComments());
-    }
-
-    public function testHasAnyComments()
-    {
-        $this->assertTrue($this->workspace->hasAnyComments());
-    }
-
-    public function testGetEchoes()
-    {
-        $this->assertCount(1, $this->workspace->getEchoes());
-    }
-
-    public function testGetPhpBlocks()
-    {
-        $this->assertCount(2, $this->workspace->getPhpBlocks());
-    }
-
-    public function testGetPhpTags()
-    {
-        $this->assertCount(2, $this->workspace->getPhpTags());
-    }
-
-    public function testGetVerbatimBlocks()
-    {
-        $this->assertCount(2, $this->workspace->getVerbatimBlocks());
-    }
-
-    public function testGetLiterals()
-    {
-        $this->assertCount(55, $this->workspace->getLiterals());
-    }
-
-    public function testGetDirectives()
-    {
-        $this->assertCount(42, $this->workspace->getDirectives());
-    }
-
-    public function testGetHasAnyDirectives()
-    {
-        $this->assertTrue($this->workspace->hasAnyDirectives());
-    }
-
-    public function getGetComponents()
-    {
-        $this->assertCount(2, $this->workspace->getComponents());
-    }
-
-    public function testGetOpeningComponentTags()
-    {
-        $this->assertCount(2, $this->workspace->getOpeningComponentTags());
-    }
-
-    public function testFindComponentsByTagName()
-    {
-        $this->assertCount(2, $this->workspace->findComponentsByTagName('profile'));
-        $this->assertCount(0, $this->workspace->findComponentsByTagName('alert'));
-    }
-
-    public function testHasAnyComponents()
-    {
-        $this->assertTrue($this->workspace->hasAnyComponents());
-    }
-
-    public function testHasDirective()
-    {
-        $this->assertTrue($this->workspace->hasDirective('include'));
-    }
-
-    public function testAllOfType()
-    {
-        $this->assertCount(55, $this->workspace->allOfType(LiteralNode::class));
-    }
-
-    public function testAllNotOfType()
-    {
-        $this->assertCount(55, $this->workspace->allNotOfType(LiteralNode::class));
-    }
-
-    public function testGetAllStructures()
-    {
-        $this->assertCount(18, $this->workspace->getAllStructures());
-    }
-
-    public function testGetRootStructures()
-    {
-        $this->assertCount(6, $this->workspace->getRootStructures());
-    }
-
-    public function testGetAllSwitchStatements()
-    {
-        $this->assertCount(4, $this->workspace->getAllSwitchStatements());
-    }
-
-    public function testGetRootSwitchStatements()
-    {
-        $this->assertCount(2, $this->workspace->getRootSwitchStatements());
-    }
-
-    public function testGetAllConditions()
-    {
-        $this->assertCount(4, $this->workspace->getAllConditions());
-    }
-
-    public function testGetRootConditions()
-    {
-        $this->assertCount(2, $this->workspace->getRootConditions());
-    }
-
-    public function testGetAllForElse()
-    {
-        $this->assertCount(4, $this->workspace->getAllForElse());
-    }
-
-    public function testGetRootForElse()
-    {
-        $this->assertCount(2, $this->workspace->getRootForElse());
-    }
+    expect($this->workspace->getComponents())->toHaveCount(2);
 }
+
+test('get opening component tags', function () {
+    expect($this->workspace->getOpeningComponentTags())->toHaveCount(2);
+});
+
+test('find components by tag name', function () {
+    expect($this->workspace->findComponentsByTagName('profile'))->toHaveCount(2);
+    expect($this->workspace->findComponentsByTagName('alert'))->toHaveCount(0);
+});
+
+test('has any components', function () {
+    expect($this->workspace->hasAnyComponents())->toBeTrue();
+});
+
+test('has directive', function () {
+    expect($this->workspace->hasDirective('include'))->toBeTrue();
+});
+
+test('all of type', function () {
+    expect($this->workspace->allOfType(LiteralNode::class))->toHaveCount(55);
+});
+
+test('all not of type', function () {
+    expect($this->workspace->allNotOfType(LiteralNode::class))->toHaveCount(55);
+});
+
+test('get all structures', function () {
+    expect($this->workspace->getAllStructures())->toHaveCount(18);
+});
+
+test('get root structures', function () {
+    expect($this->workspace->getRootStructures())->toHaveCount(6);
+});
+
+test('get all switch statements', function () {
+    expect($this->workspace->getAllSwitchStatements())->toHaveCount(4);
+});
+
+test('get root switch statements', function () {
+    expect($this->workspace->getRootSwitchStatements())->toHaveCount(2);
+});
+
+test('get all conditions', function () {
+    expect($this->workspace->getAllConditions())->toHaveCount(4);
+});
+
+test('get root conditions', function () {
+    expect($this->workspace->getRootConditions())->toHaveCount(2);
+});
+
+test('get all for else', function () {
+    expect($this->workspace->getAllForElse())->toHaveCount(4);
+});
+
+test('get root for else', function () {
+    expect($this->workspace->getRootForElse())->toHaveCount(2);
+});

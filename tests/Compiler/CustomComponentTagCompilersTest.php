@@ -1,56 +1,39 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Compiler;
-
-use Stillat\BladeParser\Contracts\CustomComponentTagCompiler;
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
 use Stillat\BladeParser\Document\Document;
 use Stillat\BladeParser\Document\DocumentCompilerOptions;
-use Stillat\BladeParser\Nodes\Components\ComponentNode;
-use Stillat\BladeParser\Tests\ParserTestCase;
 
-class CustomComponentTagCompilersTest extends ParserTestCase
-{
-    public function testCustomComponentTagCompilers()
-    {
-        $template = <<<'BLADE'
+test('custom component tag compilers', function () {
+    $template = <<<'BLADE'
 <a-custom />
 BLADE;
-        $doc = Document::fromText($template, customComponentTags: ['a']);
+    $doc = Document::fromText($template, customComponentTags: ['a']);
 
-        $result = $doc->compile(new DocumentCompilerOptions(
-            customTagCompilers: ['a' => new CustomCompiler]
-        ));
+    $result = $doc->compile(new DocumentCompilerOptions(
+        customTagCompilers: ['a' => new \Stillat\BladeParser\Tests\Compiler\CustomCompiler]
+    ));
 
-        $this->assertSame('My custom compilation result!', $result);
-    }
+    expect($result)->toBe('My custom compilation result!');
+});
 
-    public function testCoreComponentTagCompilersCanBeDisabled()
-    {
-        $template = <<<'BLADE'
+test('core component tag compilers can be disabled', function () {
+    $template = <<<'BLADE'
 <a-custom />
 <x-profile />
 BLADE;
 
-        $doc = Document::fromText($template, customComponentTags: ['a']);
+    $doc = Document::fromText($template, customComponentTags: ['a']);
 
-        $result = $doc->compile(new DocumentCompilerOptions(
-            customTagCompilers: ['a' => new CustomCompiler],
-            compileCoreComponentTags: false
-        ));
+    $result = $doc->compile(new DocumentCompilerOptions(
+        customTagCompilers: ['a' => new \Stillat\BladeParser\Tests\Compiler\CustomCompiler],
+        compileCoreComponentTags: false
+    ));
 
-        $expected = <<<'EXPECTED'
+    $expected = <<<'EXPECTED'
 My custom compilation result!
 <x-profile />
 EXPECTED;
 
-        $this->assertSame($expected, $result);
-    }
-}
-
-class CustomCompiler implements CustomComponentTagCompiler
-{
-    public function compile(ComponentNode $component): ?string
-    {
-        return 'My custom compilation result!';
-    }
-}
+    expect($result)->toBe($expected);
+});

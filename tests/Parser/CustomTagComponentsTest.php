@@ -1,67 +1,60 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Parser;
-
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
 use Stillat\BladeParser\Nodes\Components\ComponentNode;
-use Stillat\BladeParser\Tests\ParserTestCase;
 
-class CustomTagComponentsTest extends ParserTestCase
-{
-    public function testCustomTagsCanBeParsed()
-    {
-        $template = <<<'EOT'
+test('custom tags can be parsed', function () {
+    $template = <<<'EOT'
 <x-alert :$message />
     <custom-alert :$message />
 EOT;
-        $parser = $this->parser();
-        $parser->parse($template);
+    $parser = $this->parser();
+    $parser->parse($template);
 
-        $this->assertFalse($parser->hasCustomComponents());
-        $this->assertTrue($parser->hasComponents());
-        $this->assertTrue($parser->hasAnyComponents());
+    expect($parser->hasCustomComponents())->toBeFalse();
+    expect($parser->hasComponents())->toBeTrue();
+    expect($parser->hasAnyComponents())->toBeTrue();
 
-        $parser->registerCustomComponentTag('custom');
-        $parser->parse($template);
+    $parser->registerCustomComponentTag('custom');
+    $parser->parse($template);
 
-        $this->assertTrue($parser->hasCustomComponents());
-        $this->assertTrue($parser->hasComponents());
-        $this->assertTrue($parser->hasAnyComponents());
+    expect($parser->hasCustomComponents())->toBeTrue();
+    expect($parser->hasComponents())->toBeTrue();
+    expect($parser->hasAnyComponents())->toBeTrue();
 
-        $doc = $this->getDocument($template, customComponentTags: ['custom']);
+    $doc = $this->getDocument($template, customComponentTags: ['custom']);
 
-        /** @var ComponentNode[] $components */
-        $components = $doc->findComponentsByTagName('alert');
+    /** @var ComponentNode[] $components */
+    $components = $doc->findComponentsByTagName('alert');
 
-        $this->assertCount(2, $components);
+    expect($components)->toHaveCount(2);
 
-        $xAlert = $components[0];
-        $this->assertFalse($xAlert->isCustomComponent);
-        $this->assertSame('x', $xAlert->componentPrefix);
-        $this->assertSame('x-alert', $xAlert->getCompareName());
-        $this->assertSame('alert', $xAlert->getTagName());
+    $xAlert = $components[0];
+    expect($xAlert->isCustomComponent)->toBeFalse();
+    expect($xAlert->componentPrefix)->toBe('x');
+    expect($xAlert->getCompareName())->toBe('x-alert');
+    expect($xAlert->getTagName())->toBe('alert');
 
-        $customAlert = $components[1];
-        $this->assertTrue($customAlert->isCustomComponent);
-        $this->assertSame('custom', $customAlert->componentPrefix);
-        $this->assertSame('custom-alert', $customAlert->getCompareName());
-        $this->assertSame('alert', $customAlert->getTagName());
-    }
+    $customAlert = $components[1];
+    expect($customAlert->isCustomComponent)->toBeTrue();
+    expect($customAlert->componentPrefix)->toBe('custom');
+    expect($customAlert->getCompareName())->toBe('custom-alert');
+    expect($customAlert->getTagName())->toBe('alert');
+});
 
-    public function testCustomTagsDontGetConfusedWhenPairing()
-    {
-        $template = <<<'EOT'
+test('custom tags dont get confused when pairing', function () {
+    $template = <<<'EOT'
 <x-alert message="the message">
     <custom-alert message="something different">
     
     </custom-alert>
 </x-alert>
 EOT;
-        $doc = $this->getDocument($template, customComponentTags: ['custom'])->resolveStructures();
-        $this->assertCount(4, $doc->getComponents());
+    $doc = $this->getDocument($template, customComponentTags: ['custom'])->resolveStructures();
+    expect($doc->getComponents())->toHaveCount(4);
 
-        $components = $doc->getComponents();
+    $components = $doc->getComponents();
 
-        $this->assertComponentsArePaired($components[0], $components[3]);
-        $this->assertComponentsArePaired($components[1], $components[2]);
-    }
-}
+    $this->assertComponentsArePaired($components[0], $components[3]);
+    $this->assertComponentsArePaired($components[1], $components[2]);
+});

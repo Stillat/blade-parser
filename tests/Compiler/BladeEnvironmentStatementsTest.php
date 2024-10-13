@@ -1,68 +1,58 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Compiler;
-
-use Stillat\BladeParser\Tests\ParserTestCase;
-
-class BladeEnvironmentStatementsTest extends ParserTestCase
-{
-    public function testEnvStatementsAreCompiled()
-    {
-        $string = "@env('staging')
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
+test('env statements are compiled', function () {
+    $string = "@env('staging')
 breeze
 @else
 boom
 @endenv";
-        $expected = "<?php if(app()->environment('staging')): ?>
+    $expected = "<?php if(app()->environment('staging')): ?>
 breeze
 <?php else: ?>
 boom
 <?php endif; ?>";
-        $this->assertEquals($expected, $this->compiler->compileString($string));
-    }
+    expect($this->compiler->compileString($string))->toEqual($expected);
+});
 
-    public function testEnvStatementsWithMultipleStringParamsAreCompiled()
-    {
-        $string = "@env('staging', 'production')
+test('env statements with multiple string params are compiled', function () {
+    $string = "@env('staging', 'production')
 breeze
 @else
 boom
 @endenv";
-        $expected = "<?php if(app()->environment('staging', 'production')): ?>
+    $expected = "<?php if(app()->environment('staging', 'production')): ?>
 breeze
 <?php else: ?>
 boom
 <?php endif; ?>";
-        $this->assertEquals($expected, $this->compiler->compileString($string));
-    }
+    expect($this->compiler->compileString($string))->toEqual($expected);
+});
 
-    public function testEnvStatementsWithArrayParamAreCompiled()
-    {
-        $string = "@env(['staging', 'production'])
+test('env statements with array param are compiled', function () {
+    $string = "@env(['staging', 'production'])
 breeze
 @else
 boom
 @endenv";
-        $expected = "<?php if(app()->environment(['staging', 'production'])): ?>
+    $expected = "<?php if(app()->environment(['staging', 'production'])): ?>
 breeze
 <?php else: ?>
 boom
 <?php endif; ?>";
-        $this->assertEquals($expected, $this->compiler->compileString($string));
-    }
+    expect($this->compiler->compileString($string))->toEqual($expected);
+});
 
-    public function testProductionStatementsAreCompiled()
-    {
-        $string = '@production
+test('production statements are compiled', function () {
+    $string = '@production
 breeze
 @else
 boom
 @endproduction';
-        $expected = "<?php if(app()->environment('production')): ?>
+    $expected = "<?php if(app()->environment('production')): ?>
 breeze
 <?php else: ?>
 boom
 <?php endif; ?>";
-        $this->assertEquals($expected, $this->compiler->compileString($string));
-    }
-}
+    expect($this->compiler->compileString($string))->toEqual($expected);
+});

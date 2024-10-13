@@ -1,31 +1,26 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Validation;
-
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
 use Stillat\BladeParser\Document\Document;
-use Stillat\BladeParser\Tests\ParserTestCase;
 use Stillat\BladeParser\Validation\Validators\InconsistentIndentationLevelValidator;
 
-class InconsistentIndentationLevelTest extends ParserTestCase
-{
-    public function testInconsistentIndentationLevelDetectsIssues()
-    {
-        $template = <<<'BLADE'
+
+test('inconsistent indentation level detects issues', function () {
+    $template = <<<'BLADE'
 @if ($this)
 
         @endif
 BLADE;
-        $results = Document::fromText($template)
-            ->addValidator(new InconsistentIndentationLevelValidator)
-            ->validate()->getValidationErrors();
+    $results = Document::fromText($template)
+        ->addValidator(new InconsistentIndentationLevelValidator)
+        ->validate()->getValidationErrors();
 
-        $this->assertCount(1, $results);
-        $this->assertSame('Inconsistent indentation level of 8 for [@endif]; parent [@if] has a level of 0', $results[0]->message);
-    }
+    expect($results)->toHaveCount(1);
+    expect($results[0]->message)->toBe('Inconsistent indentation level of 8 for [@endif]; parent [@if] has a level of 0');
+});
 
-    public function testInconsistentIndentationLevelDoesNotDetectIssues()
-    {
-        $template = <<<'BLADE'
+test('inconsistent indentation level does not detect issues', function () {
+    $template = <<<'BLADE'
         @if ($this)
 
         @endif
@@ -34,10 +29,9 @@ BLADE;
     
             @endif
 BLADE;
-        $results = Document::fromText($template)
-            ->addValidator(new InconsistentIndentationLevelValidator)
-            ->validate()->getValidationErrors();
+    $results = Document::fromText($template)
+        ->addValidator(new InconsistentIndentationLevelValidator)
+        ->validate()->getValidationErrors();
 
-        $this->assertCount(0, $results);
-    }
-}
+    expect($results)->toHaveCount(0);
+});

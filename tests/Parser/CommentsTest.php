@@ -1,138 +1,126 @@
 <?php
 
-namespace Stillat\BladeParser\Tests\Parser;
-
+uses(\Stillat\BladeParser\Tests\ParserTestCase::class);
 use Stillat\BladeParser\Nodes\CommentNode;
-use Stillat\BladeParser\Tests\ParserTestCase;
 
-class CommentsTest extends ParserTestCase
-{
-    public function testBasicComments()
-    {
-        $template = '{{-- This is a comment --}}';
-        $nodes = $this->parseNodes($template);
+test('basic comments', function () {
+    $template = '{{-- This is a comment --}}';
+    $nodes = $this->parseNodes($template);
 
-        $this->assertCount(1, $nodes);
-        $this->assertInstanceOf(CommentNode::class, $nodes[0]);
+    expect($nodes)->toHaveCount(1);
+    expect($nodes[0])->toBeInstanceOf(CommentNode::class);
 
-        /** @var CommentNode $comment */
-        $comment = $nodes[0];
+    /** @var CommentNode $comment */
+    $comment = $nodes[0];
 
-        $this->assertSame('{{-- This is a comment --}}', $comment->content);
-        $this->assertSame(' This is a comment ', $comment->innerContent);
-    }
+    expect($comment->content)->toBe('{{-- This is a comment --}}');
+    expect($comment->innerContent)->toBe(' This is a comment ');
+});
 
-    public function testCommentsContainingThingsThatLookLikeBlade()
-    {
-        $template = <<<'EOT'
+test('comments containing things that look like blade', function () {
+    $template = <<<'EOT'
 {{-- This is a comment with a @can inside --}}
 EOT;
 
-        $nodes = $this->parseNodes($template);
+    $nodes = $this->parseNodes($template);
 
-        $this->assertCount(1, $nodes);
-        $this->assertInstanceOf(CommentNode::class, $nodes[0]);
+    expect($nodes)->toHaveCount(1);
+    expect($nodes[0])->toBeInstanceOf(CommentNode::class);
 
-        /** @var CommentNode $comment */
-        $comment = $nodes[0];
+    /** @var CommentNode $comment */
+    $comment = $nodes[0];
 
-        $this->assertSame($template, $comment->content);
-        $this->assertSame(' This is a comment with a @can inside ', $comment->innerContent);
-    }
+    expect($comment->content)->toBe($template);
+    expect($comment->innerContent)->toBe(' This is a comment with a @can inside ');
+});
 
-    public function testCommentsContainingCurlyBraces()
-    {
-        $template = <<<'EOT'
+test('comments containing curly braces', function () {
+    $template = <<<'EOT'
 {{-- This is a comment {{ --}}
 EOT;
 
-        $nodes = $this->parseNodes($template);
+    $nodes = $this->parseNodes($template);
 
-        $this->assertCount(1, $nodes);
-        $this->assertInstanceOf(CommentNode::class, $nodes[0]);
+    expect($nodes)->toHaveCount(1);
+    expect($nodes[0])->toBeInstanceOf(CommentNode::class);
 
-        /** @var CommentNode $comment */
-        $comment = $nodes[0];
+    /** @var CommentNode $comment */
+    $comment = $nodes[0];
 
-        $this->assertSame($template, $comment->content);
-        $this->assertSame(' This is a comment {{ ', $comment->innerContent);
+    expect($comment->content)->toBe($template);
+    expect($comment->innerContent)->toBe(' This is a comment {{ ');
 
-        $template = <<<'EOT'
+    $template = <<<'EOT'
 {{-- This is a comment -}} --}}
 EOT;
 
-        $nodes = $this->parseNodes($template);
+    $nodes = $this->parseNodes($template);
 
-        $this->assertCount(1, $nodes);
-        $this->assertInstanceOf(CommentNode::class, $nodes[0]);
+    expect($nodes)->toHaveCount(1);
+    expect($nodes[0])->toBeInstanceOf(CommentNode::class);
 
-        /** @var CommentNode $comment */
-        $comment = $nodes[0];
+    /** @var CommentNode $comment */
+    $comment = $nodes[0];
 
-        $this->assertSame($template, $comment->content);
-        $this->assertSame(' This is a comment -}} ', $comment->innerContent);
+    expect($comment->content)->toBe($template);
+    expect($comment->innerContent)->toBe(' This is a comment -}} ');
 
-        $template = <<<'EOT'
+    $template = <<<'EOT'
 {{-- This is a {{ @can @verbatim comment -}} --}}
 EOT;
 
-        $nodes = $this->parseNodes($template);
+    $nodes = $this->parseNodes($template);
 
-        $this->assertCount(1, $nodes);
-        $this->assertInstanceOf(CommentNode::class, $nodes[0]);
+    expect($nodes)->toHaveCount(1);
+    expect($nodes[0])->toBeInstanceOf(CommentNode::class);
 
-        /** @var CommentNode $comment */
-        $comment = $nodes[0];
+    /** @var CommentNode $comment */
+    $comment = $nodes[0];
 
-        $this->assertSame($template, $comment->content);
-        $this->assertSame(' This is a {{ @can @verbatim comment -}} ', $comment->innerContent);
-    }
+    expect($comment->content)->toBe($template);
+    expect($comment->innerContent)->toBe(' This is a {{ @can @verbatim comment -}} ');
+});
 
-    public function testMultipleComments()
-    {
-        $template = <<<'EOT'
+test('multiple comments', function () {
+    $template = <<<'EOT'
 {{-- This is a comment --}}Literal{{-- This is another comment --}}
 EOT;
-        $nodes = $this->parseNodes($template);
+    $nodes = $this->parseNodes($template);
 
-        $this->assertCount(3, $nodes);
-        $this->assertCommentContent($nodes[0], '{{-- This is a comment --}}');
-        $this->assertLiteralContent($nodes[1], 'Literal');
-        $this->assertCommentContent($nodes[2], '{{-- This is another comment --}}');
-    }
+    expect($nodes)->toHaveCount(3);
+    $this->assertCommentContent($nodes[0], '{{-- This is a comment --}}');
+    $this->assertLiteralContent($nodes[1], 'Literal');
+    $this->assertCommentContent($nodes[2], '{{-- This is another comment --}}');
+});
 
-    public function testCommentsWithBracesDoNotConfuseTheParser()
-    {
-        $template = <<<'EOT'
+test('comments with braces do not confuse the parser', function () {
+    $template = <<<'EOT'
 {{--a{{ $one }}b{{ $two }}c{{ $three }}d--}}a{{ $one }}b{{ $two }}c{{ $three }}d
 EOT;
 
-        $nodes = $this->parseNodes($template);
+    $nodes = $this->parseNodes($template);
 
-        $this->assertCount(8, $nodes);
-        $this->assertCommentContent($nodes[0], '{{--a{{ $one }}b{{ $two }}c{{ $three }}d--}}');
-        $this->assertLiteralContent($nodes[1], 'a');
-        $this->assertEchoContent($nodes[2], '{{ $one }}');
-        $this->assertLiteralContent($nodes[3], 'b');
-        $this->assertEchoContent($nodes[4], '{{ $two }}');
-        $this->assertLiteralContent($nodes[5], 'c');
-        $this->assertEchoContent($nodes[6], '{{ $three }}');
-        $this->assertLiteralContent($nodes[7], 'd');
-    }
+    expect($nodes)->toHaveCount(8);
+    $this->assertCommentContent($nodes[0], '{{--a{{ $one }}b{{ $two }}c{{ $three }}d--}}');
+    $this->assertLiteralContent($nodes[1], 'a');
+    $this->assertEchoContent($nodes[2], '{{ $one }}');
+    $this->assertLiteralContent($nodes[3], 'b');
+    $this->assertEchoContent($nodes[4], '{{ $two }}');
+    $this->assertLiteralContent($nodes[5], 'c');
+    $this->assertEchoContent($nodes[6], '{{ $three }}');
+    $this->assertLiteralContent($nodes[7], 'd');
+});
 
-    public function testCommentWithoutSpaces()
-    {
-        $template = '{{--this is a comment--}}';
-        $nodes = $this->parseNodes($template);
-        $this->assertCount(1, $nodes);
-        $this->assertCommentContent($nodes[0], $template);
-    }
+test('comment without spaces', function () {
+    $template = '{{--this is a comment--}}';
+    $nodes = $this->parseNodes($template);
+    expect($nodes)->toHaveCount(1);
+    $this->assertCommentContent($nodes[0], $template);
+});
 
-    public function testCommentsThatContainOpeningDirectives()
-    {
-        $template = '{{-- @foreach() --}}';
-        $nodes = $this->parseNodes($template);
-        $this->assertCount(1, $nodes);
-        $this->assertCommentContent($nodes[0], $template);
-    }
-}
+test('comments that contain opening directives', function () {
+    $template = '{{-- @foreach() --}}';
+    $nodes = $this->parseNodes($template);
+    expect($nodes)->toHaveCount(1);
+    $this->assertCommentContent($nodes[0], $template);
+});
