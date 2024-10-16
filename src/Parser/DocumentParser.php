@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 use Stillat\BladeParser\Compiler\CompilerServices\CoreDirectiveRetriever;
 use Stillat\BladeParser\Compiler\CompilerServices\LiteralContentHelpers;
 use Stillat\BladeParser\Compiler\CompilerServices\StringUtilities;
+use Stillat\BladeParser\Document\Document;
 use Stillat\BladeParser\Document\Structures\DirectiveClosingAnalyzer;
 use Stillat\BladeParser\Errors\BladeError;
 use Stillat\BladeParser\Errors\ConstructContext;
@@ -179,6 +180,18 @@ class DocumentParser extends AbstractParser
         $this->ignoreDirectives = $directives;
 
         return $this;
+    }
+
+    public function toDocument(bool $resolveStructures = true): Document
+    {
+        $document = new Document;
+        $document->syncFromParser($this);
+
+        if ($resolveStructures) {
+            $document->resolveStructures();
+        }
+
+        return $document;
     }
 
     /**
@@ -603,6 +616,13 @@ class DocumentParser extends AbstractParser
         $this->components += 1;
 
         return $componentNode;
+    }
+
+    public function parseTemplate(string $document): static
+    {
+        $this->parse($document);
+
+        return $this;
     }
 
     /**
