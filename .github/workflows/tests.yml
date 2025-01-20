@@ -27,8 +27,7 @@ jobs:
       - name: Update apt sources
         if: matrix.os == 'ubuntu-latest'
         run: |
-          sudo gem install apt-spy2
-          sudo apt-spy2 fix --commit --launchpad --country=US
+          sudo apt-get check || sudo apt --fix-broken install -y
           sudo apt-get update
 
       - name: Checkout code
@@ -42,7 +41,7 @@ jobs:
           coverage: none
 
       - name: Set PHP 8 Mockery
-        uses: nick-invision/retry@v2
+        uses: nick-invision/retry@v3
         with:
           timeout_minutes: 5
           max_attempts: 5
@@ -50,7 +49,7 @@ jobs:
         if: matrix.php >= 8.0
 
       - name: Install dependencies
-        uses: nick-invision/retry@v2
+        uses: nick-invision/retry@v3
         with:
           timeout_minutes: 5
           max_attempts: 5
