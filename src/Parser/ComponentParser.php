@@ -194,6 +194,8 @@ class ComponentParser extends AbstractParser
         return Str::contains(mb_strtolower($content), '$attributes');
     }
 
+    public static $break = false;
+
     private function parseParameters(): array
     {
         $containsValue = false;
@@ -211,17 +213,18 @@ class ComponentParser extends AbstractParser
                 $startIndex = $this->currentIndex;
             }
 
-            if ($this->cur == self::C_LeftCurlyBracket && $this->next == self::C_LeftCurlyBracket && $this->fetchAtRelative(3, 1) == self::C_LeftCurlyBracket) {
+            if ($this->cur == self::C_LeftCurlyBracket && $this->next == self::C_LeftCurlyBracket && $this->fetchAtRelative($this->currentIndex + 2, 1) == self::C_LeftCurlyBracket) {
                 $this->seekToEndOfTripleEcho();
                 $parameters[] = $this->makeEchoParameter(ParameterType::AttributeTripleEcho, $startIndex);
 
                 continue;
-            } if ($this->cur == self::C_LeftCurlyBracket && $this->next == self::C_ExclamationMark && $this->fetchAtRelative(3, 1) == self::C_ExclamationMark) {
+            } if ($this->cur == self::C_LeftCurlyBracket && $this->next == self::C_ExclamationMark && $this->fetchAtRelative($this->currentIndex + 2, 1) == self::C_ExclamationMark) {
                 $this->seekToEndOfRawEcho();
                 $parameters[] = $this->makeEchoParameter(ParameterType::AttributeRawEcho, $startIndex);
 
                 continue;
             } elseif ($this->cur == self::C_LeftCurlyBracket && $this->next == self::C_LeftCurlyBracket) {
+                self::$break = true;
                 $this->seekEndOfEcho();
                 $parameters[] = $this->makeEchoParameter(ParameterType::AttributeEcho, $startIndex);
 

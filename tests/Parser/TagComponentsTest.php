@@ -423,3 +423,36 @@ EOT;
     expect($nodes[1])->toBeInstanceOf(LiteralNode::class);
     expect($nodes[2])->toBeInstanceOf(ComponentNode::class);
 });
+
+test('echo params are parsed', function () {
+    $template = <<<'EOT'
+<x-alert
+    data-one={{ $something }}
+    data-two={{{ $something }}}
+    data-three={!! $something !!}
+/>
+EOT;
+    $nodes = $this->parser()->onlyParseComponents()->parse($template);
+
+    expect($nodes)->toHaveCount(1);
+    expect($nodes[0])->toBeInstanceOf(ComponentNode::class);
+
+    /** @var ComponentNode $component */
+    $component = $nodes[0];
+    expect($component->parameters)->toHaveCount(3);
+
+    /** @var ParameterNode $param1 */
+    $param1 = $component->parameters[0];
+    expect($param1->content)->toBe('data-one={{ $something }}');
+    expect($param1->type)->toBe(ParameterType::UnknownEcho);
+
+    /** @var ParameterNode $param2 */
+    $param2 = $component->parameters[1];
+    expect($param2->content)->toBe('data-two={{{ $something }}}');
+    expect($param2->type)->toBe(ParameterType::UnknownTripleEcho);
+
+    /** @var ParameterNode $param3 */
+    $param3 = $component->parameters[2];
+    expect($param3->content)->toBe('data-three={!! $something !!}');
+    expect($param3->type)->toBe(ParameterType::UnknownRawEcho);
+});
