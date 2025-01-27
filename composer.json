@@ -19,7 +19,7 @@
         "orchestra/testbench": "*",
         "laravel/pint": "^1.4",
         "brianium/paratest": "*",
-        "pestphp/pest": "^2"
+        "pestphp/pest": "^3.7.3"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
