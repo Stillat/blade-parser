@@ -14,10 +14,12 @@ jobs:
     strategy:
       matrix:
         php: [8.2, 8.3, 8.4]
-        laravel: [11.*, 12.*]
+        laravel: [10.*, 11.*, 12.*]
         stability: [prefer-lowest, prefer-stable]
         os: [ubuntu-latest]
         exclude:
+          - laravel: 10.*
+            php: 8.4
           - laravel: 12.*
             php: 8.2
 
