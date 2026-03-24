@@ -28,3 +28,15 @@ BLADE;
 
     expect($results)->toHaveCount(0);
 });
+
+test('recursive isolated include detects issues', function () {
+    $template = <<<'BLADE'
+@includeIsolated('/tmp/file')
+BLADE;
+    $results = Document::fromText($template, filePath: '/tmp/file.blade.php')
+        ->addValidator(new RecursiveIncludeValidator)
+        ->validate()->getValidationErrors();
+
+    expect($results)->toHaveCount(1);
+    expect($results[0]->message)->toBe("Possible infinite recursion detected near [@includeIsolated('/tmp/file')]");
+});

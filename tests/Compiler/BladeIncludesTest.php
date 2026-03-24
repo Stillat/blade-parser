@@ -30,3 +30,8 @@ test('include firsts are compiled', function () {
     expect($this->compiler->compileString('@includeFirst(["one", "two"])'))->toBe('<?php echo $__env->first(["one", "two"], \Illuminate\Support\Arr::except(get_defined_vars(), [\'__data\', \'__path\']))->render(); ?>');
     expect($this->compiler->compileString('@includeFirst(["one", "two"], ["foo" => "bar"])'))->toBe('<?php echo $__env->first(["one", "two"], ["foo" => "bar"], \Illuminate\Support\Arr::except(get_defined_vars(), [\'__data\', \'__path\']))->render(); ?>');
 });
+
+test('include isolateds are compiled', function () {
+    expect($this->compiler->compileString('@includeIsolated(\'foo\')'))->toBe('<?php echo $__env->make(\'foo\')->render(); ?>');
+    expect($this->compiler->compileString('@includeIsolated(name(foo))'))->toBe('<?php echo $__env->make(name(foo))->render(); ?>');
+});

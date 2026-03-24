@@ -52,4 +52,10 @@ trait CompilesIncludes
 
         return "<?php echo \$__env->first({$expression}, \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>";
     }
+
+    #[CompilesDirective(StructureType::Include, ArgumentRequirement::Required)]
+    protected function compileIncludeIsolated(DirectiveNode $node): string
+    {
+        return "<?php echo \$__env->make({$this->getDirectiveArgsInnerContent($node)})->render(); ?>";
+    }
 }
